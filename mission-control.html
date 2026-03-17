@@ -1,9 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mission Control">
+<meta name="theme-color" content="#0a0a0f">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mission Control — AI Command Center</title>
+<title>Mission Control â€” AI Command Center</title>
 <style>
 :root {
   --bg: #0a0a0f;
@@ -25,7 +30,7 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-system,sans-serif; display:flex; min-height:100vh; overflow-x:hidden; }
 
-/* ── SIDEBAR ── */
+/* â”€â”€ SIDEBAR â”€â”€ */
 .sidebar {
   width: 240px; min-width: 240px;
   background: var(--bg2);
@@ -67,7 +72,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
 .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: var(--glow-g); animation: pulse 2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(.85)} }
 
-/* ── MAIN ── */
+/* â”€â”€ MAIN â”€â”€ */
 .main {
   margin-left: 240px; flex: 1;
   display: flex; flex-direction: column;
@@ -90,14 +95,14 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
 .pill-cyan { background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2); color: var(--cyan); }
 .live-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: pulse 1.5s infinite; }
 
-/* ── SECTIONS ── */
+/* â”€â”€ SECTIONS â”€â”€ */
 .section { display: none; padding: 24px; }
 .section.active { display: block; }
 .section-header { margin-bottom: 24px; }
 .section-header h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px; }
 .section-header p { font-size: 13px; color: var(--text2); }
 
-/* ── CARDS ── */
+/* â”€â”€ CARDS â”€â”€ */
 .card {
   background: var(--card);
   border: 1px solid var(--border);
@@ -106,13 +111,13 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
 }
 .card:hover { border-color: rgba(255,255,255,0.12); }
 
-/* ── GRID ── */
+/* â”€â”€ GRID â”€â”€ */
 .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
 .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
 .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
 @media(max-width:1100px){ .grid-4{grid-template-columns:repeat(2,1fr);} }
 
-/* ── STAT CARDS ── */
+/* â”€â”€ STAT CARDS â”€â”€ */
 .stat-card { position:relative; overflow:hidden; }
 .stat-card::before { content:''; position:absolute; top:0;left:0;right:0;height:2px; background:var(--accent,var(--green)); opacity:.7; }
 .stat-icon { font-size:22px; margin-bottom:12px; }
@@ -122,7 +127,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
 .up { background:rgba(0,255,136,.12); color:var(--green); }
 .warn { background:rgba(255,170,0,.12); color:var(--amber); }
 
-/* ── SECTION TITLE ── */
+/* â”€â”€ SECTION TITLE â”€â”€ */
 .s-title {
   font-size:14px; font-weight:700; color:var(--text2);
   text-transform:uppercase; letter-spacing:1px;
@@ -130,7 +135,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
 }
 .s-title::after { content:''; flex:1; height:1px; background:var(--border); }
 
-/* ── AGENT CARDS ── */
+/* â”€â”€ AGENT CARDS â”€â”€ */
 .agent-card { cursor:pointer; }
 .agent-card:hover { border-color:var(--green); box-shadow:var(--glow-g); transform:translateY(-2px); }
 .agent-head { display:flex;align-items:center;gap:12px;margin-bottom:14px; }
@@ -146,14 +151,14 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
 .tags { display:flex;flex-wrap:wrap;gap:6px; }
 .tag { font-size:10px;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text2); }
 
-/* ── ACTIVITY FEED ── */
+/* â”€â”€ ACTIVITY FEED â”€â”€ */
 .feed-item { display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.03); }
 .feed-item:last-child { border-bottom:none; }
 .feed-dot { width:7px;height:7px;border-radius:50%;margin-top:5px;flex-shrink:0; }
 .feed-text { font-size:12px;margin-bottom:2px; }
 .feed-time { font-size:10px;color:var(--text3); }
 
-/* ── TERMINAL ── */
+/* â”€â”€ TERMINAL â”€â”€ */
 .terminal {
   background:#060c18; border:1px solid rgba(0,255,136,.15);
   border-radius:14px; overflow:hidden; margin-bottom:24px;
@@ -174,7 +179,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
 .cursor { display:inline-block;width:7px;height:13px;background:var(--green);animation:blink 1s infinite;vertical-align:text-bottom; }
 @keyframes blink { 0%,100%{opacity:1}50%{opacity:0} }
 
-/* ── KANBAN ── */
+/* â”€â”€ KANBAN â”€â”€ */
 .kanban { display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px;overflow-x:auto; }
 .kanban-col { background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:12px;padding:14px;min-width:160px; }
 .col-head { font-size:12px;font-weight:700;color:var(--text2);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between; }
@@ -189,7 +194,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
 .p2 { background:rgba(0,212,255,.2);color:var(--cyan); }
 .p3 { background:rgba(136,136,153,.2);color:var(--text2); }
 
-/* ── TABLE ── */
+/* â”€â”€ TABLE â”€â”€ */
 .data-table { width:100%;border-collapse:collapse;font-size:12px; }
 .data-table th { padding:10px 14px;text-align:left;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--border); }
 .data-table td { padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--text2); }
@@ -197,7 +202,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
 .data-table tr:last-child td { border-bottom:none; }
 .td-name { color:var(--text);font-weight:600; }
 
-/* ── BADGES ── */
+/* â”€â”€ BADGES â”€â”€ */
 .badge { font-size:10px;font-weight:700;padding:3px 9px;border-radius:7px;text-transform:uppercase; }
 .b-active { background:rgba(0,255,136,.15);color:var(--green);border:1px solid rgba(0,255,136,.2); }
 .b-idle { background:rgba(255,170,0,.15);color:var(--amber);border:1px solid rgba(255,170,0,.2); }
@@ -205,17 +210,17 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
 .b-paused { background:rgba(136,136,153,.15);color:var(--text2);border:1px solid var(--border); }
 .b-ok { background:rgba(0,212,255,.12);color:var(--cyan);border:1px solid rgba(0,212,255,.2); }
 
-/* ── PROGRESS ── */
+/* â”€â”€ PROGRESS â”€â”€ */
 .prog-bar { height:4px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;margin-top:6px; }
 .prog-fill { height:100%;border-radius:4px;background:linear-gradient(90deg,var(--green),var(--cyan)); }
 
-/* ── GAUGE ── */
+/* â”€â”€ GAUGE â”€â”€ */
 .gauges { display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px; }
 .gauge-card { text-align:center; }
 .gauge-num { font-size:28px;font-weight:800;letter-spacing:-1px;margin:8px 0 2px; }
 .gauge-lbl { font-size:11px;color:var(--text2); }
 
-/* ── SECURITY ── */
+/* â”€â”€ SECURITY â”€â”€ */
 .score-ring {
   width:100px;height:100px;border-radius:50%;
   background:conic-gradient(var(--green) 0% 73%, rgba(255,255,255,.06) 73%);
@@ -227,7 +232,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
 .score-lbl { font-size:9px;color:var(--text3);text-transform:uppercase; }
 .audit-item { display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.03);font-size:12px; }
 
-/* ── MODELS ── */
+/* â”€â”€ MODELS â”€â”€ */
 .model-card {
   border-radius:14px;padding:18px;border:1px solid var(--border);
   background:var(--card);transition:all .2s;cursor:pointer;
@@ -241,13 +246,13 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
 .model-caps { display:flex;gap:5px;flex-wrap:wrap;margin-top:12px; }
 .cap { font-size:9px;padding:2px 7px;border-radius:5px;background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.2);color:var(--purple); }
 
-/* ── MEMORY ── */
+/* â”€â”€ MEMORY â”€â”€ */
 .file-tree { font-family:'SF Mono','Fira Code',monospace;font-size:12px; }
 .file-item { padding:7px 10px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--text2);transition:all .15s; }
 .file-item:hover { background:rgba(255,255,255,.04);color:var(--text); }
 .file-item.active { background:rgba(0,212,255,.08);color:var(--cyan); }
 
-/* ── CRON ── */
+/* â”€â”€ CRON â”€â”€ */
 .cron-pill {
   display:inline-flex;align-items:center;gap:5px;
   font-family:'SF Mono',monospace;font-size:11px;
@@ -255,12 +260,12 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
   background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2);color:var(--cyan);
 }
 
-/* ── CALENDAR ── */
+/* â”€â”€ CALENDAR â”€â”€ */
 .cal-grid { display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:16px; }
 .cal-day { text-align:center;padding:8px 4px;font-size:12px;border-radius:8px;cursor:pointer;transition:all .15s; }
 .cal-day:hover { background:rgba(255,255,255,.05); }
 .cal-day.today { background:rgba(0,255,136,.15);color:var(--green);font-weight:700; }
-.cal-day.has-event::after { content:'•';display:block;font-size:8px;color:var(--cyan);margin-top:2px; }
+.cal-day.has-event::after { content:'â€¢';display:block;font-size:8px;color:var(--cyan);margin-top:2px; }
 .cal-header { text-align:center;font-size:10px;color:var(--text3);text-transform:uppercase;padding:4px; }
 .event-pill { font-size:11px;padding:5px 10px;border-radius:7px;margin-bottom:6px;display:flex;align-items:center;gap:6px; }
 .ev-cron { background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2);color:var(--cyan); }
@@ -268,7 +273,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
 .ev-agent { background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.2);color:var(--green); }
 .ev-bill { background:rgba(255,51,102,.1);border:1px solid rgba(255,51,102,.2);color:var(--red); }
 
-/* ── CHAT ── */
+/* â”€â”€ CHAT â”€â”€ */
 .chat-area { height:300px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px; }
 .msg { max-width:75%;border-radius:14px;padding:10px 14px;font-size:13px;line-height:1.6; }
 .msg-user { align-self:flex-end;background:rgba(0,255,136,.12);border:1px solid rgba(0,255,136,.2); }
@@ -283,32 +288,32 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
 .btn-ghost { background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--border); }
 .btn-ghost:hover { background:rgba(255,255,255,.1); }
 
-/* ── COST CHART ── */
+/* â”€â”€ COST CHART â”€â”€ */
 .cost-bar { display:flex;align-items:center;gap:12px;margin-bottom:10px; }
 .cost-label { width:130px;font-size:12px;color:var(--text2); }
 .cost-track { flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden; }
 .cost-fill { height:100%;border-radius:4px; }
 .cost-val { width:60px;text-align:right;font-size:12px;font-weight:700; }
 
-/* ── SUBSCRIPTIONS ── */
+/* â”€â”€ SUBSCRIPTIONS â”€â”€ */
 .sub-card { border-radius:14px;padding:16px;border:1px solid var(--border);background:var(--card);margin-bottom:12px; }
 .sub-head { display:flex;align-items:center;justify-content:space-between;margin-bottom:10px; }
 .sub-name { font-size:14px;font-weight:700; }
 .sub-plan { font-size:11px;color:var(--text2); }
 
-/* ── TOGGLE ── */
+/* â”€â”€ TOGGLE â”€â”€ */
 .toggle { width:36px;height:20px;border-radius:10px;position:relative;cursor:pointer;transition:background .2s; }
 .toggle.on { background:var(--green); }
 .toggle.off { background:rgba(255,255,255,.1); }
 .toggle::after { content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:left .2s; }
 .toggle.on::after { left:19px; }
 
-/* ── SCROLLBAR ── */
+/* â”€â”€ SCROLLBAR â”€â”€ */
 ::-webkit-scrollbar { width:4px;height:4px; }
 ::-webkit-scrollbar-track { background:transparent; }
 ::-webkit-scrollbar-thumb { background:rgba(255,255,255,.1);border-radius:2px; }
 
-/* ── GARDEN ── */
+/* â”€â”€ GARDEN â”€â”€ */
 .garden { background:linear-gradient(180deg,#0a1a0a 0%,#0f1a12 100%);border-radius:16px;padding:24px;min-height:280px;position:relative;overflow:hidden;border:1px solid rgba(0,255,136,.1); }
 .garden::before { content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(180deg,transparent,rgba(0,100,20,.3));border-radius:0 0 16px 16px; }
 .garden-agents { display:flex;gap:20px;flex-wrap:wrap;position:relative;z-index:1; }
@@ -342,7 +347,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
 <!-- SIDEBAR -->
 <nav class="sidebar">
   <div class="sidebar-brand">
-    <div class="brand-icon">🦞</div>
+    <div class="brand-icon">ðŸ¦ž</div>
     <div>
       <div class="brand-text">Mission Control</div>
       <div class="brand-sub">AI Command Center</div>
@@ -350,30 +355,30 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
   </div>
 
   <div class="nav-section">Command</div>
-  <div class="nav-item active" onclick="show('overview',this)"><span class="nav-icon">🏠</span>Overview</div>
-  <div class="nav-item" onclick="show('garden',this)"><span class="nav-icon">🌳</span>Agents Garden</div>
-  <div class="nav-item" onclick="show('agents',this)"><span class="nav-icon">🤖</span>Agents Hub</div>
-  <div class="nav-item" onclick="show('chat',this)"><span class="nav-icon">💬</span>Chat Interface</div>
+  <div class="nav-item active" onclick="show('overview',this)"><span class="nav-icon">ðŸ </span>Overview</div>
+  <div class="nav-item" onclick="show('garden',this)"><span class="nav-icon">ðŸŒ³</span>Agents Garden</div>
+  <div class="nav-item" onclick="show('agents',this)"><span class="nav-icon">ðŸ¤–</span>Agents Hub</div>
+  <div class="nav-item" onclick="show('chat',this)"><span class="nav-icon">ðŸ’¬</span>Chat Interface</div>
 
   <div class="nav-section">Work</div>
-  <div class="nav-item" onclick="show('tasks',this)"><span class="nav-icon">📋</span>Tasks Kanban</div>
-  <div class="nav-item" onclick="show('cron',this)"><span class="nav-icon">⏰</span>Cron Jobs <span class="nav-badge badge-green">12</span></div>
-  <div class="nav-item" onclick="show('calendar',this)"><span class="nav-icon">📅</span>Calendar</div>
+  <div class="nav-item" onclick="show('tasks',this)"><span class="nav-icon">ðŸ“‹</span>Tasks Kanban</div>
+  <div class="nav-item" onclick="show('cron',this)"><span class="nav-icon">â°</span>Cron Jobs <span class="nav-badge badge-green">12</span></div>
+  <div class="nav-item" onclick="show('calendar',this)"><span class="nav-icon">ðŸ“…</span>Calendar</div>
 
   <div class="nav-section">Analytics</div>
-  <div class="nav-item" onclick="show('costs',this)"><span class="nav-icon">💰</span>Costs & Usage</div>
-  <div class="nav-item" onclick="show('models',this)"><span class="nav-icon">🔧</span>Models Config</div>
-  <div class="nav-item" onclick="show('memory',this)"><span class="nav-icon">🧠</span>Memory Browser</div>
+  <div class="nav-item" onclick="show('costs',this)"><span class="nav-icon">ðŸ’°</span>Costs & Usage</div>
+  <div class="nav-item" onclick="show('models',this)"><span class="nav-icon">ðŸ”§</span>Models Config</div>
+  <div class="nav-item" onclick="show('memory',this)"><span class="nav-icon">ðŸ§ </span>Memory Browser</div>
 
   <div class="nav-section">System</div>
-  <div class="nav-item" onclick="show('monitor',this)"><span class="nav-icon">🖥️</span>System Monitor</div>
-  <div class="nav-item" onclick="show('docs',this)"><span class="nav-icon">📁</span>Documents</div>
-  <div class="nav-item" onclick="show('security',this)"><span class="nav-icon">🔒</span>Security <span class="nav-badge badge-red">2</span></div>
-  <div class="nav-item" onclick="show('terminal',this)"><span class="nav-icon">⌨️</span>Terminal</div>
+  <div class="nav-item" onclick="show('monitor',this)"><span class="nav-icon">ðŸ–¥ï¸</span>System Monitor</div>
+  <div class="nav-item" onclick="show('docs',this)"><span class="nav-icon">ðŸ“</span>Documents</div>
+  <div class="nav-item" onclick="show('security',this)"><span class="nav-icon">ðŸ”’</span>Security <span class="nav-badge badge-red">2</span></div>
+  <div class="nav-item" onclick="show('terminal',this)"><span class="nav-icon">âŒ¨ï¸</span>Terminal</div>
 
   <div class="sidebar-footer">
     <div class="status-dot"></div>
-    <div style="font-size:11px;color:var(--text2)">Gateway Online<br><span style="font-size:10px;color:var(--text3)">v2.1.4 · Moti AI</span></div>
+    <div style="font-size:11px;color:var(--text2)">Gateway Online<br><span style="font-size:10px;color:var(--text3)">v2.1.4 Â· Moti AI</span></div>
   </div>
 </nav>
 
@@ -381,40 +386,40 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
 <div class="main">
   <!-- TOPBAR -->
   <div class="topbar">
-    <div class="topbar-title" id="topbar-title">🏠 Overview Dashboard</div>
+    <div class="topbar-title" id="topbar-title">ðŸ  Overview Dashboard</div>
     <div class="topbar-pill pill-green"><div class="live-dot"></div>Live</div>
     <div class="topbar-pill pill-cyan">5 Agents Active</div>
     <div style="font-size:12px;color:var(--text3)" id="clock"></div>
   </div>
 
-  <!-- ───────── SECTION: OVERVIEW ───────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€ SECTION: OVERVIEW â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="section active" id="sec-overview">
     <div class="section-header">
-      <h2>🏠 Overview Dashboard</h2>
+      <h2>ðŸ  Overview Dashboard</h2>
       <p>Real-time system health at a glance</p>
     </div>
 
     <div class="grid-4">
       <div class="card stat-card" style="--accent:var(--green)">
-        <div class="stat-icon">🤖</div>
+        <div class="stat-icon">ðŸ¤–</div>
         <div class="stat-val" style="color:var(--green)">5</div>
         <div class="stat-lbl">Active Agents</div>
-        <div class="stat-trend up">↑ 2 new</div>
+        <div class="stat-trend up">â†‘ 2 new</div>
       </div>
       <div class="card stat-card" style="--accent:var(--cyan)">
-        <div class="stat-icon">💬</div>
+        <div class="stat-icon">ðŸ’¬</div>
         <div class="stat-val" style="color:var(--cyan)">3</div>
         <div class="stat-lbl">Running Sessions</div>
-        <div class="stat-trend up">↑ live</div>
+        <div class="stat-trend up">â†‘ live</div>
       </div>
       <div class="card stat-card" style="--accent:var(--amber)">
-        <div class="stat-icon">⏰</div>
+        <div class="stat-icon">â°</div>
         <div class="stat-val" style="color:var(--amber)">12</div>
         <div class="stat-lbl">Cron Jobs</div>
         <div class="stat-trend warn">2 pending</div>
       </div>
       <div class="card stat-card" style="--accent:var(--purple)">
-        <div class="stat-icon">💰</div>
+        <div class="stat-icon">ðŸ’°</div>
         <div class="stat-val" style="color:var(--purple)">$0.65</div>
         <div class="stat-lbl">Today's Cost</div>
         <div class="stat-trend up">Budget OK</div>
@@ -424,24 +429,24 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
     <div class="grid-2">
       <!-- Terminal -->
       <div>
-        <div class="s-title">⚡ System Status</div>
+        <div class="s-title">âš¡ System Status</div>
         <div class="terminal">
           <div class="term-head">
             <div class="tdot" style="background:#ff5f57"></div>
             <div class="tdot" style="background:#ffbd2e"></div>
             <div class="tdot" style="background:#28c840"></div>
-            <span style="margin-left:8px;font-size:11px;color:var(--text3);font-family:monospace">mission-control — bash</span>
+            <span style="margin-left:8px;font-size:11px;color:var(--text3);font-family:monospace">mission-control â€” bash</span>
           </div>
           <div class="term-body">
             <div><span class="t-p">moti@control </span><span class="t-c">$ openclaw status --all</span></div>
-            <div class="t-o">🔍 Scanning system...</div>
-            <div class="t-ok">✓ Gateway: online (ws://localhost:18789)</div>
-            <div class="t-ok">✓ Agents: 5 active, 2 idle, 1 sleeping</div>
-            <div class="t-ok">✓ n8n: 12 workflows active</div>
-            <div class="t-ok">✓ Telegram: @Moti_videos_bot online</div>
-            <div class="t-warn">⚠ Anthropic budget: 78% used ($78.30/$100)</div>
-            <div class="t-ok">✓ GitHub Pages: deployed ✅</div>
-            <div class="t-o">─────────────────────</div>
+            <div class="t-o">ðŸ” Scanning system...</div>
+            <div class="t-ok">âœ“ Gateway: online (ws://localhost:18789)</div>
+            <div class="t-ok">âœ“ Agents: 5 active, 2 idle, 1 sleeping</div>
+            <div class="t-ok">âœ“ n8n: 12 workflows active</div>
+            <div class="t-ok">âœ“ Telegram: @Moti_videos_bot online</div>
+            <div class="t-warn">âš  Anthropic budget: 78% used ($78.30/$100)</div>
+            <div class="t-ok">âœ“ GitHub Pages: deployed âœ…</div>
+            <div class="t-o">â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€</div>
             <div><span class="t-p">moti@control </span><span class="t-c">$ _</span><span class="cursor"></span></div>
           </div>
         </div>
@@ -449,7 +454,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
 
       <!-- Activity Feed -->
       <div>
-        <div class="s-title">📡 Live Activity</div>
+        <div class="s-title">ðŸ“¡ Live Activity</div>
         <div class="card">
           <div class="feed-item">
             <div class="feed-dot" style="background:var(--green)"></div>
@@ -480,7 +485,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
     </div>
 
     <!-- Resource Gauges -->
-    <div class="s-title">📊 Resources</div>
+    <div class="s-title">ðŸ“Š Resources</div>
     <div class="gauges">
       <div class="card gauge-card">
         <div style="font-size:12px;color:var(--text2)">CPU</div>
@@ -509,11 +514,11 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
     </div>
   </div>
 
-  <!-- ───────── SECTION: GARDEN ───────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€ SECTION: GARDEN â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="section" id="sec-garden">
     <div class="section-header">
-      <h2>🌳 Virtual Agents Garden</h2>
-      <p>Your AI ecosystem as a living world — hover agents to see status</p>
+      <h2>ðŸŒ³ Virtual Agents Garden</h2>
+      <p>Your AI ecosystem as a living world â€” hover agents to see status</p>
     </div>
 
     <div class="garden">
@@ -523,51 +528,51 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
       <div class="garden-agents">
         <div class="g-agent">
           <div class="g-avatar working" style="background:rgba(0,255,136,.15)">
-            🧠
+            ðŸ§ 
             <div class="speech-bubble">Replying to MoaTh...</div>
           </div>
           <div class="g-name">Moti</div>
-          <div class="g-badge" style="background:rgba(0,255,136,.15);color:var(--green)">🟢 Active</div>
+          <div class="g-badge" style="background:rgba(0,255,136,.15);color:var(--green)">ðŸŸ¢ Active</div>
         </div>
         <div class="g-agent">
           <div class="g-avatar working" style="background:rgba(0,212,255,.15)">
-            🎬
+            ðŸŽ¬
             <div class="speech-bubble">Generating video...</div>
           </div>
           <div class="g-name">VideoBot</div>
-          <div class="g-badge" style="background:rgba(0,212,255,.15);color:var(--cyan)">⚡ Busy</div>
+          <div class="g-badge" style="background:rgba(0,212,255,.15);color:var(--cyan)">âš¡ Busy</div>
         </div>
         <div class="g-agent">
           <div class="g-avatar idle" style="background:rgba(16,185,129,.15)">
-            💚
+            ðŸ’š
             <div class="speech-bubble">Ready for tasks</div>
           </div>
           <div class="g-name">HealthCoach</div>
-          <div class="g-badge" style="background:rgba(255,170,0,.15);color:var(--amber)">🔵 Idle</div>
+          <div class="g-badge" style="background:rgba(255,170,0,.15);color:var(--amber)">ðŸ”µ Idle</div>
         </div>
         <div class="g-agent">
           <div class="g-avatar sleeping" style="background:rgba(168,85,247,.15)">
-            📈
+            ðŸ“ˆ
             <div class="speech-bubble">Zzz...</div>
           </div>
           <div class="g-name">TradingBot</div>
-          <div class="g-badge" style="background:rgba(136,136,153,.15);color:var(--text2)">😴 Sleep</div>
+          <div class="g-badge" style="background:rgba(136,136,153,.15);color:var(--text2)">ðŸ˜´ Sleep</div>
         </div>
         <div class="g-agent">
           <div class="g-avatar idle" style="background:rgba(239,68,68,.15)">
-            🎯
+            ðŸŽ¯
             <div class="speech-bubble">Ready for content</div>
           </div>
           <div class="g-name">ContentGen</div>
-          <div class="g-badge" style="background:rgba(255,170,0,.15);color:var(--amber)">🔵 Idle</div>
+          <div class="g-badge" style="background:rgba(255,170,0,.15);color:var(--amber)">ðŸ”µ Idle</div>
         </div>
         <div class="g-agent">
           <div class="g-avatar idle" style="background:rgba(124,58,237,.12)">
-            🔊
+            ðŸ”Š
             <div class="speech-bubble">Whisper ready</div>
           </div>
           <div class="g-name">WhisperBot</div>
-          <div class="g-badge" style="background:rgba(255,170,0,.15);color:var(--amber)">🔵 Idle</div>
+          <div class="g-badge" style="background:rgba(255,170,0,.15);color:var(--amber)">ðŸ”µ Idle</div>
         </div>
       </div>
     </div>
@@ -575,40 +580,40 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
     <div style="margin-top:24px">
       <div class="grid-2">
         <div class="card">
-          <div class="s-title">🌳 Garden Overview</div>
+          <div class="s-title">ðŸŒ³ Garden Overview</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
             <div style="font-size:13px;color:var(--text2)">Total Agents <span style="float:right;color:var(--text);font-weight:700">6</span></div>
-            <div style="font-size:13px;color:var(--green)">🟢 Working <span style="float:right;font-weight:700">2</span></div>
-            <div style="font-size:13px;color:var(--amber)">🔵 Idle <span style="float:right;font-weight:700">3</span></div>
-            <div style="font-size:13px;color:var(--text3)">😴 Sleeping <span style="float:right;font-weight:700">1</span></div>
+            <div style="font-size:13px;color:var(--green)">ðŸŸ¢ Working <span style="float:right;font-weight:700">2</span></div>
+            <div style="font-size:13px;color:var(--amber)">ðŸ”µ Idle <span style="float:right;font-weight:700">3</span></div>
+            <div style="font-size:13px;color:var(--text3)">ðŸ˜´ Sleeping <span style="float:right;font-weight:700">1</span></div>
           </div>
           <div style="margin-top:14px;font-size:12px;color:var(--text2)">Garden Health</div>
           <div class="prog-bar" style="margin-top:6px;height:6px"><div class="prog-fill" style="width:82%"></div></div>
-          <div style="font-size:11px;color:var(--text3);margin-top:4px">82% — Excellent</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">82% â€” Excellent</div>
         </div>
         <div class="card">
-          <div class="s-title">🏆 Achievements</div>
+          <div class="s-title">ðŸ† Achievements</div>
           <div style="font-size:13px;line-height:2">
-            🏆 Early Bird — First cron today<br>
-            🌟 Workaholic — 156 tasks completed<br>
-            💤 Well Rested — 0 errors overnight<br>
-            🎯 Sharpshooter — 100% success rate
+            ðŸ† Early Bird â€” First cron today<br>
+            ðŸŒŸ Workaholic â€” 156 tasks completed<br>
+            ðŸ’¤ Well Rested â€” 0 errors overnight<br>
+            ðŸŽ¯ Sharpshooter â€” 100% success rate
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ───────── SECTION: AGENTS ───────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€ SECTION: AGENTS â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="section" id="sec-agents">
     <div class="section-header">
-      <h2>🤖 Agents Hub</h2>
+      <h2>ðŸ¤– Agents Hub</h2>
       <p>Centralized agent management and monitoring</p>
     </div>
     <div class="grid-3">
       <div class="card agent-card">
         <div class="agent-head">
-          <div class="agent-av" style="background:rgba(0,255,136,.12)">🧠</div>
+          <div class="agent-av" style="background:rgba(0,255,136,.12)">ðŸ§ </div>
           <div><div class="agent-name">Moti</div><div class="agent-role">Main Assistant</div></div>
           <div class="a-status s-online"></div>
         </div>
@@ -620,7 +625,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
       </div>
       <div class="card agent-card">
         <div class="agent-head">
-          <div class="agent-av" style="background:rgba(0,212,255,.12)">🎬</div>
+          <div class="agent-av" style="background:rgba(0,212,255,.12)">ðŸŽ¬</div>
           <div><div class="agent-name">VideoBot</div><div class="agent-role">Content Creator</div></div>
           <div class="a-status s-online"></div>
         </div>
@@ -632,7 +637,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
       </div>
       <div class="card agent-card">
         <div class="agent-head">
-          <div class="agent-av" style="background:rgba(16,185,129,.12)">💚</div>
+          <div class="agent-av" style="background:rgba(16,185,129,.12)">ðŸ’š</div>
           <div><div class="agent-name">HealthCoach</div><div class="agent-role">Wellness Bot</div></div>
           <div class="a-status s-idle"></div>
         </div>
@@ -644,7 +649,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
       </div>
       <div class="card agent-card">
         <div class="agent-head">
-          <div class="agent-av" style="background:rgba(245,158,11,.12)">📈</div>
+          <div class="agent-av" style="background:rgba(245,158,11,.12)">ðŸ“ˆ</div>
           <div><div class="agent-name">TradingBot</div><div class="agent-role">Market Analyst</div></div>
           <div class="a-status s-offline"></div>
         </div>
@@ -656,7 +661,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
       </div>
       <div class="card agent-card">
         <div class="agent-head">
-          <div class="agent-av" style="background:rgba(239,68,68,.12)">🎯</div>
+          <div class="agent-av" style="background:rgba(239,68,68,.12)">ðŸŽ¯</div>
           <div><div class="agent-name">ContentGen</div><div class="agent-role">Viral Writer</div></div>
           <div class="a-status s-idle"></div>
         </div>
@@ -668,7 +673,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
       </div>
       <div class="card agent-card">
         <div class="agent-head">
-          <div class="agent-av" style="background:rgba(124,58,237,.12)">🔊</div>
+          <div class="agent-av" style="background:rgba(124,58,237,.12)">ðŸ”Š</div>
           <div><div class="agent-name">WhisperBot</div><div class="agent-role">Voice Transcriber</div></div>
           <div class="a-status s-idle"></div>
         </div>
@@ -681,36 +686,36 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
     </div>
   </div>
 
-  <!-- ───────── SECTION: CHAT ───────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€ SECTION: CHAT â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="section" id="sec-chat">
     <div class="section-header">
-      <h2>💬 Chat Interface</h2>
+      <h2>ðŸ’¬ Chat Interface</h2>
       <p>Direct communication with agents</p>
     </div>
     <div class="grid-2">
       <div class="card" style="padding:0;overflow:hidden">
         <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center">
-          <span style="font-size:18px">🧠</span>
+          <span style="font-size:18px">ðŸ§ </span>
           <div>
             <div style="font-size:13px;font-weight:700">Moti</div>
-            <div style="font-size:10px;color:var(--green)">● Online — Claude Sonnet 4</div>
+            <div style="font-size:10px;color:var(--green)">â— Online â€” Claude Sonnet 4</div>
           </div>
           <div style="margin-left:auto;font-size:11px;color:var(--text3)">ctx: 12k / 200k</div>
         </div>
         <div class="chat-area">
-          <div class="msg msg-user">ابني لي dashboard للـ Mission Control 🚀<div class="msg-meta">MoaTh · 23:59 · 42 tokens</div></div>
-          <div class="msg msg-agent">يلا نبنيه الحين! جاهز خلال دقائق 🔥<div class="msg-meta">Moti · 00:00 · 18 tokens · 0.4s</div></div>
-          <div class="msg msg-user">ليش ما يشتغل الفيديو بوت؟<div class="msg-meta">MoaTh · 23:52 · 12 tokens</div></div>
-          <div class="msg msg-agent">وجدت المشكلة — Groq node يرسل JSON كـ string. تم الإصلاح ✅<div class="msg-meta">Moti · 00:30 · 67 tokens · 12.3s</div></div>
+          <div class="msg msg-user">Ø§Ø¨Ù†ÙŠ Ù„ÙŠ dashboard Ù„Ù„Ù€ Mission Control ðŸš€<div class="msg-meta">MoaTh Â· 23:59 Â· 42 tokens</div></div>
+          <div class="msg msg-agent">ÙŠÙ„Ø§ Ù†Ø¨Ù†ÙŠÙ‡ Ø§Ù„Ø­ÙŠÙ†! Ø¬Ø§Ù‡Ø² Ø®Ù„Ø§Ù„ Ø¯Ù‚Ø§Ø¦Ù‚ ðŸ”¥<div class="msg-meta">Moti Â· 00:00 Â· 18 tokens Â· 0.4s</div></div>
+          <div class="msg msg-user">Ù„ÙŠØ´ Ù…Ø§ ÙŠØ´ØªØºÙ„ Ø§Ù„ÙÙŠØ¯ÙŠÙˆ Ø¨ÙˆØªØŸ<div class="msg-meta">MoaTh Â· 23:52 Â· 12 tokens</div></div>
+          <div class="msg msg-agent">ÙˆØ¬Ø¯Øª Ø§Ù„Ù…Ø´ÙƒÙ„Ø© â€” Groq node ÙŠØ±Ø³Ù„ JSON ÙƒÙ€ string. ØªÙ… Ø§Ù„Ø¥ØµÙ„Ø§Ø­ âœ…<div class="msg-meta">Moti Â· 00:30 Â· 67 tokens Â· 12.3s</div></div>
         </div>
         <div class="chat-input">
           <input type="text" placeholder="Message Moti..." />
-          <button class="btn btn-green">Send ⚡</button>
+          <button class="btn btn-green">Send âš¡</button>
         </div>
       </div>
       <div>
         <div class="card" style="margin-bottom:14px">
-          <div class="s-title">⚙️ Session Config</div>
+          <div class="s-title">âš™ï¸ Session Config</div>
           <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Model Override</div>
           <select style="width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-size:12px">
             <option>anthropic/claude-sonnet-4-6 (default)</option>
@@ -722,7 +727,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
           <div style="font-size:10px;color:var(--text3);margin-top:4px">12k / 200k tokens used</div>
         </div>
         <div class="card">
-          <div class="s-title">📊 Session Stats</div>
+          <div class="s-title">ðŸ“Š Session Stats</div>
           <div style="font-size:12px;color:var(--text2);display:grid;gap:8px">
             <div>Total tokens: <span style="float:right;color:var(--text)">71,230</span></div>
             <div>Total cost: <span style="float:right;color:var(--amber)">$0.82</span></div>
@@ -734,45 +739,45 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
     </div>
   </div>
 
-  <!-- ───────── SECTION: TASKS ───────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€ SECTION: TASKS â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="section" id="sec-tasks">
     <div class="section-header">
-      <h2>📋 Tasks Kanban</h2>
+      <h2>ðŸ“‹ Tasks Kanban</h2>
       <p>Visual task management</p>
     </div>
     <div class="kanban">
       <div class="kanban-col">
-        <div class="col-head">📥 Backlog <span class="col-count">3</span></div>
+        <div class="col-head">ðŸ“¥ Backlog <span class="col-count">3</span></div>
         <div class="task-card"><div class="task-title">Voice AI Assistant</div><div class="task-meta"><span class="priority p2">P2</span> Whisper + ElevenLabs</div></div>
         <div class="task-card"><div class="task-title">Halal Trading System</div><div class="task-meta"><span class="priority p1">P1</span> Python + Tadawul</div></div>
         <div class="task-card"><div class="task-title">Discord Integration</div><div class="task-meta"><span class="priority p3">P3</span> OpenClaw</div></div>
       </div>
       <div class="kanban-col">
-        <div class="col-head">🔄 In Progress <span class="col-count">2</span></div>
+        <div class="col-head">ðŸ”„ In Progress <span class="col-count">2</span></div>
         <div class="task-card" style="border-color:var(--cyan)"><div class="task-title">Mission Control Dashboard</div><div class="task-meta"><span class="priority p0">P0</span> HTML/GitHub Pages</div></div>
         <div class="task-card"><div class="task-title">Fix VideoBot Workflow</div><div class="task-meta"><span class="priority p0">P0</span> n8n + Groq</div></div>
       </div>
       <div class="kanban-col">
-        <div class="col-head">🔍 In Review <span class="col-count">1</span></div>
+        <div class="col-head">ðŸ” In Review <span class="col-count">1</span></div>
         <div class="task-card"><div class="task-title">Agent Garden V2</div><div class="task-meta"><span class="priority p1">P1</span> Design polish</div></div>
       </div>
       <div class="kanban-col">
-        <div class="col-head">✅ Done <span class="col-count">4</span></div>
-        <div class="task-card" style="opacity:.6"><div class="task-title">Install ffmpeg + Whisper</div><div class="task-meta"><span class="priority p1">P1</span> ✅ Today</div></div>
-        <div class="task-card" style="opacity:.6"><div class="task-title">GitHub Pages Setup</div><div class="task-meta"><span class="priority p1">P1</span> ✅ Today</div></div>
-        <div class="task-card" style="opacity:.6"><div class="task-title">HealthCoach Fix</div><div class="task-meta"><span class="priority p0">P0</span> ✅ Yesterday</div></div>
-        <div class="task-card" style="opacity:.6"><div class="task-title">OpenClaw Setup</div><div class="task-meta"><span class="priority p0">P0</span> ✅ Mar 15</div></div>
+        <div class="col-head">âœ… Done <span class="col-count">4</span></div>
+        <div class="task-card" style="opacity:.6"><div class="task-title">Install ffmpeg + Whisper</div><div class="task-meta"><span class="priority p1">P1</span> âœ… Today</div></div>
+        <div class="task-card" style="opacity:.6"><div class="task-title">GitHub Pages Setup</div><div class="task-meta"><span class="priority p1">P1</span> âœ… Today</div></div>
+        <div class="task-card" style="opacity:.6"><div class="task-title">HealthCoach Fix</div><div class="task-meta"><span class="priority p0">P0</span> âœ… Yesterday</div></div>
+        <div class="task-card" style="opacity:.6"><div class="task-title">OpenClaw Setup</div><div class="task-meta"><span class="priority p0">P0</span> âœ… Mar 15</div></div>
       </div>
       <div class="kanban-col">
-        <div class="col-head">🗑️ Archived <span class="col-count">0</span></div>
+        <div class="col-head">ðŸ—‘ï¸ Archived <span class="col-count">0</span></div>
       </div>
     </div>
   </div>
 
-  <!-- ───────── SECTION: CRON ───────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€ SECTION: CRON â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="section" id="sec-cron">
     <div class="section-header">
-      <h2>⏰ Cron Jobs Manager</h2>
+      <h2>â° Cron Jobs Manager</h2>
       <p>Scheduled task automation</p>
     </div>
     <div class="card" style="margin-bottom:24px">
@@ -781,21 +786,21 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
           <tr><th>Name</th><th>Schedule</th><th>Agent</th><th>Status</th><th>Last Run</th><th>Next Run</th><th>Actions</th></tr>
         </thead>
         <tbody>
-          <tr><td class="td-name">💚 Health Coach Daily</td><td><span class="cron-pill">0 9 * * *</span></td><td>HealthCoach</td><td><span class="badge b-active">Active</span></td><td>Today 09:00</td><td>Tomorrow 09:00</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:11px">▶ Run</button></td></tr>
-          <tr><td class="td-name">🌙 Evening Check-in</td><td><span class="cron-pill">0 21 * * *</span></td><td>HealthCoach</td><td><span class="badge b-active">Active</span></td><td>Today 21:00</td><td>Tomorrow 21:00</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:11px">▶ Run</button></td></tr>
-          <tr><td class="td-name">📰 Daily AI News</td><td><span class="cron-pill">0 8 * * *</span></td><td>ContentGen</td><td><span class="badge b-paused">Paused</span></td><td>Mar 14</td><td>—</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:11px">▶ Enable</button></td></tr>
-          <tr><td class="td-name">📚 English Writing</td><td><span class="cron-pill">0 10 * * *</span></td><td>Moti</td><td><span class="badge b-paused">Paused</span></td><td>Mar 12</td><td>—</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:11px">▶ Enable</button></td></tr>
-          <tr><td class="td-name">📊 Weekly Review</td><td><span class="cron-pill">0 10 * * 1</span></td><td>HealthCoach</td><td><span class="badge b-active">Active</span></td><td>Mar 10</td><td>Mar 24</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:11px">▶ Run</button></td></tr>
-          <tr><td class="td-name">🎬 Video Factory</td><td><span class="cron-pill">0 */6 * * *</span></td><td>VideoBot</td><td><span class="badge b-active">Active</span></td><td>Today 06:00</td><td>Today 12:00</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:11px">▶ Run</button></td></tr>
+          <tr><td class="td-name">ðŸ’š Health Coach Daily</td><td><span class="cron-pill">0 9 * * *</span></td><td>HealthCoach</td><td><span class="badge b-active">Active</span></td><td>Today 09:00</td><td>Tomorrow 09:00</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:11px">â–¶ Run</button></td></tr>
+          <tr><td class="td-name">ðŸŒ™ Evening Check-in</td><td><span class="cron-pill">0 21 * * *</span></td><td>HealthCoach</td><td><span class="badge b-active">Active</span></td><td>Today 21:00</td><td>Tomorrow 21:00</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:11px">â–¶ Run</button></td></tr>
+          <tr><td class="td-name">ðŸ“° Daily AI News</td><td><span class="cron-pill">0 8 * * *</span></td><td>ContentGen</td><td><span class="badge b-paused">Paused</span></td><td>Mar 14</td><td>â€”</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:11px">â–¶ Enable</button></td></tr>
+          <tr><td class="td-name">ðŸ“š English Writing</td><td><span class="cron-pill">0 10 * * *</span></td><td>Moti</td><td><span class="badge b-paused">Paused</span></td><td>Mar 12</td><td>â€”</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:11px">â–¶ Enable</button></td></tr>
+          <tr><td class="td-name">ðŸ“Š Weekly Review</td><td><span class="cron-pill">0 10 * * 1</span></td><td>HealthCoach</td><td><span class="badge b-active">Active</span></td><td>Mar 10</td><td>Mar 24</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:11px">â–¶ Run</button></td></tr>
+          <tr><td class="td-name">ðŸŽ¬ Video Factory</td><td><span class="cron-pill">0 */6 * * *</span></td><td>VideoBot</td><td><span class="badge b-active">Active</span></td><td>Today 06:00</td><td>Today 12:00</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:11px">â–¶ Run</button></td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
-  <!-- ───────── SECTION: CALENDAR ───────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€ SECTION: CALENDAR â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="section" id="sec-calendar">
     <div class="section-header">
-      <h2>📅 OpenClaw Calendar</h2>
+      <h2>ðŸ“… OpenClaw Calendar</h2>
       <p>Unified view of all scheduled activities</p>
     </div>
     <div class="grid-2">
@@ -803,8 +808,8 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
           <div style="font-size:16px;font-weight:700">March 2026</div>
           <div style="display:flex;gap:8px">
-            <button class="btn btn-ghost" style="padding:5px 10px;font-size:12px">‹</button>
-            <button class="btn btn-ghost" style="padding:5px 10px;font-size:12px">›</button>
+            <button class="btn btn-ghost" style="padding:5px 10px;font-size:12px">â€¹</button>
+            <button class="btn btn-ghost" style="padding:5px 10px;font-size:12px">â€º</button>
           </div>
         </div>
         <div class="cal-grid">
@@ -818,44 +823,44 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
         </div>
       </div>
       <div class="card">
-        <div class="s-title">📋 Today — March 18</div>
-        <div class="event-pill ev-cron">🔄 09:00 — Health Coach Daily</div>
-        <div class="event-pill ev-task">📋 12:00 — Review VideoBot Fix</div>
-        <div class="event-pill ev-cron">🔄 18:00 — Video Factory Run</div>
-        <div class="event-pill ev-agent">🤖 21:00 — Evening Check-in</div>
-        <div class="s-title" style="margin-top:20px">⚠️ Subscription Alerts</div>
-        <div class="event-pill ev-bill">💰 Anthropic renews Mar 25 ($100)</div>
-        <div class="event-pill ev-bill">💰 fal.ai renews Mar 20 ($50)</div>
+        <div class="s-title">ðŸ“‹ Today â€” March 18</div>
+        <div class="event-pill ev-cron">ðŸ”„ 09:00 â€” Health Coach Daily</div>
+        <div class="event-pill ev-task">ðŸ“‹ 12:00 â€” Review VideoBot Fix</div>
+        <div class="event-pill ev-cron">ðŸ”„ 18:00 â€” Video Factory Run</div>
+        <div class="event-pill ev-agent">ðŸ¤– 21:00 â€” Evening Check-in</div>
+        <div class="s-title" style="margin-top:20px">âš ï¸ Subscription Alerts</div>
+        <div class="event-pill ev-bill">ðŸ’° Anthropic renews Mar 25 ($100)</div>
+        <div class="event-pill ev-bill">ðŸ’° fal.ai renews Mar 20 ($50)</div>
       </div>
     </div>
   </div>
 
-  <!-- ───────── SECTION: COSTS ───────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€ SECTION: COSTS â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="section" id="sec-costs">
     <div class="section-header">
-      <h2>💰 Costs & Usage Analytics</h2>
+      <h2>ðŸ’° Costs & Usage Analytics</h2>
       <p>Financial tracking and budget management</p>
     </div>
 
     <div class="grid-4" style="margin-bottom:24px">
       <div class="card stat-card" style="--accent:var(--amber)">
-        <div class="stat-icon">💰</div>
+        <div class="stat-icon">ðŸ’°</div>
         <div class="stat-val" style="color:var(--amber)">$0.65</div>
         <div class="stat-lbl">Today</div>
       </div>
       <div class="card stat-card" style="--accent:var(--red)">
-        <div class="stat-icon">📆</div>
+        <div class="stat-icon">ðŸ“†</div>
         <div class="stat-val" style="color:var(--red)">$78.30</div>
         <div class="stat-lbl">This Month</div>
         <div class="stat-trend warn">78% of $100</div>
       </div>
       <div class="card stat-card" style="--accent:var(--green)">
-        <div class="stat-icon">💵</div>
+        <div class="stat-icon">ðŸ’µ</div>
         <div class="stat-val" style="color:var(--green)">$21.70</div>
         <div class="stat-lbl">Remaining</div>
       </div>
       <div class="card stat-card" style="--accent:var(--cyan)">
-        <div class="stat-icon">📈</div>
+        <div class="stat-icon">ðŸ“ˆ</div>
         <div class="stat-val" style="color:var(--cyan)">$95</div>
         <div class="stat-lbl">Projected EOM</div>
       </div>
@@ -863,7 +868,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
 
     <div class="grid-2">
       <div class="card">
-        <div class="s-title">📊 Model Breakdown</div>
+        <div class="s-title">ðŸ“Š Model Breakdown</div>
         <div class="cost-bar">
           <div class="cost-label">claude-sonnet-4-6</div>
           <div class="cost-track"><div class="cost-fill" style="width:60%;background:var(--purple)"></div></div>
@@ -886,22 +891,22 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
         </div>
       </div>
       <div class="card">
-        <div class="s-title">🔔 Subscriptions</div>
+        <div class="s-title">ðŸ”” Subscriptions</div>
         <div class="sub-card">
           <div class="sub-head">
-            <div><div class="sub-name">Anthropic</div><div class="sub-plan">Pro Plan · $100/mo</div></div>
-            <span class="badge b-idle">⚠️ 78%</span>
+            <div><div class="sub-name">Anthropic</div><div class="sub-plan">Pro Plan Â· $100/mo</div></div>
+            <span class="badge b-idle">âš ï¸ 78%</span>
           </div>
           <div class="prog-bar"><div class="prog-fill" style="width:78%;background:linear-gradient(90deg,var(--green),var(--amber))"></div></div>
-          <div style="font-size:10px;color:var(--text3);margin-top:4px">$78.30 used · renews Mar 25</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:4px">$78.30 used Â· renews Mar 25</div>
         </div>
         <div class="sub-card">
           <div class="sub-head">
-            <div><div class="sub-name">fal.ai</div><div class="sub-plan">Pro Plan · $50/mo</div></div>
-            <span class="badge b-active">✅ OK</span>
+            <div><div class="sub-name">fal.ai</div><div class="sub-plan">Pro Plan Â· $50/mo</div></div>
+            <span class="badge b-active">âœ… OK</span>
           </div>
           <div class="prog-bar"><div class="prog-fill" style="width:25%"></div></div>
-          <div style="font-size:10px;color:var(--text3);margin-top:4px">$12.30 used · renews Mar 20</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:4px">$12.30 used Â· renews Mar 20</div>
         </div>
         <div class="sub-card">
           <div class="sub-head">
@@ -913,25 +918,25 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
     </div>
 
     <div class="card">
-      <div class="s-title">💡 Cost Optimization Tips</div>
+      <div class="s-title">ðŸ’¡ Cost Optimization Tips</div>
       <div style="display:grid;gap:10px;font-size:12px">
-        <div style="padding:10px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.1);border-radius:8px;color:var(--text2)">💡 Use <strong style="color:var(--green)">gpt-4o-mini</strong> for simple chat — saves ~85% vs claude-sonnet</div>
-        <div style="padding:10px;background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.1);border-radius:8px;color:var(--text2)">💡 Batch cron jobs together to reduce context overhead — saves ~30%</div>
-        <div style="padding:10px;background:rgba(255,170,0,.05);border:1px solid rgba(255,170,0,.1);border-radius:8px;color:var(--text2)">⚠️ Anthropic at 78% — consider switching non-critical tasks to Groq (free)</div>
+        <div style="padding:10px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.1);border-radius:8px;color:var(--text2)">ðŸ’¡ Use <strong style="color:var(--green)">gpt-4o-mini</strong> for simple chat â€” saves ~85% vs claude-sonnet</div>
+        <div style="padding:10px;background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.1);border-radius:8px;color:var(--text2)">ðŸ’¡ Batch cron jobs together to reduce context overhead â€” saves ~30%</div>
+        <div style="padding:10px;background:rgba(255,170,0,.05);border:1px solid rgba(255,170,0,.1);border-radius:8px;color:var(--text2)">âš ï¸ Anthropic at 78% â€” consider switching non-critical tasks to Groq (free)</div>
       </div>
     </div>
   </div>
 
-  <!-- ───────── SECTION: MODELS ───────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€ SECTION: MODELS â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="section" id="sec-models">
     <div class="section-header">
-      <h2>🔧 Models Configuration</h2>
+      <h2>ðŸ”§ Models Configuration</h2>
       <p>Manage AI models, pricing, and fallback chains</p>
     </div>
     <div class="grid-3">
       <div class="model-card">
         <div class="model-name">claude-sonnet-4-6</div>
-        <div class="model-provider">Anthropic · Default Model</div>
+        <div class="model-provider">Anthropic Â· Default Model</div>
         <div class="model-pricing">
           <div class="price-item"><span>Input/1M</span><div class="price-val">$3.00</div></div>
           <div class="price-item"><span>Output/1M</span><div class="price-val">$15.00</div></div>
@@ -941,7 +946,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
       </div>
       <div class="model-card">
         <div class="model-name">gpt-4o-mini</div>
-        <div class="model-provider">OpenAI · Cheap Tier</div>
+        <div class="model-provider">OpenAI Â· Cheap Tier</div>
         <div class="model-pricing">
           <div class="price-item"><span>Input/1M</span><div class="price-val">$0.15</div></div>
           <div class="price-item"><span>Output/1M</span><div class="price-val">$0.60</div></div>
@@ -951,7 +956,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
       </div>
       <div class="model-card">
         <div class="model-name">llama-3.3-70b</div>
-        <div class="model-provider">Groq · Free Tier</div>
+        <div class="model-provider">Groq Â· Free Tier</div>
         <div class="model-pricing">
           <div class="price-item"><span>Input/1M</span><div class="price-val" style="color:var(--green)">Free</div></div>
           <div class="price-item"><span>Speed</span><div class="price-val">~500ms</div></div>
@@ -961,46 +966,46 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
       </div>
     </div>
     <div class="card">
-      <div class="s-title">🔗 Fallback Chain</div>
+      <div class="s-title">ðŸ”— Fallback Chain</div>
       <div style="display:flex;align-items:center;gap:12px;font-size:13px;flex-wrap:wrap">
         <div style="padding:8px 14px;border-radius:10px;background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.2);color:var(--purple)">claude-sonnet-4-6</div>
-        <div style="color:var(--text3)">→</div>
+        <div style="color:var(--text3)">â†’</div>
         <div style="padding:8px 14px;border-radius:10px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.15);color:var(--cyan)">gpt-4o</div>
-        <div style="color:var(--text3)">→</div>
+        <div style="color:var(--text3)">â†’</div>
         <div style="padding:8px 14px;border-radius:10px;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.15);color:var(--green)">gpt-4o-mini</div>
-        <div style="color:var(--text3)">→</div>
+        <div style="color:var(--text3)">â†’</div>
         <div style="padding:8px 14px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text2)">llama-3.3-70b (free)</div>
       </div>
     </div>
   </div>
 
-  <!-- ───────── SECTION: MEMORY ───────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€ SECTION: MEMORY â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="section" id="sec-memory">
     <div class="section-header">
-      <h2>🧠 Memory Browser</h2>
+      <h2>ðŸ§  Memory Browser</h2>
       <p>View and edit agent memory systems</p>
     </div>
     <div class="grid-2">
       <div class="card">
-        <div class="s-title">📂 File Tree</div>
+        <div class="s-title">ðŸ“‚ File Tree</div>
         <div class="file-tree">
-          <div class="file-item active">📄 MEMORY.md <span style="margin-left:auto;font-size:10px;color:var(--text3)">8.2 KB</span></div>
-          <div class="file-item">🪨 SOUL.md <span style="margin-left:auto;font-size:10px;color:var(--text3)">2.1 KB</span></div>
-          <div class="file-item">👤 USER.md <span style="margin-left:auto;font-size:10px;color:var(--text3)">1.8 KB</span></div>
-          <div class="file-item">🤖 IDENTITY.md <span style="margin-left:auto;font-size:10px;color:var(--text3)">0.4 KB</span></div>
-          <div class="file-item">🔧 AGENTS.md <span style="margin-left:auto;font-size:10px;color:var(--text3)">6.1 KB</span></div>
-          <div class="file-item">🛠️ TOOLS.md <span style="margin-left:auto;font-size:10px;color:var(--text3)">1.2 KB</span></div>
-          <div style="font-size:10px;color:var(--text3);padding:8px 10px;margin-top:4px">📁 memory/</div>
-          <div class="file-item" style="padding-left:24px">📝 2026-03-18.md</div>
-          <div class="file-item" style="padding-left:24px">📝 2026-03-17.md</div>
+          <div class="file-item active">ðŸ“„ MEMORY.md <span style="margin-left:auto;font-size:10px;color:var(--text3)">8.2 KB</span></div>
+          <div class="file-item">ðŸª¨ SOUL.md <span style="margin-left:auto;font-size:10px;color:var(--text3)">2.1 KB</span></div>
+          <div class="file-item">ðŸ‘¤ USER.md <span style="margin-left:auto;font-size:10px;color:var(--text3)">1.8 KB</span></div>
+          <div class="file-item">ðŸ¤– IDENTITY.md <span style="margin-left:auto;font-size:10px;color:var(--text3)">0.4 KB</span></div>
+          <div class="file-item">ðŸ”§ AGENTS.md <span style="margin-left:auto;font-size:10px;color:var(--text3)">6.1 KB</span></div>
+          <div class="file-item">ðŸ› ï¸ TOOLS.md <span style="margin-left:auto;font-size:10px;color:var(--text3)">1.2 KB</span></div>
+          <div style="font-size:10px;color:var(--text3);padding:8px 10px;margin-top:4px">ðŸ“ memory/</div>
+          <div class="file-item" style="padding-left:24px">ðŸ“ 2026-03-18.md</div>
+          <div class="file-item" style="padding-left:24px">ðŸ“ 2026-03-17.md</div>
         </div>
       </div>
       <div class="card" style="font-family:'SF Mono','Fira Code',monospace;font-size:12px;color:var(--text2);line-height:1.8">
-        <div class="s-title">📖 MEMORY.md Preview</div>
+        <div class="s-title">ðŸ“– MEMORY.md Preview</div>
         <div style="color:var(--cyan)"># MEMORY.md - Long-Term Memory</div>
         <br>
-        <div style="color:var(--amber)">## MoaTh — Core Profile</div>
-        <div>- Flight attendant · 27 · Riyadh · UTC+3</div>
+        <div style="color:var(--amber)">## MoaTh â€” Core Profile</div>
+        <div>- Flight attendant Â· 27 Â· Riyadh Â· UTC+3</div>
         <div>- Career pivot: freelance AI dev (2yr)</div>
         <div>- Stack: Python, n8n, Claude, LangChain</div>
         <br>
@@ -1009,50 +1014,50 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
         <div>- Code/technical: English</div>
         <br>
         <div style="color:var(--amber)">## Active Projects</div>
-        <div>- n8n Automation Stack ✅</div>
-        <div>- VideoBot (Luma) — Fixed today ✅</div>
-        <div>- Mission Control Dashboard 🔄</div>
+        <div>- n8n Automation Stack âœ…</div>
+        <div>- VideoBot (Luma) â€” Fixed today âœ…</div>
+        <div>- Mission Control Dashboard ðŸ”„</div>
       </div>
     </div>
   </div>
 
-  <!-- ───────── SECTION: MONITOR ───────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€ SECTION: MONITOR â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="section" id="sec-monitor">
     <div class="section-header">
-      <h2>🖥️ System Monitor</h2>
+      <h2>ðŸ–¥ï¸ System Monitor</h2>
       <p>Infrastructure health monitoring</p>
     </div>
     <div class="grid-4">
       <div class="card gauge-card stat-card" style="--accent:var(--green)">
-        <div class="stat-icon">⚡</div>
+        <div class="stat-icon">âš¡</div>
         <div class="stat-val" style="color:var(--green)">23%</div>
         <div class="stat-lbl">CPU</div>
         <div class="prog-bar"><div class="prog-fill" style="width:23%"></div></div>
       </div>
       <div class="card gauge-card stat-card" style="--accent:var(--cyan)">
-        <div class="stat-icon">🧠</div>
+        <div class="stat-icon">ðŸ§ </div>
         <div class="stat-val" style="color:var(--cyan)">52%</div>
-        <div class="stat-lbl">Memory · 6.2/12 GB</div>
+        <div class="stat-lbl">Memory Â· 6.2/12 GB</div>
         <div class="prog-bar"><div class="prog-fill" style="width:52%"></div></div>
       </div>
       <div class="card gauge-card stat-card" style="--accent:var(--amber)">
-        <div class="stat-icon">💾</div>
+        <div class="stat-icon">ðŸ’¾</div>
         <div class="stat-val" style="color:var(--amber)">46%</div>
-        <div class="stat-lbl">Disk · 234/512 GB</div>
+        <div class="stat-lbl">Disk Â· 234/512 GB</div>
         <div class="prog-bar"><div class="prog-fill" style="width:46%"></div></div>
       </div>
       <div class="card gauge-card stat-card" style="--accent:var(--purple)">
-        <div class="stat-icon">🌐</div>
-        <div class="stat-val" style="color:var(--purple)">↑ 1.2</div>
+        <div class="stat-icon">ðŸŒ</div>
+        <div class="stat-val" style="color:var(--purple)">â†‘ 1.2</div>
         <div class="stat-lbl">Network MB/s</div>
         <div class="prog-bar"><div class="prog-fill" style="width:15%;background:linear-gradient(90deg,var(--purple),var(--cyan))"></div></div>
       </div>
     </div>
     <div class="grid-2">
       <div class="card">
-        <div class="s-title">🔌 Gateway Status</div>
+        <div class="s-title">ðŸ”Œ Gateway Status</div>
         <div style="font-size:12px;color:var(--text2);display:grid;gap:8px">
-          <div>Status: <span style="color:var(--green);font-weight:700">● Online</span></div>
+          <div>Status: <span style="color:var(--green);font-weight:700">â— Online</span></div>
           <div>Endpoint: <span style="color:var(--cyan);font-family:monospace">ws://localhost:18789</span></div>
           <div>Uptime: <span style="color:var(--text)">14d 6h 32m</span></div>
           <div>Version: <span style="color:var(--text)">OpenClaw v2.1.4</span></div>
@@ -1060,42 +1065,42 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
         </div>
       </div>
       <div class="card">
-        <div class="s-title">📡 Connected Channels</div>
+        <div class="s-title">ðŸ“¡ Connected Channels</div>
         <div style="font-size:12px;color:var(--text2);display:grid;gap:10px">
-          <div style="display:flex;align-items:center;gap:8px"><span>✉️</span> Telegram <span style="margin-left:auto"><span class="badge b-active">Connected</span></span></div>
-          <div style="display:flex;align-items:center;gap:8px"><span>🎤</span> Whisper STT <span style="margin-left:auto"><span class="badge b-active">Ready</span></span></div>
-          <div style="display:flex;align-items:center;gap:8px"><span>🎬</span> Luma API <span style="margin-left:auto"><span class="badge b-active">Active</span></span></div>
-          <div style="display:flex;align-items:center;gap:8px"><span>⚡</span> n8n (VPS) <span style="margin-left:auto"><span class="badge b-active">Online</span></span></div>
+          <div style="display:flex;align-items:center;gap:8px"><span>âœ‰ï¸</span> Telegram <span style="margin-left:auto"><span class="badge b-active">Connected</span></span></div>
+          <div style="display:flex;align-items:center;gap:8px"><span>ðŸŽ¤</span> Whisper STT <span style="margin-left:auto"><span class="badge b-active">Ready</span></span></div>
+          <div style="display:flex;align-items:center;gap:8px"><span>ðŸŽ¬</span> Luma API <span style="margin-left:auto"><span class="badge b-active">Active</span></span></div>
+          <div style="display:flex;align-items:center;gap:8px"><span>âš¡</span> n8n (VPS) <span style="margin-left:auto"><span class="badge b-active">Online</span></span></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ───────── SECTION: DOCS ───────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€ SECTION: DOCS â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="section" id="sec-docs">
     <div class="section-header">
-      <h2>📁 Documents Explorer</h2>
+      <h2>ðŸ“ Documents Explorer</h2>
       <p>Browse workspace files</p>
     </div>
     <div class="card">
       <table class="data-table">
         <thead><tr><th>Name</th><th>Type</th><th>Size</th><th>Modified</th><th>Actions</th></tr></thead>
         <tbody>
-          <tr><td class="td-name">📄 MEMORY.md</td><td>Markdown</td><td>8.2 KB</td><td>Today 00:30</td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px">Edit</button></td></tr>
-          <tr><td class="td-name">🪨 SOUL.md</td><td>Markdown</td><td>2.1 KB</td><td>Mar 15</td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px">Edit</button></td></tr>
-          <tr><td class="td-name">👤 USER.md</td><td>Markdown</td><td>1.8 KB</td><td>Mar 17</td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px">Edit</button></td></tr>
-          <tr><td class="td-name">🔧 AGENTS.md</td><td>Markdown</td><td>6.1 KB</td><td>Mar 15</td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px">Edit</button></td></tr>
-          <tr><td class="td-name">📝 memory/2026-03-18.md</td><td>Markdown</td><td>1.2 KB</td><td>Today 00:31</td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px">Edit</button></td></tr>
-          <tr><td class="td-name">🌿 index.html (Agent Garden)</td><td>HTML</td><td>26 KB</td><td>Today 11:10</td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px">View</button></td></tr>
+          <tr><td class="td-name">ðŸ“„ MEMORY.md</td><td>Markdown</td><td>8.2 KB</td><td>Today 00:30</td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px">Edit</button></td></tr>
+          <tr><td class="td-name">ðŸª¨ SOUL.md</td><td>Markdown</td><td>2.1 KB</td><td>Mar 15</td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px">Edit</button></td></tr>
+          <tr><td class="td-name">ðŸ‘¤ USER.md</td><td>Markdown</td><td>1.8 KB</td><td>Mar 17</td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px">Edit</button></td></tr>
+          <tr><td class="td-name">ðŸ”§ AGENTS.md</td><td>Markdown</td><td>6.1 KB</td><td>Mar 15</td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px">Edit</button></td></tr>
+          <tr><td class="td-name">ðŸ“ memory/2026-03-18.md</td><td>Markdown</td><td>1.2 KB</td><td>Today 00:31</td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px">Edit</button></td></tr>
+          <tr><td class="td-name">ðŸŒ¿ index.html (Agent Garden)</td><td>HTML</td><td>26 KB</td><td>Today 11:10</td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px">View</button></td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
-  <!-- ───────── SECTION: SECURITY ───────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€ SECTION: SECURITY â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="section" id="sec-security">
     <div class="section-header">
-      <h2>🔒 Security Center</h2>
+      <h2>ðŸ”’ Security Center</h2>
       <p>Security audit and controls</p>
     </div>
     <div class="grid-2">
@@ -1107,24 +1112,24 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
             <div class="score-lbl">/ 100</div>
           </div>
         </div>
-        <div style="font-size:13px;color:var(--amber)">⚠️ Good — 2 issues to fix</div>
+        <div style="font-size:13px;color:var(--amber)">âš ï¸ Good â€” 2 issues to fix</div>
       </div>
       <div class="card">
         <div class="s-title">Audit Checklist</div>
-        <div class="audit-item"><span style="color:var(--green)">✅</span> API keys stored securely</div>
-        <div class="audit-item"><span style="color:var(--red)">❌</span> GitHub token exposed in chat — rotate now!</div>
-        <div class="audit-item"><span style="color:var(--amber)">⚠️</span> 2FA not enabled on GitHub</div>
-        <div class="audit-item"><span style="color:var(--green)">✅</span> Gateway runs on localhost only</div>
-        <div class="audit-item"><span style="color:var(--green)">✅</span> Telegram bot token secured</div>
-        <div class="audit-item"><span style="color:var(--amber)">⚠️</span> n8n backup not configured</div>
+        <div class="audit-item"><span style="color:var(--green)">âœ…</span> API keys stored securely</div>
+        <div class="audit-item"><span style="color:var(--red)">âŒ</span> GitHub token exposed in chat â€” rotate now!</div>
+        <div class="audit-item"><span style="color:var(--amber)">âš ï¸</span> 2FA not enabled on GitHub</div>
+        <div class="audit-item"><span style="color:var(--green)">âœ…</span> Gateway runs on localhost only</div>
+        <div class="audit-item"><span style="color:var(--green)">âœ…</span> Telegram bot token secured</div>
+        <div class="audit-item"><span style="color:var(--amber)">âš ï¸</span> n8n backup not configured</div>
       </div>
     </div>
   </div>
 
-  <!-- ───────── SECTION: TERMINAL ───────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€ SECTION: TERMINAL â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div class="section" id="sec-terminal">
     <div class="section-header">
-      <h2>⌨️ Terminal</h2>
+      <h2>âŒ¨ï¸ Terminal</h2>
       <p>Direct CLI access</p>
     </div>
     <div class="terminal" style="margin-bottom:16px">
@@ -1132,14 +1137,14 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
         <div class="tdot" style="background:#ff5f57"></div>
         <div class="tdot" style="background:#ffbd2e"></div>
         <div class="tdot" style="background:#28c840"></div>
-        <span style="margin-left:8px;font-size:11px;color:var(--text3);font-family:monospace">Terminal — bash — MoaTh@Windows</span>
+        <span style="margin-left:8px;font-size:11px;color:var(--text3);font-family:monospace">Terminal â€” bash â€” MoaTh@Windows</span>
       </div>
       <div class="term-body" id="term-output" style="height:280px;overflow-y:auto">
         <div><span class="t-p">moti@A5 </span><span class="t-c">$ openclaw status</span></div>
-        <div class="t-ok">✓ Gateway: online</div>
-        <div class="t-ok">✓ Model: claude-sonnet-4-6</div>
-        <div class="t-ok">✓ Channel: telegram</div>
-        <div class="t-ok">✓ Sessions: 3 active</div>
+        <div class="t-ok">âœ“ Gateway: online</div>
+        <div class="t-ok">âœ“ Model: claude-sonnet-4-6</div>
+        <div class="t-ok">âœ“ Channel: telegram</div>
+        <div class="t-ok">âœ“ Sessions: 3 active</div>
         <div style="height:8px"></div>
         <div><span class="t-p">moti@A5 </span><span class="t-cursor" id="term-cursor"></span></div>
       </div>
@@ -1152,7 +1157,7 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
     </div>
     <div style="display:flex;gap:10px">
       <input type="text" id="term-input" placeholder="Enter command..." style="flex:1;background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.2);border-radius:10px;padding:10px 14px;color:var(--text);font-family:monospace;font-size:13px;outline:none" onkeydown="if(event.key==='Enter')runCmd(this.value)">
-      <button class="btn btn-green" onclick="runCmd(document.getElementById('term-input').value)">Run ↵</button>
+      <button class="btn btn-green" onclick="runCmd(document.getElementById('term-input').value)">Run â†µ</button>
     </div>
   </div>
 
@@ -1166,13 +1171,13 @@ function show(id, el) {
   document.getElementById('sec-' + id).classList.add('active');
   el.classList.add('active');
   const titles = {
-    overview:'🏠 Overview Dashboard', garden:'🌳 Agents Garden',
-    agents:'🤖 Agents Hub', chat:'💬 Chat Interface',
-    tasks:'📋 Tasks Kanban', cron:'⏰ Cron Jobs Manager',
-    calendar:'📅 Calendar', costs:'💰 Costs & Usage',
-    models:'🔧 Models Config', memory:'🧠 Memory Browser',
-    monitor:'🖥️ System Monitor', docs:'📁 Documents',
-    security:'🔒 Security Center', terminal:'⌨️ Terminal'
+    overview:'ðŸ  Overview Dashboard', garden:'ðŸŒ³ Agents Garden',
+    agents:'ðŸ¤– Agents Hub', chat:'ðŸ’¬ Chat Interface',
+    tasks:'ðŸ“‹ Tasks Kanban', cron:'â° Cron Jobs Manager',
+    calendar:'ðŸ“… Calendar', costs:'ðŸ’° Costs & Usage',
+    models:'ðŸ”§ Models Config', memory:'ðŸ§  Memory Browser',
+    monitor:'ðŸ–¥ï¸ System Monitor', docs:'ðŸ“ Documents',
+    security:'ðŸ”’ Security Center', terminal:'âŒ¨ï¸ Terminal'
   };
   document.getElementById('topbar-title').textContent = titles[id] || id;
 }
@@ -1181,7 +1186,7 @@ function show(id, el) {
 function tick() {
   const now = new Date();
   document.getElementById('clock').textContent =
-    now.toLocaleDateString('en',{weekday:'short',month:'short',day:'numeric'}) + ' · ' +
+    now.toLocaleDateString('en',{weekday:'short',month:'short',day:'numeric'}) + ' Â· ' +
     now.toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 }
 tick(); setInterval(tick, 1000);
@@ -1199,9 +1204,9 @@ if (starsEl) {
 
 // Terminal
 const cmds = {
-  'openclaw status': ['✓ Gateway: online (ws://localhost:18789)', '✓ Model: claude-sonnet-4-6', '✓ Telegram: connected', '✓ Sessions: 3 active', '✓ Uptime: 14d 6h'],
-  'openclaw agents list': ['🤖 Moti (main) — online', '🎬 VideoBot — online', '💚 HealthCoach — idle', '📈 TradingBot — sleeping', '🎯 ContentGen — idle', '🔊 WhisperBot — idle'],
-  'openclaw cron list': ['✓ Health Coach Daily (0 9 * * *) — active', '✓ Evening Check-in (0 21 * * *) — active', '✓ Video Factory (0 */6 * * *) — active', '✗ Daily News (paused)', '✗ English Writing (paused)'],
+  'openclaw status': ['âœ“ Gateway: online (ws://localhost:18789)', 'âœ“ Model: claude-sonnet-4-6', 'âœ“ Telegram: connected', 'âœ“ Sessions: 3 active', 'âœ“ Uptime: 14d 6h'],
+  'openclaw agents list': ['ðŸ¤– Moti (main) â€” online', 'ðŸŽ¬ VideoBot â€” online', 'ðŸ’š HealthCoach â€” idle', 'ðŸ“ˆ TradingBot â€” sleeping', 'ðŸŽ¯ ContentGen â€” idle', 'ðŸ”Š WhisperBot â€” idle'],
+  'openclaw cron list': ['âœ“ Health Coach Daily (0 9 * * *) â€” active', 'âœ“ Evening Check-in (0 21 * * *) â€” active', 'âœ“ Video Factory (0 */6 * * *) â€” active', 'âœ— Daily News (paused)', 'âœ— English Writing (paused)'],
   'openclaw logs -f': ['[INFO] Telegram message received from MoaTh', '[INFO] Routing to claude-sonnet-4-6', '[INFO] Tool: exec (powershell)', '[INFO] Response sent in 1.2s', '[INFO] Heartbeat: HEARTBEAT_OK'],
 };
 function runCmd(cmd) {
@@ -1218,7 +1223,7 @@ function runCmd(cmd) {
   outputs.forEach((l, i) => {
     setTimeout(() => {
       const d = document.createElement('div');
-      d.className = l.startsWith('✓') || l.startsWith('✅') ? 't-ok' : l.startsWith('✗') || l.includes('Error') ? 't-err' : 't-o';
+      d.className = l.startsWith('âœ“') || l.startsWith('âœ…') ? 't-ok' : l.startsWith('âœ—') || l.includes('Error') ? 't-err' : 't-o';
       d.textContent = l;
       out.appendChild(d);
       if (i === outputs.length - 1) {
@@ -1235,3 +1240,4 @@ function runCmd(cmd) {
 </script>
 </body>
 </html>
+
