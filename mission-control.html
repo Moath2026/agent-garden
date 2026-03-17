@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" sizes="192x192" href="icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Mission Control">
@@ -345,6 +346,10 @@ body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-syste
 <body>
 
 <!-- SIDEBAR -->
+
+<div class="hamburger" id="ham" onclick="toggleSidebar()">&#9776;</div>
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
 <nav class="sidebar">
   <div class="sidebar-brand">
     <div class="brand-icon">ðŸ¦ž</div>
@@ -1237,6 +1242,22 @@ function runCmd(cmd) {
     }, i * 80);
   });
 }
+
+function toggleSidebar() {
+  document.querySelector('.sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.querySelector('.sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+// Close sidebar on nav item click (mobile)
+document.querySelectorAll('.nav-item').forEach(el => {
+  el.addEventListener('click', () => {
+    if (window.innerWidth <= 768) closeSidebar();
+  });
+});
+
 </script>
 </body>
 </html>
