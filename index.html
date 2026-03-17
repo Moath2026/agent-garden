@@ -3,803 +3,809 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🌿 Agent Garden</title>
+<title>Moti — AI Command Center</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #04070f;
+    --surface: #0b1120;
+    --card: #0f1929;
+    --border: rgba(255,255,255,0.06);
+    --accent: #7c3aed;
+    --accent2: #06b6d4;
+    --accent3: #10b981;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --glow: 0 0 30px rgba(124,58,237,0.3);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
-body {
-  background: #080d1a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
+  /* ── Ambient glow ── */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -30vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80vw;
+    height: 60vh;
+    background: radial-gradient(ellipse, rgba(124,58,237,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
 
-/* ═══════════════════════════════════════
-   DASHBOARD SHELL
-═══════════════════════════════════════ */
-.dashboard {
-  width: min(940px, 100vw - 24px);
-  background: #0f172a;
-  border-radius: 22px;
-  border: 1px solid rgba(255,255,255,0.07);
-  padding: 22px;
-  box-shadow: 0 40px 80px rgba(0,0,0,0.7);
-}
+  /* ── Top Nav ── */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+    background: rgba(4,7,15,0.85);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .nav-brand .dot {
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--accent);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.85); }
+  }
+  .nav-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--accent3);
+    background: rgba(16,185,129,0.1);
+    border: 1px solid rgba(16,185,129,0.2);
+    padding: 5px 12px;
+    border-radius: 20px;
+  }
+  .nav-status .live { width: 6px; height: 6px; background: var(--accent3); border-radius: 50%; animation: pulse 1.5s infinite; }
 
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 18px;
-}
+  /* ── Main layout ── */
+  .main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 40px 32px 80px;
+    position: relative;
+    z-index: 1;
+  }
 
-.header-left h1 {
-  color: #f1f5f9;
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
-}
+  /* ── Hero section ── */
+  .hero {
+    text-align: center;
+    padding: 60px 0 48px;
+  }
+  .hero-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    background: rgba(124,58,237,0.1);
+    border: 1px solid rgba(124,58,237,0.2);
+    padding: 6px 14px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(42px, 6vw, 72px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1.05;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.5) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 520px;
+    margin: 0 auto 36px;
+    line-height: 1.7;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 13px 28px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), #9333ea);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(124,58,237,0.4);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(124,58,237,0.5); }
+  .btn-ghost {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-1px); }
 
-.header-meta {
-  color: #475569;
-  font-size: 12px;
-  margin-top: 3px;
-  font-weight: 500;
-}
+  /* ── Stats row ── */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 768px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .stat-card:hover { border-color: rgba(255,255,255,0.12); transform: translateY(-2px); }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--color, var(--accent));
+    opacity: 0.6;
+  }
+  .stat-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-bottom: 14px;
+  }
+  .stat-value {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 4px;
+  }
+  .stat-label { font-size: 13px; color: var(--muted); }
+  .stat-trend {
+    position: absolute;
+    top: 18px; right: 18px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 8px;
+  }
+  .up { background: rgba(16,185,129,0.15); color: var(--accent3); }
+  .down { background: rgba(239,68,68,0.15); color: #ef4444; }
 
-.controls { display: flex; gap: 8px; }
+  /* ── Section title ── */
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text);
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
 
-.btn {
-  padding: 7px 16px;
-  border-radius: 9px;
-  border: 1px solid;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 700;
-  transition: all 0.2s;
-  letter-spacing: 0.2px;
-}
+  /* ── Grid layouts ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
+  @media (max-width: 900px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
 
-.btn-work {
-  background: rgba(34,197,94,0.1);
-  color: #4ade80;
-  border-color: rgba(34,197,94,0.25);
-}
+  /* ── Agent cards ── */
+  .agent-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .agent-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: var(--glow);
+  }
+  .agent-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .agent-avatar {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+  .agent-name { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+  .agent-role { font-size: 12px; color: var(--muted); }
+  .agent-status {
+    margin-left: auto;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+  .online { background: var(--accent3); box-shadow: 0 0 8px var(--accent3); animation: pulse 2s infinite; }
+  .idle { background: #f59e0b; }
+  .offline { background: var(--muted); }
+  .agent-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+  .agent-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
 
-.btn-sleep {
-  background: rgba(100,116,139,0.1);
-  color: #94a3b8;
-  border-color: rgba(100,116,139,0.2);
-}
+  /* ── Activity feed ── */
+  .feed-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px;
+  }
+  .feed-item {
+    display: flex;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    transition: opacity 0.2s;
+  }
+  .feed-item:last-child { border-bottom: none; }
+  .feed-item:hover { opacity: 0.85; }
+  .feed-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .feed-content { flex: 1; }
+  .feed-text { font-size: 13px; color: var(--text); margin-bottom: 3px; }
+  .feed-time { font-size: 11px; color: var(--muted); }
 
-.btn:hover { transform: translateY(-2px); filter: brightness(1.25); }
-.btn:active { transform: translateY(0); }
+  /* ── Skills showcase ── */
+  .skill-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    transition: all 0.2s;
+  }
+  .skill-card:hover { border-color: rgba(255,255,255,0.1); transform: translateY(-2px); }
+  .skill-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .skill-name { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .skill-desc { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 14px; }
+  .skill-bar {
+    height: 3px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .skill-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 1s ease;
+  }
 
-/* ═══════════════════════════════════════
-   GARDEN SCENE
-═══════════════════════════════════════ */
-.garden {
-  position: relative;
-  width: 100%;
-  height: 470px;
-  border-radius: 16px;
-  overflow: hidden;
-  background: linear-gradient(175deg,
-    #d1fae5 0%,
-    #a7f3d0 8%,
-    #6ee7b7 18%,
-    #34d399 32%,
-    #10b981 52%,
-    #059669 72%,
-    #047857 88%,
-    #065f46 100%
-  );
-}
+  /* ── Terminal card ── */
+  .terminal {
+    background: #060c18;
+    border: 1px solid rgba(124,58,237,0.2);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+  .terminal-header {
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .t-dot { width: 12px; height: 12px; border-radius: 50%; }
+  .terminal-body { padding: 20px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; line-height: 1.8; }
+  .t-line { margin-bottom: 2px; }
+  .t-prompt { color: var(--accent); }
+  .t-cmd { color: #e2e8f0; }
+  .t-out { color: var(--muted); }
+  .t-ok { color: var(--accent3); }
+  .t-cursor { display: inline-block; width: 8px; height: 14px; background: var(--accent); animation: blink 1s infinite; vertical-align: text-bottom; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-/* Subtle vignette overlay */
-.garden::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.12) 0%, transparent 60%),
-    radial-gradient(ellipse at 0% 100%, rgba(0,0,0,0.2) 0%, transparent 50%),
-    radial-gradient(ellipse at 100% 100%, rgba(0,0,0,0.15) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 5;
-}
+  /* ── Projects grid ── */
+  .project-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px;
+    transition: all 0.2s;
+  }
+  .project-card:hover { border-color: rgba(255,255,255,0.1); transform: translateY(-2px); }
+  .project-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .project-icon { font-size: 28px; }
+  .project-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-live { background: rgba(16,185,129,0.15); color: var(--accent3); border: 1px solid rgba(16,185,129,0.2); }
+  .badge-wip { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.2); }
+  .badge-planned { background: rgba(124,58,237,0.15); color: var(--accent); border: 1px solid rgba(124,58,237,0.2); }
+  .project-name { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+  .project-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+  .project-stack { display: flex; gap: 6px; flex-wrap: wrap; }
+  .stack-tag {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 6px;
+    background: rgba(6,182,212,0.1);
+    border: 1px solid rgba(6,182,212,0.15);
+    color: var(--accent2);
+    font-weight: 500;
+  }
 
-/* Dappled-light grass texture */
-.garden::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(ellipse 60px 40px at 15% 25%, rgba(255,255,255,0.1) 0%, transparent 100%),
-    radial-gradient(ellipse 80px 50px at 75% 70%, rgba(255,255,255,0.08) 0%, transparent 100%),
-    radial-gradient(ellipse 50px 30px at 40% 80%, rgba(255,255,255,0.07) 0%, transparent 100%),
-    radial-gradient(ellipse 40px 25px at 85% 20%, rgba(255,255,255,0.09) 0%, transparent 100%),
-    radial-gradient(ellipse 30px 20px at 60% 40%, rgba(255,255,255,0.06) 0%, transparent 100%);
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* ── STONE PATH ── */
-.path {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 110px;
-  transform: translateX(-50%);
-  background: linear-gradient(180deg,
-    rgba(241,245,249,0.2) 0%,
-    rgba(203,213,225,0.35) 50%,
-    rgba(148,163,184,0.45) 100%
-  );
-  clip-path: polygon(22% 0%, 78% 0%, 96% 100%, 4% 100%);
-  z-index: 2;
-}
-
-/* Path pebbles */
-.pebble {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(226,232,240,0.45);
-  z-index: 3;
-}
-
-/* ── TREES ── */
-.tree {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  z-index: 4;
-  pointer-events: none;
-}
-
-.tree-crown {
-  border-radius: 50% 50% 43% 43%;
-  background: radial-gradient(ellipse at 38% 28%, #a7f3d0 0%, #059669 55%, #064e3b 100%);
-  box-shadow:
-    0 10px 30px rgba(0,0,0,0.4),
-    inset 10px -10px 20px rgba(0,0,0,0.25),
-    inset -5px 5px 15px rgba(255,255,255,0.12);
-}
-
-.tree-trunk {
-  background: linear-gradient(90deg, #92400e 0%, #6b2f0a 40%, #92400e 100%);
-  border-radius: 3px;
-  margin-top: -5px;
-  box-shadow: 2px 2px 6px rgba(0,0,0,0.4);
-}
-
-/* Sizes */
-.lg .tree-crown { width: 88px; height: 110px; }
-.lg .tree-trunk { width: 18px; height: 32px; }
-.md .tree-crown { width: 64px; height: 80px; }
-.md .tree-trunk { width: 13px; height: 22px; }
-.sm .tree-crown { width: 46px; height: 58px; }
-.sm .tree-trunk { width: 9px; height: 16px; }
-
-/* ── BUSH ── */
-.bush {
-  position: absolute;
-  border-radius: 55% 45% 50% 50%;
-  background: radial-gradient(ellipse at 38% 35%, #6ee7b7, #065f46 80%);
-  box-shadow: 0 5px 14px rgba(0,0,0,0.35);
-  z-index: 4;
-  pointer-events: none;
-}
-
-/* ── POND ── */
-.pond {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(ellipse at 38% 32%,
-    #bae6fd 0%,
-    #38bdf8 25%,
-    #0284c7 55%,
-    #0c4a6e 100%
-  );
-  box-shadow:
-    0 8px 25px rgba(3,105,161,0.5),
-    0 0 0 4px rgba(125,211,252,0.18),
-    inset 0 0 30px rgba(0,0,0,0.25);
-  z-index: 4;
-  animation: pond-pulse 5s ease-in-out infinite;
-  pointer-events: none;
-}
-
-.pond-shine {
-  position: absolute;
-  top: 22%;
-  left: 18%;
-  width: 55%;
-  height: 18%;
-  background: rgba(255,255,255,0.28);
-  border-radius: 50%;
-  transform: rotate(-18deg);
-  animation: pond-shine 5s ease-in-out infinite;
-}
-
-@keyframes pond-pulse {
-  0%,100% { box-shadow: 0 8px 25px rgba(3,105,161,0.5), 0 0 0 4px rgba(125,211,252,0.18), inset 0 0 30px rgba(0,0,0,0.25); }
-  50%      { box-shadow: 0 8px 35px rgba(3,105,161,0.7), 0 0 0 8px rgba(125,211,252,0.08), inset 0 0 30px rgba(0,0,0,0.2); }
-}
-
-@keyframes pond-shine {
-  0%,100% { opacity: 0.7; transform: rotate(-18deg) scaleX(1); }
-  50%      { opacity: 1;   transform: rotate(-18deg) scaleX(1.15); }
-}
-
-/* ── FLOWERS ── */
-.flower {
-  position: absolute;
-  font-size: 22px;
-  z-index: 4;
-  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.35));
-  transform-origin: bottom center;
-  animation: flower-sway var(--fs, 2.8s) ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes flower-sway {
-  0%,100% { transform: rotate(-7deg) scale(1); }
-  50%      { transform: rotate(7deg)  scale(1.04); }
-}
-
-/* ── FIREFLIES ── */
-.firefly {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #fef08a;
-  box-shadow: 0 0 10px 4px rgba(253,224,71,0.6);
-  z-index: 6;
-  pointer-events: none;
-  opacity: 0;
-  animation: ff-drift var(--ffd, 6s) ease-in-out infinite var(--ffdel, 0s);
-}
-
-@keyframes ff-drift {
-  0%   { opacity: 0; transform: translate(0, 0); }
-  15%  { opacity: 1; }
-  50%  { transform: translate(var(--ffx, 30px), var(--ffy, -50px)); opacity: 0.9; }
-  85%  { opacity: 0.5; }
-  100% { opacity: 0; transform: translate(var(--ffx2, -20px), var(--ffy2, -90px)); }
-}
-
-/* ═══════════════════════════════════════
-   AGENTS
-═══════════════════════════════════════ */
-.agent {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  z-index: 20;
-  user-select: none;
-  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), filter 0.3s;
-}
-
-.agent:hover { filter: brightness(1.15); transform: scale(1.1) !important; }
-
-/* Ground shadow */
-.agent-shadow {
-  position: absolute;
-  bottom: -4px;
-  width: 52px;
-  height: 16px;
-  background: rgba(0,0,0,0.22);
-  border-radius: 50%;
-  filter: blur(5px);
-  transition: all 0.4s ease;
-  z-index: -1;
-}
-
-/* Avatar circle */
-.agent-body {
-  position: relative;
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  border: 3px solid rgba(255,255,255,0.45);
-  box-shadow: 0 6px 22px rgba(0,0,0,0.35), inset 0 2px 5px rgba(255,255,255,0.25);
-  transition: all 0.4s ease;
-  overflow: visible;
-}
-
-/* Status dot */
-.dot {
-  position: absolute;
-  bottom: 2px;
-  right: 2px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 2.5px solid #fff;
-  transition: background 0.3s;
-}
-
-/* Name tag */
-.agent-name {
-  margin-top: 9px;
-  font-size: 11px;
-  font-weight: 800;
-  color: #fff;
-  text-shadow: 0 1px 8px rgba(0,0,0,1), 0 0 20px rgba(0,0,0,0.8);
-  background: rgba(0,0,0,0.5);
-  padding: 2px 10px;
-  border-radius: 20px;
-  white-space: nowrap;
-  letter-spacing: 0.4px;
-  backdrop-filter: blur(6px);
-}
-
-/* ── Task bubble ── */
-.bubble {
-  position: absolute;
-  top: -50px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255,255,255,0.96);
-  backdrop-filter: blur(12px);
-  border-radius: 14px;
-  padding: 6px 13px;
-  font-size: 11px;
-  font-weight: 700;
-  color: #0f172a;
-  white-space: nowrap;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s ease, top 0.4s ease;
-  z-index: 30;
-}
-
-.bubble::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 8px solid transparent;
-  border-top-color: rgba(255,255,255,0.96);
-  border-bottom: none;
-}
-
-/* ── ZZZ ── */
-.zzz { position: absolute; top: -58px; right: -10px; width: 48px; height: 64px; pointer-events: none; display: none; }
-.z { position: absolute; font-weight: 900; color: #94a3b8; text-shadow: 0 0 12px rgba(148,163,184,0.7); opacity: 0; animation: float-z 3.2s ease-in-out infinite; }
-.z1 { font-size: 11px; right: 0; bottom: 0; animation-delay: 0s; }
-.z2 { font-size: 15px; right: 9px; bottom: 20px; animation-delay: 1.05s; }
-.z3 { font-size: 20px; right: 18px; bottom: 40px; animation-delay: 2.1s; }
-
-@keyframes float-z {
-  0%   { opacity: 0; transform: translateY(0) rotate(-8deg) scale(0.6); }
-  20%  { opacity: 1; }
-  80%  { opacity: 0.6; }
-  100% { opacity: 0; transform: translateY(-32px) rotate(12deg) scale(1.3); }
-}
-
-/* Sleep badge */
-.sleep-badge {
-  position: absolute;
-  top: -6px;
-  right: -8px;
-  font-size: 15px;
-  display: none;
-  animation: badge-bob 2.2s ease-in-out infinite;
-}
-
-@keyframes badge-bob {
-  0%,100% { transform: rotate(-10deg) scale(1); }
-  50%      { transform: rotate(12deg) scale(1.12); }
-}
-
-/* ══════════════════════════════════════
-   BUSY STATE
-══════════════════════════════════════ */
-.agent.busy .agent-body {
-  animation: agent-bounce 0.65s ease-in-out infinite alternate;
-  box-shadow:
-    0 0 0 4px rgba(var(--rgb), 0.25),
-    0 0 22px rgba(var(--rgb), 0.55),
-    0 6px 22px rgba(0,0,0,0.35);
-}
-
-.agent.busy .dot {
-  background: #22c55e;
-  animation: dot-pulse 1.1s ease-in-out infinite;
-}
-
-.agent.busy .bubble { opacity: 1; top: -54px; }
-
-.agent.busy .agent-shadow { width: 44px; height: 12px; opacity: 0.3; }
-
-@keyframes agent-bounce {
-  from { transform: translateY(0) scale(1); }
-  to   { transform: translateY(-11px) scale(0.96); }
-}
-
-@keyframes dot-pulse {
-  0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
-  50%      { box-shadow: 0 0 0 5px rgba(34,197,94,0); }
-}
-
-/* ══════════════════════════════════════
-   IDLE STATE
-══════════════════════════════════════ */
-.agent.idle .agent-body {
-  animation: agent-breathe 4s ease-in-out infinite;
-  opacity: 0.78;
-  filter: saturate(0.65) brightness(0.9);
-}
-
-.agent.idle .dot { background: #475569; }
-
-.agent.idle .zzz { display: block; }
-
-.agent.idle .sleep-badge { display: block; }
-
-.agent.idle .agent-shadow { width: 62px; height: 20px; opacity: 0.12; }
-
-@keyframes agent-breathe {
-  0%,100% { transform: scale(1)    rotate(-2deg); }
-  50%      { transform: scale(0.95) rotate(2.5deg); }
-}
-
-/* ═══════════════════════════════════════
-   STATUS BAR
-═══════════════════════════════════════ */
-.status-bar {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-  margin-top: 16px;
-}
-
-.scard {
-  background: rgba(255,255,255,0.025);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 11px;
-  padding: 9px 11px;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.scard:hover { background: rgba(255,255,255,0.055); border-color: rgba(255,255,255,0.12); }
-
-.scard-av {
-  width: 34px; height: 34px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
-  flex-shrink: 0;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.35);
-}
-
-.scard-info { flex: 1; min-width: 0; }
-
-.scard-name {
-  font-size: 12px;
-  font-weight: 700;
-  color: #e2e8f0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.scard-task {
-  font-size: 10px;
-  color: #475569;
-  margin-top: 2px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.badge {
-  font-size: 9px;
-  font-weight: 800;
-  padding: 3px 8px;
-  border-radius: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  white-space: nowrap;
-}
-
-.badge-busy { background: rgba(34,197,94,0.14); color: #4ade80; border: 1px solid rgba(34,197,94,0.2); }
-.badge-idle { background: rgba(71,85,105,0.18); color: #64748b; border: 1px solid rgba(71,85,105,0.18); }
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    padding: 40px 0 20px;
+    color: var(--muted);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+  }
+  .footer a { color: var(--accent); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
 
-<div class="dashboard">
-
-  <!-- Header -->
-  <div class="header">
-    <div class="header-left">
-      <h1>🌿 Agent Garden</h1>
-      <div class="header-meta" id="meta">Loading…</div>
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="dot"></div>
+    Moti AI
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div class="nav-status">
+      <div class="live"></div>
+      All Systems Operational
     </div>
-    <div class="controls">
-      <div style="display:flex;align-items:center;gap:7px;padding:6px 12px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);">
-        <div id="api-dot" style="width:8px;height:8px;border-radius:50%;background:#ef4444;box-shadow:0 0 6px rgba(239,68,68,0.6);transition:all 0.4s;flex-shrink:0;"></div>
-        <span id="api-label" style="font-size:11px;color:#64748b;font-weight:600;white-space:nowrap;">API offline — static view</span>
-      </div>
-      <button class="btn btn-work" onclick="setAll('busy')">⚡ All Working</button>
-      <button class="btn btn-sleep" onclick="setAll('idle')">💤 All Sleep</button>
+  </div>
+</nav>
+
+<div class="main">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-label">🤖 AI Command Center</div>
+    <h1>The <span>Agent Garden</span><br>is Alive</h1>
+    <p>A living dashboard of AI tools, automation workflows, and intelligent agents — built for MoaTh 🚀</p>
+    <div class="hero-actions">
+      <a href="https://github.com/Moath2026/agent-garden" class="btn btn-primary" target="_blank">
+        ⚡ View on GitHub
+      </a>
+      <a href="#agents" class="btn btn-ghost">🌿 Explore Agents</a>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-card" style="--color:#7c3aed">
+      <div class="stat-icon">🤖</div>
+      <div class="stat-value">12</div>
+      <div class="stat-label">Active Agents</div>
+      <div class="stat-trend up">↑ 3 new</div>
+    </div>
+    <div class="stat-card" style="--color:#06b6d4">
+      <div class="stat-icon">⚡</div>
+      <div class="stat-value">47</div>
+      <div class="stat-label">Workflows Built</div>
+      <div class="stat-trend up">↑ 12 this week</div>
+    </div>
+    <div class="stat-card" style="--color:#10b981">
+      <div class="stat-icon">🎯</div>
+      <div class="stat-value">2.4k</div>
+      <div class="stat-label">Tasks Automated</div>
+      <div class="stat-trend up">↑ 18%</div>
+    </div>
+    <div class="stat-card" style="--color:#f59e0b">
+      <div class="stat-icon">💰</div>
+      <div class="stat-value">$0</div>
+      <div class="stat-label">Monthly Infra Cost</div>
+      <div class="stat-trend up">100% free</div>
     </div>
   </div>
 
-  <!-- Garden -->
-  <div class="garden" id="garden"></div>
+  <!-- TERMINAL -->
+  <div class="terminal">
+    <div class="terminal-header">
+      <div class="t-dot" style="background:#ff5f57"></div>
+      <div class="t-dot" style="background:#ffbd2e"></div>
+      <div class="t-dot" style="background:#28c840"></div>
+      <span style="margin-left:8px;font-size:12px;color:var(--muted);font-family:monospace">moti — agent-garden</span>
+    </div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-prompt">moti@garden </span><span class="t-cmd">$ moti status --all</span></div>
+      <div class="t-line t-out">⠴ Scanning agents...</div>
+      <div class="t-line t-ok">✓ n8n workflows: 47 active</div>
+      <div class="t-line t-ok">✓ Telegram bot: @Moti_videos_bot — online</div>
+      <div class="t-line t-ok">✓ GitHub Pages: deployed — moath2026.github.io/agent-garden</div>
+      <div class="t-line t-ok">✓ OpenClaw: running — model: claude-sonnet-4-6</div>
+      <div class="t-line t-out">─────────────────────────────────</div>
+      <div class="t-line"><span class="t-prompt">moti@garden </span><span class="t-cmd">$ _</span><span class="t-cursor"></span></div>
+    </div>
+  </div>
 
-  <!-- Status bar -->
-  <div class="status-bar" id="status-bar"></div>
+  <!-- AGENTS -->
+  <div id="agents">
+    <div class="section-title">🤖 Active Agents</div>
+    <div class="grid-3">
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <div class="agent-avatar" style="background:rgba(124,58,237,0.15)">🧠</div>
+          <div>
+            <div class="agent-name">Moti</div>
+            <div class="agent-role">Main Assistant</div>
+          </div>
+          <div class="agent-status online"></div>
+        </div>
+        <div class="agent-desc">Primary AI agent. Handles planning, memory, code, research, and communication. Runs on Claude Sonnet 4.</div>
+        <div class="agent-tags">
+          <span class="tag">Claude</span>
+          <span class="tag">OpenClaw</span>
+          <span class="tag">Telegram</span>
+        </div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <div class="agent-avatar" style="background:rgba(6,182,212,0.15)">🎬</div>
+          <div>
+            <div class="agent-name">VideoBot</div>
+            <div class="agent-role">Content Creator</div>
+          </div>
+          <div class="agent-status online"></div>
+        </div>
+        <div class="agent-desc">Generates AI videos using Luma Dream Machine. Triggered via @Moti_videos_bot on Telegram.</div>
+        <div class="agent-tags">
+          <span class="tag">Luma API</span>
+          <span class="tag">n8n</span>
+          <span class="tag">Groq</span>
+        </div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <div class="agent-avatar" style="background:rgba(16,185,129,0.15)">💚</div>
+          <div>
+            <div class="agent-name">HealthCoach</div>
+            <div class="agent-role">Wellness Automation</div>
+          </div>
+          <div class="agent-status online"></div>
+        </div>
+        <div class="agent-desc">Daily health tracking, meal suggestions, and habit monitoring. Fully automated n8n workflow.</div>
+        <div class="agent-tags">
+          <span class="tag">n8n</span>
+          <span class="tag">Claude API</span>
+          <span class="tag">Sheets</span>
+        </div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <div class="agent-avatar" style="background:rgba(245,158,11,0.15)">📈</div>
+          <div>
+            <div class="agent-name">TradingBot</div>
+            <div class="agent-role">Market Analyst</div>
+          </div>
+          <div class="agent-status idle"></div>
+        </div>
+        <div class="agent-desc">Monitors Tadawul & halal ETFs. Sends alerts for Shariah-compliant investment opportunities.</div>
+        <div class="agent-tags">
+          <span class="tag">Python</span>
+          <span class="tag">Tadawul</span>
+          <span class="tag">Halal</span>
+        </div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <div class="agent-avatar" style="background:rgba(239,68,68,0.15)">🎯</div>
+          <div>
+            <div class="agent-name">ContentGen</div>
+            <div class="agent-role">Viral Writer</div>
+          </div>
+          <div class="agent-status online"></div>
+        </div>
+        <div class="agent-desc">Generates viral social media content with AI. LinkedIn, Twitter, Instagram — all automated.</div>
+        <div class="agent-tags">
+          <span class="tag">Groq</span>
+          <span class="tag">n8n</span>
+          <span class="tag">Social</span>
+        </div>
+      </div>
+
+      <div class="agent-card">
+        <div class="agent-header">
+          <div class="agent-avatar" style="background:rgba(124,58,237,0.1)">🔊</div>
+          <div>
+            <div class="agent-name">WhisperBot</div>
+            <div class="agent-role">Voice Transcriber</div>
+          </div>
+          <div class="agent-status idle"></div>
+        </div>
+        <div class="agent-desc">Converts audio and video to text using OpenAI Whisper. Multi-language including Arabic.</div>
+        <div class="agent-tags">
+          <span class="tag">Whisper</span>
+          <span class="tag">ffmpeg</span>
+          <span class="tag">Python</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="section-title">🚀 Projects</div>
+  <div class="grid-3" style="margin-bottom:40px">
+
+    <div class="project-card">
+      <div class="project-header">
+        <div class="project-icon">🌿</div>
+        <div class="project-badge badge-live">Live</div>
+      </div>
+      <div class="project-name">Agent Garden</div>
+      <div class="project-desc">This dashboard. A living portfolio of every AI tool, agent, and automation MoaTh has built.</div>
+      <div class="project-stack">
+        <span class="stack-tag">HTML/CSS</span>
+        <span class="stack-tag">GitHub Pages</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <div class="project-icon">⚡</div>
+        <div class="project-badge badge-live">Live</div>
+      </div>
+      <div class="project-name">n8n Automation Stack</div>
+      <div class="project-desc">47 workflows running on self-hosted n8n. Health coaching, video gen, content creation, and more.</div>
+      <div class="project-stack">
+        <span class="stack-tag">n8n</span>
+        <span class="stack-tag">Hostinger VPS</span>
+        <span class="stack-tag">Docker</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <div class="project-icon">🎬</div>
+        <div class="project-badge badge-wip">WIP</div>
+      </div>
+      <div class="project-name">Moti Video Bot</div>
+      <div class="project-desc">Telegram bot that generates AI videos on demand using Luma Dream Machine + Groq for prompts.</div>
+      <div class="project-stack">
+        <span class="stack-tag">Luma API</span>
+        <span class="stack-tag">Groq</span>
+        <span class="stack-tag">Telegram</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <div class="project-icon">🧠</div>
+        <div class="project-badge badge-live">Live</div>
+      </div>
+      <div class="project-name">OpenClaw Setup</div>
+      <div class="project-desc">Personal AI OS running locally. Claude Sonnet as brain, Telegram as interface, full memory system.</div>
+      <div class="project-stack">
+        <span class="stack-tag">OpenClaw</span>
+        <span class="stack-tag">Claude API</span>
+        <span class="stack-tag">Telegram</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <div class="project-icon">📊</div>
+        <div class="project-badge badge-wip">WIP</div>
+      </div>
+      <div class="project-name">Halal Trading System</div>
+      <div class="project-desc">Automated screening and alerts for Shariah-compliant stocks on Tadawul. Python + LangChain.</div>
+      <div class="project-stack">
+        <span class="stack-tag">Python</span>
+        <span class="stack-tag">LangChain</span>
+        <span class="stack-tag">Tadawul API</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <div class="project-icon">🎙️</div>
+        <div class="project-badge badge-planned">Planned</div>
+      </div>
+      <div class="project-name">Voice AI Assistant</div>
+      <div class="project-desc">Arabic + English voice interface using Whisper for STT and ElevenLabs for TTS. Fully offline capable.</div>
+      <div class="project-stack">
+        <span class="stack-tag">Whisper</span>
+        <span class="stack-tag">ElevenLabs</span>
+        <span class="stack-tag">Python</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SKILLS + ACTIVITY -->
+  <div class="grid-2">
+
+    <div>
+      <div class="section-title">⚡ Skills Stack</div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+
+        <div class="skill-card">
+          <span class="skill-icon">🔗</span>
+          <div class="skill-name">n8n Automation</div>
+          <div class="skill-desc">Visual workflow automation. 47 active workflows. Webhooks, APIs, AI nodes.</div>
+          <div class="skill-bar"><div class="skill-fill" style="width:88%"></div></div>
+        </div>
+
+        <div class="skill-card">
+          <span class="skill-icon">🐍</span>
+          <div class="skill-name">Python</div>
+          <div class="skill-desc">AI scripts, automation, data processing, API integrations.</div>
+          <div class="skill-bar"><div class="skill-fill" style="width:70%"></div></div>
+        </div>
+
+        <div class="skill-card">
+          <span class="skill-icon">🤖</span>
+          <div class="skill-name">LLM Engineering</div>
+          <div class="skill-desc">Claude API, LangChain, LangGraph, prompt engineering, agents.</div>
+          <div class="skill-bar"><div class="skill-fill" style="width:82%"></div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <div>
+      <div class="section-title">📡 Live Activity</div>
+      <div class="feed-card">
+
+        <div class="feed-item">
+          <div class="feed-dot" style="background:var(--accent3)"></div>
+          <div class="feed-content">
+            <div class="feed-text">Agent Garden deployed to GitHub Pages</div>
+            <div class="feed-time">Today, 11:00 AM</div>
+          </div>
+        </div>
+
+        <div class="feed-item">
+          <div class="feed-dot" style="background:var(--accent2)"></div>
+          <div class="feed-content">
+            <div class="feed-text">ffmpeg + Whisper installed — voice stack ready</div>
+            <div class="feed-time">Today, 11:05 AM</div>
+          </div>
+        </div>
+
+        <div class="feed-item">
+          <div class="feed-dot" style="background:var(--accent)"></div>
+          <div class="feed-content">
+            <div class="feed-text">HealthCoach workflow fixed and reactivated</div>
+            <div class="feed-time">Yesterday</div>
+          </div>
+        </div>
+
+        <div class="feed-item">
+          <div class="feed-dot" style="background:#f59e0b"></div>
+          <div class="feed-content">
+            <div class="feed-text">NanoBanana workflow restored</div>
+            <div class="feed-time">Yesterday</div>
+          </div>
+        </div>
+
+        <div class="feed-item">
+          <div class="feed-dot" style="background:var(--accent3)"></div>
+          <div class="feed-content">
+            <div class="feed-text">OpenClaw configured — Telegram bot active</div>
+            <div class="feed-time">2 days ago</div>
+          </div>
+        </div>
+
+        <div class="feed-item">
+          <div class="feed-dot" style="background:var(--accent)"></div>
+          <div class="feed-content">
+            <div class="feed-text">Moti came online for the first time 🌱</div>
+            <div class="feed-time">2026-03-15</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
 
 </div>
 
-<script>
-/* ─── API Config ─────────────────────────────── */
-const API_URL = null; // GitHub Pages - static mode
-const API_POLL   = 8000; // refresh every 8 seconds
-let   apiOnline  = false;
+<!-- FOOTER -->
+<div class="footer">
+  Built by <a href="https://github.com/Moath2026">MoaTh</a> 🚀 &nbsp;·&nbsp; Powered by Moti 🤖 &nbsp;·&nbsp; 
+  <a href="https://github.com/Moath2026/agent-garden">GitHub</a>
+</div>
 
-/* ─── Fallback static agents (shown when API offline) ── */
-const AGENTS_STATIC = [
-  { id:'moti',    name:'Moti',    icon:'🤖', grad:'linear-gradient(135deg,#6366f1,#8b5cf6)', rgb:'99,102,241',  state:'busy', task:'⚙️ Orchestrating...',  pos:{ left:'42%', top:'40%' } },
-  { id:'scout',   name:'Scout',   icon:'🔍', grad:'linear-gradient(135deg,#f59e0b,#ef4444)', rgb:'245,158,11',  state:'busy', task:'🔍 Researching...',    pos:{ left:'70%', top:'22%' } },
-  { id:'coder',   name:'Coder',   icon:'💻', grad:'linear-gradient(135deg,#06b6d4,#0284c7)', rgb:'6,182,212',   state:'idle', task:'💻 Writing code...',   pos:{ left:'74%', top:'60%' } },
-  { id:'writer',  name:'Writer',  icon:'✍️', grad:'linear-gradient(135deg,#ec4899,#f43f5e)', rgb:'236,72,153',  state:'idle', task:'✍️ Drafting post...',  pos:{ left:'16%', top:'60%' } },
-  { id:'analyst', name:'Analyst', icon:'📊', grad:'linear-gradient(135deg,#10b981,#0d9488)', rgb:'16,185,129',  state:'busy', task:'📊 Analyzing data...', pos:{ left:'18%', top:'22%' } },
-];
-
-let AGENTS = [...AGENTS_STATIC];
-
-/* ─── Garden scenery data ────────────────────── */
-const TREES = [
-  { left:'2%',  top:'3%',  size:'lg' },
-  { left:'87%', top:'2%',  size:'lg' },
-  { left:'84%', top:'68%', size:'md' },
-  { left:'2%',  top:'70%', size:'md' },
-  { left:'44%', top:'1%',  size:'sm' },
-  { left:'48%', top:'72%', size:'sm' },
-];
-
-const BUSHES = [
-  { left:'10%', top:'42%', w:'46px', h:'32px' },
-  { left:'80%', top:'42%', w:'40px', h:'28px' },
-  { left:'38%', top:'76%', w:'52px', h:'34px' },
-];
-
-const FLOWERS = [
-  { left:'11%', top:'33%', e:'🌸', spd:'2.6s' },
-  { left:'79%', top:'38%', e:'🌺', spd:'3.1s' },
-  { left:'28%', top:'80%', e:'🌻', spd:'2.4s' },
-  { left:'64%', top:'81%', e:'🌸', spd:'3.4s' },
-  { left:'7%',  top:'52%', e:'🌼', spd:'2.9s' },
-  { left:'90%', top:'32%', e:'🌺', spd:'2.7s' },
-  { left:'54%', top:'14%', e:'🌼', spd:'3.0s' },
-  { left:'34%', top:'8%',  e:'🌸', spd:'2.5s' },
-  { left:'14%', top:'12%', e:'🌿', spd:'3.2s' },
-  { left:'80%', top:'12%', e:'🌿', spd:'2.8s' },
-  { left:'93%', top:'56%', e:'🍄', spd:'3.5s' },
-  { left:'4%',  top:'84%', e:'🍄', spd:'3.0s' },
-];
-
-const PEBBLES = [
-  { left:'47%', top:'15%', w:'10px', h:'6px' },
-  { left:'50%', top:'30%', w:'8px',  h:'5px' },
-  { left:'53%', top:'48%', w:'11px', h:'7px' },
-  { left:'46%', top:'64%', w:'9px',  h:'5px' },
-  { left:'51%', top:'80%', w:'12px', h:'6px' },
-];
-
-/* ─── Build garden ───────────────────────────── */
-function buildGarden() {
-  const g = document.getElementById('garden');
-  g.innerHTML = '';
-
-  // Path
-  const path = el('div','path'); g.appendChild(path);
-
-  // Pebbles
-  PEBBLES.forEach(p => {
-    const d = el('div','pebble');
-    css(d,`left:${p.left};top:${p.top};width:${p.w};height:${p.h}`);
-    g.appendChild(d);
-  });
-
-  // Trees
-  TREES.forEach(t => {
-    const tree = el('div',`tree ${t.size}`);
-    css(tree,`left:${t.left};top:${t.top}`);
-    tree.innerHTML = `<div class="tree-crown"></div><div class="tree-trunk"></div>`;
-    g.appendChild(tree);
-  });
-
-  // Bushes
-  BUSHES.forEach(b => {
-    const d = el('div','bush');
-    css(d,`left:${b.left};top:${b.top};width:${b.w};height:${b.h}`);
-    g.appendChild(d);
-  });
-
-  // Pond
-  const pond = el('div','pond');
-  css(pond,'left:48%;top:54%;width:140px;height:86px;transform:translateX(-50%)');
-  pond.innerHTML = '<div class="pond-shine"></div>';
-  g.appendChild(pond);
-
-  // Flowers
-  FLOWERS.forEach(f => {
-    const d = el('div','flower');
-    css(d,`left:${f.left};top:${f.top};--fs:${f.spd}`);
-    d.textContent = f.e;
-    g.appendChild(d);
-  });
-
-  // Fireflies
-  for(let i=0;i<10;i++){
-    const ff = el('div','firefly');
-    const x = rnd(8,88), y = rnd(15,82);
-    const dur = (3.5+Math.random()*5).toFixed(1)+'s';
-    const del = (-Math.random()*9).toFixed(1)+'s';
-    const fx  = (rnd(-40,40))+'px', fy  = (rnd(-70,-20))+'px';
-    const fx2 = (rnd(-40,40))+'px', fy2 = (rnd(-100,-50))+'px';
-    css(ff,`left:${x}%;top:${y}%;--ffd:${dur};--ffdel:${del};--ffx:${fx};--ffy:${fy};--ffx2:${fx2};--ffy2:${fy2}`);
-    g.appendChild(ff);
-  }
-
-  // Agents
-  AGENTS.forEach(a => buildAgent(g, a));
-}
-
-/* ─── Build one agent element ────────────────── */
-function buildAgent(garden, a) {
-  const d = el('div',`agent ${a.state}`);
-  d.id = `ag-${a.id}`;
-  css(d,`left:${a.pos.left};top:${a.pos.top};--rgb:${a.rgb}`);
-  d.innerHTML = `
-    <div class="agent-shadow"></div>
-    <div class="agent-body" style="background:${a.grad}">
-      ${a.icon}
-      <div class="dot"></div>
-      <div class="sleep-badge">💤</div>
-      <div class="zzz">
-        <span class="z z1">Z</span>
-        <span class="z z2">Z</span>
-        <span class="z z3">Z</span>
-      </div>
-    </div>
-    <div class="bubble">${a.task}</div>
-    <div class="agent-name">${a.name}</div>
-  `;
-  d.addEventListener('click', () => toggle(a.id));
-  garden.appendChild(d);
-}
-
-/* ─── Status bar ─────────────────────────────── */
-function renderStatusBar() {
-  document.getElementById('status-bar').innerHTML = AGENTS.map(a => `
-    <div class="scard" onclick="toggle('${a.id}')">
-      <div class="scard-av" style="background:${a.grad}">${a.icon}</div>
-      <div class="scard-info">
-        <div class="scard-name">${a.name}</div>
-        <div class="scard-task">${a.state==='busy' ? a.task : '💤 Sleeping...'}</div>
-      </div>
-      <div class="badge ${a.state==='busy'?'badge-busy':'badge-idle'}">${a.state==='busy'?'Busy':'Zzz'}</div>
-    </div>
-  `).join('');
-}
-
-function renderMeta() {
-  const busy = AGENTS.filter(a=>a.state==='busy').length;
-  const idle = AGENTS.length - busy;
-  document.getElementById('meta').textContent = `${busy} working · ${idle} sleeping`;
-}
-
-/* ─── Toggle agent state ─────────────────────── */
-function toggle(id) {
-  const a = AGENTS.find(x=>x.id===id);
-  if(!a) return;
-  a.state = a.state==='busy' ? 'idle' : 'busy';
-  const el_ = document.getElementById(`ag-${id}`);
-  if(el_) el_.className = `agent ${a.state}`;
-  renderStatusBar();
-  renderMeta();
-}
-
-function setAll(state) {
-  AGENTS.forEach(a => {
-    a.state = state;
-    const el_ = document.getElementById(`ag-${a.id}`);
-    if(el_) el_.className = `agent ${state}`;
-  });
-  renderStatusBar();
-  renderMeta();
-}
-
-/* ─── Helpers ────────────────────────────────── */
-function el(tag, cls) { const d=document.createElement(tag); d.className=cls; return d; }
-function css(d, str) { d.style.cssText = str; }
-function rnd(a,b) { return Math.floor(Math.random()*(b-a))+a; }
-
-/* ─── API Fetch ──────────────────────────────── */
-async function fetchAgents() {
-  try {
-    const res = await fetch(API_URL, { signal: AbortSignal.timeout(4000) });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    if (!data.agents || !data.agents.length) return;
-
-    apiOnline = true;
-    setApiStatus(true, data.agents.length);
-
-    // Merge live data into AGENTS array
-    // Add new, update existing, keep positions stable
-    const live = data.agents;
-    const newAgents = [];
-    live.forEach((la, i) => {
-      const existing = AGENTS.find(a => a.id === la.id);
-      if (existing) {
-        existing.state = la.state;
-        existing.task  = la.task;
-        existing.name  = la.name;
-        newAgents.push(existing);
-      } else {
-        newAgents.push(la);
-      }
-    });
-    AGENTS = newAgents;
-    buildGarden();
-    renderStatusBar();
-    renderMeta();
-
-  } catch(e) {
-    if (apiOnline) {
-      apiOnline = false;
-      setApiStatus(false, 0);
-    }
-  }
-}
-
-function setApiStatus(online, count) {
-  const dot = document.getElementById('api-dot');
-  const lbl = document.getElementById('api-label');
-  if (!dot || !lbl) return;
-  if (online) {
-    dot.style.background = '#22c55e';
-    dot.style.boxShadow  = '0 0 6px rgba(34,197,94,0.8)';
-    lbl.textContent = `Live · ${count} session${count!==1?'s':''}`;
-  } else {
-    dot.style.background = '#ef4444';
-    dot.style.boxShadow  = '0 0 6px rgba(239,68,68,0.6)';
-    lbl.textContent = 'API offline — static view';
-  }
-}
-
-/* ─── Init ───────────────────────────────────── */
-buildGarden();
-renderStatusBar();
-renderMeta();
-fetchAgents();
-setInterval(fetchAgents, API_POLL);
-</script>
 </body>
 </html>
