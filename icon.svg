@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="110" fill="#0a0a0f"/>
+  
+  <!-- Outer glow ring -->
+  <circle cx="256" cy="256" r="220" fill="none" stroke="#00ff88" stroke-width="3" opacity="0.3"/>
+  <circle cx="256" cy="256" r="200" fill="none" stroke="#00ff88" stroke-width="1.5" opacity="0.15"/>
+  
+  <!-- Grid lines -->
+  <line x1="56" y1="256" x2="456" y2="256" stroke="#00ff88" stroke-width="1" opacity="0.1"/>
+  <line x1="256" y1="56" x2="256" y2="456" stroke="#00ff88" stroke-width="1" opacity="0.1"/>
+  
+  <!-- Center circle -->
+  <circle cx="256" cy="256" r="120" fill="#0f1a12" stroke="#00ff88" stroke-width="2" opacity="0.8"/>
+  
+  <!-- Inner detail ring -->
+  <circle cx="256" cy="256" r="90" fill="none" stroke="#00d4ff" stroke-width="1.5" opacity="0.4" stroke-dasharray="10,6"/>
+  
+  <!-- Moti text -->
+  <text x="256" y="248" font-family="'SF Pro Display', 'Inter', sans-serif" font-size="64" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="-2">Moti</text>
+  
+  <!-- AI subtitle -->
+  <text x="256" y="292" font-family="'SF Mono', monospace" font-size="22" fill="#00ff88" text-anchor="middle" letter-spacing="6" opacity="0.9">AI</text>
+  
+  <!-- Corner dots -->
+  <circle cx="120" cy="120" r="6" fill="#00ff88" opacity="0.5"/>
+  <circle cx="392" cy="120" r="6" fill="#00d4ff" opacity="0.5"/>
+  <circle cx="120" cy="392" r="6" fill="#00d4ff" opacity="0.5"/>
+  <circle cx="392" cy="392" r="6" fill="#00ff88" opacity="0.5"/>
+  
+  <!-- Tick marks on ring -->
+  <line x1="256" y1="36" x2="256" y2="56" stroke="#00ff88" stroke-width="3" opacity="0.6"/>
+  <line x1="256" y1="456" x2="256" y2="476" stroke="#00ff88" stroke-width="3" opacity="0.6"/>
+  <line x1="36" y1="256" x2="56" y2="256" stroke="#00ff88" stroke-width="3" opacity="0.6"/>
+  <line x1="456" y1="256" x2="476" y2="256" stroke="#00ff88" stroke-width="3" opacity="0.6"/>
+  
+  <!-- Small pulse dot -->
+  <circle cx="256" cy="340" r="5" fill="#00ff88" opacity="0.8">
+  </circle>
+</svg>
