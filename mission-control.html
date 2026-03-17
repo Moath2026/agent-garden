@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mission Control — AI Command Center</title>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #12121a;
+  --card: rgba(255,255,255,0.03);
+  --border: rgba(255,255,255,0.08);
+  --green: #00ff88;
+  --cyan: #00d4ff;
+  --amber: #ffaa00;
+  --red: #ff3366;
+  --purple: #a855f7;
+  --text: #ffffff;
+  --text2: #888899;
+  --text3: #555566;
+  --glow-g: 0 0 20px rgba(0,255,136,0.3);
+  --glow-c: 0 0 20px rgba(0,212,255,0.3);
+  --glow-p: 0 0 20px rgba(168,85,247,0.3);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Inter',-apple-system,sans-serif; display:flex; min-height:100vh; overflow-x:hidden; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 240px; min-width: 240px;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  position: fixed; top:0; left:0; bottom:0;
+  z-index: 100; overflow-y:auto;
+}
+.sidebar-brand {
+  padding: 20px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.brand-icon { font-size: 24px; }
+.brand-text { font-size: 14px; font-weight: 700; letter-spacing: 1px; color: var(--green); text-transform: uppercase; }
+.brand-sub { font-size: 10px; color: var(--text3); }
+.nav-section { padding: 16px 10px 6px; font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; cursor: pointer;
+  border-radius: 8px; margin: 2px 8px;
+  font-size: 13px; color: var(--text2);
+  transition: all 0.15s; border: 1px solid transparent;
+}
+.nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+.nav-item.active { background: rgba(0,255,136,0.08); color: var(--green); border-color: rgba(0,255,136,0.15); }
+.nav-icon { font-size: 16px; width: 20px; text-align:center; }
+.nav-badge {
+  margin-left: auto; font-size: 10px; font-weight: 700;
+  padding: 2px 6px; border-radius: 10px;
+}
+.badge-red { background: rgba(255,51,102,0.2); color: var(--red); }
+.badge-green { background: rgba(0,255,136,0.15); color: var(--green); }
+.sidebar-footer {
+  margin-top: auto; padding: 16px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: var(--glow-g); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(.85)} }
+
+/* ── MAIN ── */
+.main {
+  margin-left: 240px; flex: 1;
+  display: flex; flex-direction: column;
+  min-height: 100vh;
+}
+.topbar {
+  height: 56px; background: rgba(10,10,15,0.9);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 24px; gap: 16px;
+  position: sticky; top: 0; z-index: 50;
+}
+.topbar-title { font-size: 16px; font-weight: 700; flex: 1; }
+.topbar-pill {
+  font-size: 11px; padding: 4px 12px; border-radius: 20px;
+  display: flex; align-items: center; gap: 6px;
+}
+.pill-green { background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.2); color: var(--green); }
+.pill-cyan { background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2); color: var(--cyan); }
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: pulse 1.5s infinite; }
+
+/* ── SECTIONS ── */
+.section { display: none; padding: 24px; }
+.section.active { display: block; }
+.section-header { margin-bottom: 24px; }
+.section-header h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px; }
+.section-header p { font-size: 13px; color: var(--text2); }
+
+/* ── CARDS ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 20px;
+  transition: border-color .2s, transform .2s;
+}
+.card:hover { border-color: rgba(255,255,255,0.12); }
+
+/* ── GRID ── */
+.grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+.grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
+@media(max-width:1100px){ .grid-4{grid-template-columns:repeat(2,1fr);} }
+
+/* ── STAT CARDS ── */
+.stat-card { position:relative; overflow:hidden; }
+.stat-card::before { content:''; position:absolute; top:0;left:0;right:0;height:2px; background:var(--accent,var(--green)); opacity:.7; }
+.stat-icon { font-size:22px; margin-bottom:12px; }
+.stat-val { font-size:32px; font-weight:800; letter-spacing:-1px; margin-bottom:4px; }
+.stat-lbl { font-size:12px; color:var(--text2); }
+.stat-trend { position:absolute;top:16px;right:16px;font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px; }
+.up { background:rgba(0,255,136,.12); color:var(--green); }
+.warn { background:rgba(255,170,0,.12); color:var(--amber); }
+
+/* ── SECTION TITLE ── */
+.s-title {
+  font-size:14px; font-weight:700; color:var(--text2);
+  text-transform:uppercase; letter-spacing:1px;
+  margin-bottom:16px; display:flex; align-items:center; gap:10px;
+}
+.s-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* ── AGENT CARDS ── */
+.agent-card { cursor:pointer; }
+.agent-card:hover { border-color:var(--green); box-shadow:var(--glow-g); transform:translateY(-2px); }
+.agent-head { display:flex;align-items:center;gap:12px;margin-bottom:14px; }
+.agent-av { width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px; }
+.agent-name { font-size:15px;font-weight:700; }
+.agent-role { font-size:11px;color:var(--text2); }
+.a-status { margin-left:auto;width:8px;height:8px;border-radius:50%; }
+.s-online { background:var(--green);box-shadow:var(--glow-g);animation:pulse 2s infinite; }
+.s-idle { background:var(--amber); }
+.s-offline { background:var(--text3); }
+.s-error { background:var(--red);animation:pulse 1s infinite; }
+.agent-desc { font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:14px; }
+.tags { display:flex;flex-wrap:wrap;gap:6px; }
+.tag { font-size:10px;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text2); }
+
+/* ── ACTIVITY FEED ── */
+.feed-item { display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.03); }
+.feed-item:last-child { border-bottom:none; }
+.feed-dot { width:7px;height:7px;border-radius:50%;margin-top:5px;flex-shrink:0; }
+.feed-text { font-size:12px;margin-bottom:2px; }
+.feed-time { font-size:10px;color:var(--text3); }
+
+/* ── TERMINAL ── */
+.terminal {
+  background:#060c18; border:1px solid rgba(0,255,136,.15);
+  border-radius:14px; overflow:hidden; margin-bottom:24px;
+}
+.term-head {
+  padding:10px 14px; background:rgba(255,255,255,.02);
+  border-bottom:1px solid rgba(255,255,255,.04);
+  display:flex;align-items:center;gap:8px;
+}
+.tdot { width:11px;height:11px;border-radius:50%; }
+.term-body { padding:18px;font-family:'SF Mono','Fira Code',monospace;font-size:12px;line-height:1.9; }
+.t-p { color:var(--green); }
+.t-c { color:var(--text); }
+.t-o { color:var(--text2); }
+.t-ok { color:var(--green); }
+.t-warn { color:var(--amber); }
+.t-err { color:var(--red); }
+.cursor { display:inline-block;width:7px;height:13px;background:var(--green);animation:blink 1s infinite;vertical-align:text-bottom; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0} }
+
+/* ── KANBAN ── */
+.kanban { display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px;overflow-x:auto; }
+.kanban-col { background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:12px;padding:14px;min-width:160px; }
+.col-head { font-size:12px;font-weight:700;color:var(--text2);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between; }
+.col-count { font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(255,255,255,.06); }
+.task-card { background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;transition:all .15s; }
+.task-card:hover { border-color:rgba(255,255,255,.15);transform:translateY(-1px); }
+.task-title { font-size:12px;font-weight:600;margin-bottom:6px; }
+.task-meta { font-size:10px;color:var(--text3);display:flex;gap:8px;align-items:center; }
+.priority { padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700; }
+.p0 { background:rgba(255,51,102,.2);color:var(--red); }
+.p1 { background:rgba(255,170,0,.2);color:var(--amber); }
+.p2 { background:rgba(0,212,255,.2);color:var(--cyan); }
+.p3 { background:rgba(136,136,153,.2);color:var(--text2); }
+
+/* ── TABLE ── */
+.data-table { width:100%;border-collapse:collapse;font-size:12px; }
+.data-table th { padding:10px 14px;text-align:left;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--border); }
+.data-table td { padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.03);color:var(--text2); }
+.data-table tr:hover td { background:rgba(255,255,255,.02);color:var(--text); }
+.data-table tr:last-child td { border-bottom:none; }
+.td-name { color:var(--text);font-weight:600; }
+
+/* ── BADGES ── */
+.badge { font-size:10px;font-weight:700;padding:3px 9px;border-radius:7px;text-transform:uppercase; }
+.b-active { background:rgba(0,255,136,.15);color:var(--green);border:1px solid rgba(0,255,136,.2); }
+.b-idle { background:rgba(255,170,0,.15);color:var(--amber);border:1px solid rgba(255,170,0,.2); }
+.b-error { background:rgba(255,51,102,.15);color:var(--red);border:1px solid rgba(255,51,102,.2); }
+.b-paused { background:rgba(136,136,153,.15);color:var(--text2);border:1px solid var(--border); }
+.b-ok { background:rgba(0,212,255,.12);color:var(--cyan);border:1px solid rgba(0,212,255,.2); }
+
+/* ── PROGRESS ── */
+.prog-bar { height:4px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;margin-top:6px; }
+.prog-fill { height:100%;border-radius:4px;background:linear-gradient(90deg,var(--green),var(--cyan)); }
+
+/* ── GAUGE ── */
+.gauges { display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px; }
+.gauge-card { text-align:center; }
+.gauge-num { font-size:28px;font-weight:800;letter-spacing:-1px;margin:8px 0 2px; }
+.gauge-lbl { font-size:11px;color:var(--text2); }
+
+/* ── SECURITY ── */
+.score-ring {
+  width:100px;height:100px;border-radius:50%;
+  background:conic-gradient(var(--green) 0% 73%, rgba(255,255,255,.06) 73%);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 16px;
+  position:relative;
+}
+.score-inner { width:72px;height:72px;border-radius:50%;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center; }
+.score-num { font-size:22px;font-weight:800;color:var(--green); }
+.score-lbl { font-size:9px;color:var(--text3);text-transform:uppercase; }
+.audit-item { display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.03);font-size:12px; }
+
+/* ── MODELS ── */
+.model-card {
+  border-radius:14px;padding:18px;border:1px solid var(--border);
+  background:var(--card);transition:all .2s;cursor:pointer;
+}
+.model-card:hover { border-color:var(--purple);box-shadow:var(--glow-p);transform:translateY(-2px); }
+.model-name { font-size:15px;font-weight:700;margin-bottom:4px; }
+.model-provider { font-size:11px;color:var(--text2);margin-bottom:12px; }
+.model-pricing { display:flex;gap:16px;font-size:11px; }
+.price-item span { display:block;font-size:10px;color:var(--text3); }
+.price-val { font-size:13px;font-weight:700;color:var(--cyan); }
+.model-caps { display:flex;gap:5px;flex-wrap:wrap;margin-top:12px; }
+.cap { font-size:9px;padding:2px 7px;border-radius:5px;background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.2);color:var(--purple); }
+
+/* ── MEMORY ── */
+.file-tree { font-family:'SF Mono','Fira Code',monospace;font-size:12px; }
+.file-item { padding:7px 10px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--text2);transition:all .15s; }
+.file-item:hover { background:rgba(255,255,255,.04);color:var(--text); }
+.file-item.active { background:rgba(0,212,255,.08);color:var(--cyan); }
+
+/* ── CRON ── */
+.cron-pill {
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:'SF Mono',monospace;font-size:11px;
+  padding:3px 10px;border-radius:8px;
+  background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2);color:var(--cyan);
+}
+
+/* ── CALENDAR ── */
+.cal-grid { display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:16px; }
+.cal-day { text-align:center;padding:8px 4px;font-size:12px;border-radius:8px;cursor:pointer;transition:all .15s; }
+.cal-day:hover { background:rgba(255,255,255,.05); }
+.cal-day.today { background:rgba(0,255,136,.15);color:var(--green);font-weight:700; }
+.cal-day.has-event::after { content:'•';display:block;font-size:8px;color:var(--cyan);margin-top:2px; }
+.cal-header { text-align:center;font-size:10px;color:var(--text3);text-transform:uppercase;padding:4px; }
+.event-pill { font-size:11px;padding:5px 10px;border-radius:7px;margin-bottom:6px;display:flex;align-items:center;gap:6px; }
+.ev-cron { background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2);color:var(--cyan); }
+.ev-task { background:rgba(255,170,0,.1);border:1px solid rgba(255,170,0,.2);color:var(--amber); }
+.ev-agent { background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.2);color:var(--green); }
+.ev-bill { background:rgba(255,51,102,.1);border:1px solid rgba(255,51,102,.2);color:var(--red); }
+
+/* ── CHAT ── */
+.chat-area { height:300px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px; }
+.msg { max-width:75%;border-radius:14px;padding:10px 14px;font-size:13px;line-height:1.6; }
+.msg-user { align-self:flex-end;background:rgba(0,255,136,.12);border:1px solid rgba(0,255,136,.2); }
+.msg-agent { align-self:flex-start;background:rgba(255,255,255,.04);border:1px solid var(--border); }
+.msg-meta { font-size:10px;color:var(--text3);margin-top:4px; }
+.chat-input { display:flex;gap:10px;padding:12px 16px;border-top:1px solid var(--border); }
+.chat-input input { flex:1;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:13px;outline:none; }
+.chat-input input:focus { border-color:var(--green); }
+.btn { padding:10px 18px;border-radius:10px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .15s; }
+.btn-green { background:var(--green);color:#000; }
+.btn-green:hover { opacity:.85;transform:translateY(-1px); }
+.btn-ghost { background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--border); }
+.btn-ghost:hover { background:rgba(255,255,255,.1); }
+
+/* ── COST CHART ── */
+.cost-bar { display:flex;align-items:center;gap:12px;margin-bottom:10px; }
+.cost-label { width:130px;font-size:12px;color:var(--text2); }
+.cost-track { flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden; }
+.cost-fill { height:100%;border-radius:4px; }
+.cost-val { width:60px;text-align:right;font-size:12px;font-weight:700; }
+
+/* ── SUBSCRIPTIONS ── */
+.sub-card { border-radius:14px;padding:16px;border:1px solid var(--border);background:var(--card);margin-bottom:12px; }
+.sub-head { display:flex;align-items:center;justify-content:space-between;margin-bottom:10px; }
+.sub-name { font-size:14px;font-weight:700; }
+.sub-plan { font-size:11px;color:var(--text2); }
+
+/* ── TOGGLE ── */
+.toggle { width:36px;height:20px;border-radius:10px;position:relative;cursor:pointer;transition:background .2s; }
+.toggle.on { background:var(--green); }
+.toggle.off { background:rgba(255,255,255,.1); }
+.toggle::after { content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:left .2s; }
+.toggle.on::after { left:19px; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width:4px;height:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:rgba(255,255,255,.1);border-radius:2px; }
+
+/* ── GARDEN ── */
+.garden { background:linear-gradient(180deg,#0a1a0a 0%,#0f1a12 100%);border-radius:16px;padding:24px;min-height:280px;position:relative;overflow:hidden;border:1px solid rgba(0,255,136,.1); }
+.garden::before { content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(180deg,transparent,rgba(0,100,20,.3));border-radius:0 0 16px 16px; }
+.garden-agents { display:flex;gap:20px;flex-wrap:wrap;position:relative;z-index:1; }
+.g-agent { text-align:center;cursor:pointer; }
+.g-avatar { width:60px;height:60px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 8px;position:relative;transition:transform .2s; }
+.g-avatar:hover { transform:scale(1.1); }
+.g-avatar.working { animation:float 3s ease-in-out infinite; box-shadow:0 0 20px rgba(0,255,136,.4); }
+.g-avatar.idle { animation:sway 4s ease-in-out infinite; }
+.g-avatar.sleeping { animation:breathe 4s ease-in-out infinite; filter:brightness(.6); }
+.g-avatar.error { animation:shake .5s infinite; box-shadow:0 0 20px rgba(255,51,102,.4); }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+@keyframes sway { 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(3deg)} 75%{transform:rotate(-3deg)} }
+@keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(.95)} }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-3px)} 75%{transform:translateX(3px)} }
+.g-name { font-size:11px;color:var(--text2); }
+.g-badge { font-size:9px;padding:2px 6px;border-radius:5px;margin-top:4px;display:inline-block; }
+.speech-bubble {
+  position:absolute;top:-36px;left:50%;transform:translateX(-50%);
+  white-space:nowrap;font-size:9px;background:rgba(0,0,0,.8);
+  border:1px solid var(--border);border-radius:8px;padding:4px 8px;
+  color:var(--text2);pointer-events:none;opacity:0;transition:opacity .2s;
+}
+.g-agent:hover .speech-bubble { opacity:1; }
+.garden-stars { position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none; }
+.star { position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.4;animation:twinkle var(--d,3s) infinite; }
+@keyframes twinkle { 0%,100%{opacity:.2} 50%{opacity:.8} }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">🦞</div>
+    <div>
+      <div class="brand-text">Mission Control</div>
+      <div class="brand-sub">AI Command Center</div>
+    </div>
+  </div>
+
+  <div class="nav-section">Command</div>
+  <div class="nav-item active" onclick="show('overview',this)"><span class="nav-icon">🏠</span>Overview</div>
+  <div class="nav-item" onclick="show('garden',this)"><span class="nav-icon">🌳</span>Agents Garden</div>
+  <div class="nav-item" onclick="show('agents',this)"><span class="nav-icon">🤖</span>Agents Hub</div>
+  <div class="nav-item" onclick="show('chat',this)"><span class="nav-icon">💬</span>Chat Interface</div>
+
+  <div class="nav-section">Work</div>
+  <div class="nav-item" onclick="show('tasks',this)"><span class="nav-icon">📋</span>Tasks Kanban</div>
+  <div class="nav-item" onclick="show('cron',this)"><span class="nav-icon">⏰</span>Cron Jobs <span class="nav-badge badge-green">12</span></div>
+  <div class="nav-item" onclick="show('calendar',this)"><span class="nav-icon">📅</span>Calendar</div>
+
+  <div class="nav-section">Analytics</div>
+  <div class="nav-item" onclick="show('costs',this)"><span class="nav-icon">💰</span>Costs & Usage</div>
+  <div class="nav-item" onclick="show('models',this)"><span class="nav-icon">🔧</span>Models Config</div>
+  <div class="nav-item" onclick="show('memory',this)"><span class="nav-icon">🧠</span>Memory Browser</div>
+
+  <div class="nav-section">System</div>
+  <div class="nav-item" onclick="show('monitor',this)"><span class="nav-icon">🖥️</span>System Monitor</div>
+  <div class="nav-item" onclick="show('docs',this)"><span class="nav-icon">📁</span>Documents</div>
+  <div class="nav-item" onclick="show('security',this)"><span class="nav-icon">🔒</span>Security <span class="nav-badge badge-red">2</span></div>
+  <div class="nav-item" onclick="show('terminal',this)"><span class="nav-icon">⌨️</span>Terminal</div>
+
+  <div class="sidebar-footer">
+    <div class="status-dot"></div>
+    <div style="font-size:11px;color:var(--text2)">Gateway Online<br><span style="font-size:10px;color:var(--text3)">v2.1.4 · Moti AI</span></div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">🏠 Overview Dashboard</div>
+    <div class="topbar-pill pill-green"><div class="live-dot"></div>Live</div>
+    <div class="topbar-pill pill-cyan">5 Agents Active</div>
+    <div style="font-size:12px;color:var(--text3)" id="clock"></div>
+  </div>
+
+  <!-- ───────── SECTION: OVERVIEW ───────── -->
+  <div class="section active" id="sec-overview">
+    <div class="section-header">
+      <h2>🏠 Overview Dashboard</h2>
+      <p>Real-time system health at a glance</p>
+    </div>
+
+    <div class="grid-4">
+      <div class="card stat-card" style="--accent:var(--green)">
+        <div class="stat-icon">🤖</div>
+        <div class="stat-val" style="color:var(--green)">5</div>
+        <div class="stat-lbl">Active Agents</div>
+        <div class="stat-trend up">↑ 2 new</div>
+      </div>
+      <div class="card stat-card" style="--accent:var(--cyan)">
+        <div class="stat-icon">💬</div>
+        <div class="stat-val" style="color:var(--cyan)">3</div>
+        <div class="stat-lbl">Running Sessions</div>
+        <div class="stat-trend up">↑ live</div>
+      </div>
+      <div class="card stat-card" style="--accent:var(--amber)">
+        <div class="stat-icon">⏰</div>
+        <div class="stat-val" style="color:var(--amber)">12</div>
+        <div class="stat-lbl">Cron Jobs</div>
+        <div class="stat-trend warn">2 pending</div>
+      </div>
+      <div class="card stat-card" style="--accent:var(--purple)">
+        <div class="stat-icon">💰</div>
+        <div class="stat-val" style="color:var(--purple)">$0.65</div>
+        <div class="stat-lbl">Today's Cost</div>
+        <div class="stat-trend up">Budget OK</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Terminal -->
+      <div>
+        <div class="s-title">⚡ System Status</div>
+        <div class="terminal">
+          <div class="term-head">
+            <div class="tdot" style="background:#ff5f57"></div>
+            <div class="tdot" style="background:#ffbd2e"></div>
+            <div class="tdot" style="background:#28c840"></div>
+            <span style="margin-left:8px;font-size:11px;color:var(--text3);font-family:monospace">mission-control — bash</span>
+          </div>
+          <div class="term-body">
+            <div><span class="t-p">moti@control </span><span class="t-c">$ openclaw status --all</span></div>
+            <div class="t-o">🔍 Scanning system...</div>
+            <div class="t-ok">✓ Gateway: online (ws://localhost:18789)</div>
+            <div class="t-ok">✓ Agents: 5 active, 2 idle, 1 sleeping</div>
+            <div class="t-ok">✓ n8n: 12 workflows active</div>
+            <div class="t-ok">✓ Telegram: @Moti_videos_bot online</div>
+            <div class="t-warn">⚠ Anthropic budget: 78% used ($78.30/$100)</div>
+            <div class="t-ok">✓ GitHub Pages: deployed ✅</div>
+            <div class="t-o">─────────────────────</div>
+            <div><span class="t-p">moti@control </span><span class="t-c">$ _</span><span class="cursor"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Feed -->
+      <div>
+        <div class="s-title">📡 Live Activity</div>
+        <div class="card">
+          <div class="feed-item">
+            <div class="feed-dot" style="background:var(--green)"></div>
+            <div><div class="feed-text">VideoBot generated new video successfully</div><div class="feed-time">2 min ago</div></div>
+          </div>
+          <div class="feed-item">
+            <div class="feed-dot" style="background:var(--cyan)"></div>
+            <div><div class="feed-text">Moti replied to MoaTh via Telegram</div><div class="feed-time">5 min ago</div></div>
+          </div>
+          <div class="feed-item">
+            <div class="feed-dot" style="background:var(--amber)"></div>
+            <div><div class="feed-text">Health Coach cron job executed</div><div class="feed-time">30 min ago</div></div>
+          </div>
+          <div class="feed-item">
+            <div class="feed-dot" style="background:var(--purple)"></div>
+            <div><div class="feed-text">Dashboard deployed to GitHub Pages</div><div class="feed-time">2h ago</div></div>
+          </div>
+          <div class="feed-item">
+            <div class="feed-dot" style="background:var(--red)"></div>
+            <div><div class="feed-text">Groq node fixed in VideoBot workflow</div><div class="feed-time">3h ago</div></div>
+          </div>
+          <div class="feed-item">
+            <div class="feed-dot" style="background:var(--green)"></div>
+            <div><div class="feed-text">ffmpeg + Whisper installed successfully</div><div class="feed-time">Today 11:05</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resource Gauges -->
+    <div class="s-title">📊 Resources</div>
+    <div class="gauges">
+      <div class="card gauge-card">
+        <div style="font-size:12px;color:var(--text2)">CPU</div>
+        <div class="gauge-num" style="color:var(--green)">23%</div>
+        <div class="prog-bar"><div class="prog-fill" style="width:23%"></div></div>
+        <div class="gauge-lbl">Normal</div>
+      </div>
+      <div class="card gauge-card">
+        <div style="font-size:12px;color:var(--text2)">Memory</div>
+        <div class="gauge-num" style="color:var(--cyan)">6.2 GB</div>
+        <div class="prog-bar"><div class="prog-fill" style="width:52%;background:linear-gradient(90deg,var(--cyan),var(--purple))"></div></div>
+        <div class="gauge-lbl">of 12 GB</div>
+      </div>
+      <div class="card gauge-card">
+        <div style="font-size:12px;color:var(--text2)">Disk</div>
+        <div class="gauge-num" style="color:var(--amber)">234 GB</div>
+        <div class="prog-bar"><div class="prog-fill" style="width:46%;background:linear-gradient(90deg,var(--amber),var(--red))"></div></div>
+        <div class="gauge-lbl">of 512 GB</div>
+      </div>
+      <div class="card gauge-card">
+        <div style="font-size:12px;color:var(--text2)">Uptime</div>
+        <div class="gauge-num" style="color:var(--purple)">99.9%</div>
+        <div class="prog-bar"><div class="prog-fill" style="width:99.9%;background:linear-gradient(90deg,var(--purple),var(--cyan))"></div></div>
+        <div class="gauge-lbl">14d 6h</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────── SECTION: GARDEN ───────── -->
+  <div class="section" id="sec-garden">
+    <div class="section-header">
+      <h2>🌳 Virtual Agents Garden</h2>
+      <p>Your AI ecosystem as a living world — hover agents to see status</p>
+    </div>
+
+    <div class="garden">
+      <!-- Stars -->
+      <div class="garden-stars" id="stars"></div>
+
+      <div class="garden-agents">
+        <div class="g-agent">
+          <div class="g-avatar working" style="background:rgba(0,255,136,.15)">
+            🧠
+            <div class="speech-bubble">Replying to MoaTh...</div>
+          </div>
+          <div class="g-name">Moti</div>
+          <div class="g-badge" style="background:rgba(0,255,136,.15);color:var(--green)">🟢 Active</div>
+        </div>
+        <div class="g-agent">
+          <div class="g-avatar working" style="background:rgba(0,212,255,.15)">
+            🎬
+            <div class="speech-bubble">Generating video...</div>
+          </div>
+          <div class="g-name">VideoBot</div>
+          <div class="g-badge" style="background:rgba(0,212,255,.15);color:var(--cyan)">⚡ Busy</div>
+        </div>
+        <div class="g-agent">
+          <div class="g-avatar idle" style="background:rgba(16,185,129,.15)">
+            💚
+            <div class="speech-bubble">Ready for tasks</div>
+          </div>
+          <div class="g-name">HealthCoach</div>
+          <div class="g-badge" style="background:rgba(255,170,0,.15);color:var(--amber)">🔵 Idle</div>
+        </div>
+        <div class="g-agent">
+          <div class="g-avatar sleeping" style="background:rgba(168,85,247,.15)">
+            📈
+            <div class="speech-bubble">Zzz...</div>
+          </div>
+          <div class="g-name">TradingBot</div>
+          <div class="g-badge" style="background:rgba(136,136,153,.15);color:var(--text2)">😴 Sleep</div>
+        </div>
+        <div class="g-agent">
+          <div class="g-avatar idle" style="background:rgba(239,68,68,.15)">
+            🎯
+            <div class="speech-bubble">Ready for content</div>
+          </div>
+          <div class="g-name">ContentGen</div>
+          <div class="g-badge" style="background:rgba(255,170,0,.15);color:var(--amber)">🔵 Idle</div>
+        </div>
+        <div class="g-agent">
+          <div class="g-avatar idle" style="background:rgba(124,58,237,.12)">
+            🔊
+            <div class="speech-bubble">Whisper ready</div>
+          </div>
+          <div class="g-name">WhisperBot</div>
+          <div class="g-badge" style="background:rgba(255,170,0,.15);color:var(--amber)">🔵 Idle</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:24px">
+      <div class="grid-2">
+        <div class="card">
+          <div class="s-title">🌳 Garden Overview</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div style="font-size:13px;color:var(--text2)">Total Agents <span style="float:right;color:var(--text);font-weight:700">6</span></div>
+            <div style="font-size:13px;color:var(--green)">🟢 Working <span style="float:right;font-weight:700">2</span></div>
+            <div style="font-size:13px;color:var(--amber)">🔵 Idle <span style="float:right;font-weight:700">3</span></div>
+            <div style="font-size:13px;color:var(--text3)">😴 Sleeping <span style="float:right;font-weight:700">1</span></div>
+          </div>
+          <div style="margin-top:14px;font-size:12px;color:var(--text2)">Garden Health</div>
+          <div class="prog-bar" style="margin-top:6px;height:6px"><div class="prog-fill" style="width:82%"></div></div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">82% — Excellent</div>
+        </div>
+        <div class="card">
+          <div class="s-title">🏆 Achievements</div>
+          <div style="font-size:13px;line-height:2">
+            🏆 Early Bird — First cron today<br>
+            🌟 Workaholic — 156 tasks completed<br>
+            💤 Well Rested — 0 errors overnight<br>
+            🎯 Sharpshooter — 100% success rate
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────── SECTION: AGENTS ───────── -->
+  <div class="section" id="sec-agents">
+    <div class="section-header">
+      <h2>🤖 Agents Hub</h2>
+      <p>Centralized agent management and monitoring</p>
+    </div>
+    <div class="grid-3">
+      <div class="card agent-card">
+        <div class="agent-head">
+          <div class="agent-av" style="background:rgba(0,255,136,.12)">🧠</div>
+          <div><div class="agent-name">Moti</div><div class="agent-role">Main Assistant</div></div>
+          <div class="a-status s-online"></div>
+        </div>
+        <div class="agent-desc">Primary AI agent. Handles planning, memory, code, research. Claude Sonnet 4.</div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:10px">
+          <span>45,230 tokens today</span><span style="color:var(--amber)">$4.52</span>
+        </div>
+        <div class="tags"><span class="tag">Claude Sonnet</span><span class="tag">OpenClaw</span><span class="tag">Telegram</span></div>
+      </div>
+      <div class="card agent-card">
+        <div class="agent-head">
+          <div class="agent-av" style="background:rgba(0,212,255,.12)">🎬</div>
+          <div><div class="agent-name">VideoBot</div><div class="agent-role">Content Creator</div></div>
+          <div class="a-status s-online"></div>
+        </div>
+        <div class="agent-desc">Generates AI videos via Luma Dream Machine. Triggered via @Moti_videos_bot.</div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:10px">
+          <span>12,400 tokens today</span><span style="color:var(--amber)">$0.18</span>
+        </div>
+        <div class="tags"><span class="tag">Luma API</span><span class="tag">n8n</span><span class="tag">Groq</span></div>
+      </div>
+      <div class="card agent-card">
+        <div class="agent-head">
+          <div class="agent-av" style="background:rgba(16,185,129,.12)">💚</div>
+          <div><div class="agent-name">HealthCoach</div><div class="agent-role">Wellness Bot</div></div>
+          <div class="a-status s-idle"></div>
+        </div>
+        <div class="agent-desc">Daily health tracking, meal suggestions, habit monitoring via n8n.</div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:10px">
+          <span>8,200 tokens today</span><span style="color:var(--amber)">$0.12</span>
+        </div>
+        <div class="tags"><span class="tag">n8n</span><span class="tag">Claude API</span><span class="tag">Sheets</span></div>
+      </div>
+      <div class="card agent-card">
+        <div class="agent-head">
+          <div class="agent-av" style="background:rgba(245,158,11,.12)">📈</div>
+          <div><div class="agent-name">TradingBot</div><div class="agent-role">Market Analyst</div></div>
+          <div class="a-status s-offline"></div>
+        </div>
+        <div class="agent-desc">Monitors Tadawul & halal ETFs for Shariah-compliant opportunities.</div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:10px">
+          <span>0 tokens today</span><span style="color:var(--text3)">$0.00</span>
+        </div>
+        <div class="tags"><span class="tag">Python</span><span class="tag">Tadawul</span><span class="tag">Halal</span></div>
+      </div>
+      <div class="card agent-card">
+        <div class="agent-head">
+          <div class="agent-av" style="background:rgba(239,68,68,.12)">🎯</div>
+          <div><div class="agent-name">ContentGen</div><div class="agent-role">Viral Writer</div></div>
+          <div class="a-status s-idle"></div>
+        </div>
+        <div class="agent-desc">Generates viral content for LinkedIn, Twitter, Instagram. Powered by Groq.</div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:10px">
+          <span>5,600 tokens today</span><span style="color:var(--amber)">$0.04</span>
+        </div>
+        <div class="tags"><span class="tag">Groq</span><span class="tag">n8n</span><span class="tag">Social</span></div>
+      </div>
+      <div class="card agent-card">
+        <div class="agent-head">
+          <div class="agent-av" style="background:rgba(124,58,237,.12)">🔊</div>
+          <div><div class="agent-name">WhisperBot</div><div class="agent-role">Voice Transcriber</div></div>
+          <div class="a-status s-idle"></div>
+        </div>
+        <div class="agent-desc">Converts audio to text using OpenAI Whisper. Arabic + English support.</div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:10px">
+          <span>Local processing</span><span style="color:var(--green)">$0.00</span>
+        </div>
+        <div class="tags"><span class="tag">Whisper</span><span class="tag">ffmpeg</span><span class="tag">Python</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────── SECTION: CHAT ───────── -->
+  <div class="section" id="sec-chat">
+    <div class="section-header">
+      <h2>💬 Chat Interface</h2>
+      <p>Direct communication with agents</p>
+    </div>
+    <div class="grid-2">
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center">
+          <span style="font-size:18px">🧠</span>
+          <div>
+            <div style="font-size:13px;font-weight:700">Moti</div>
+            <div style="font-size:10px;color:var(--green)">● Online — Claude Sonnet 4</div>
+          </div>
+          <div style="margin-left:auto;font-size:11px;color:var(--text3)">ctx: 12k / 200k</div>
+        </div>
+        <div class="chat-area">
+          <div class="msg msg-user">ابني لي dashboard للـ Mission Control 🚀<div class="msg-meta">MoaTh · 23:59 · 42 tokens</div></div>
+          <div class="msg msg-agent">يلا نبنيه الحين! جاهز خلال دقائق 🔥<div class="msg-meta">Moti · 00:00 · 18 tokens · 0.4s</div></div>
+          <div class="msg msg-user">ليش ما يشتغل الفيديو بوت؟<div class="msg-meta">MoaTh · 23:52 · 12 tokens</div></div>
+          <div class="msg msg-agent">وجدت المشكلة — Groq node يرسل JSON كـ string. تم الإصلاح ✅<div class="msg-meta">Moti · 00:30 · 67 tokens · 12.3s</div></div>
+        </div>
+        <div class="chat-input">
+          <input type="text" placeholder="Message Moti..." />
+          <button class="btn btn-green">Send ⚡</button>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="s-title">⚙️ Session Config</div>
+          <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Model Override</div>
+          <select style="width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-size:12px">
+            <option>anthropic/claude-sonnet-4-6 (default)</option>
+            <option>openai/gpt-4o-mini</option>
+            <option>openai/gpt-4o</option>
+          </select>
+          <div style="margin-top:12px;font-size:12px;color:var(--text2)">Context Window</div>
+          <div class="prog-bar" style="margin-top:6px;height:6px"><div class="prog-fill" style="width:6%"></div></div>
+          <div style="font-size:10px;color:var(--text3);margin-top:4px">12k / 200k tokens used</div>
+        </div>
+        <div class="card">
+          <div class="s-title">📊 Session Stats</div>
+          <div style="font-size:12px;color:var(--text2);display:grid;gap:8px">
+            <div>Total tokens: <span style="float:right;color:var(--text)">71,230</span></div>
+            <div>Total cost: <span style="float:right;color:var(--amber)">$0.82</span></div>
+            <div>Avg latency: <span style="float:right;color:var(--cyan)">1.2s</span></div>
+            <div>Messages: <span style="float:right;color:var(--text)">4</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────── SECTION: TASKS ───────── -->
+  <div class="section" id="sec-tasks">
+    <div class="section-header">
+      <h2>📋 Tasks Kanban</h2>
+      <p>Visual task management</p>
+    </div>
+    <div class="kanban">
+      <div class="kanban-col">
+        <div class="col-head">📥 Backlog <span class="col-count">3</span></div>
+        <div class="task-card"><div class="task-title">Voice AI Assistant</div><div class="task-meta"><span class="priority p2">P2</span> Whisper + ElevenLabs</div></div>
+        <div class="task-card"><div class="task-title">Halal Trading System</div><div class="task-meta"><span class="priority p1">P1</span> Python + Tadawul</div></div>
+        <div class="task-card"><div class="task-title">Discord Integration</div><div class="task-meta"><span class="priority p3">P3</span> OpenClaw</div></div>
+      </div>
+      <div class="kanban-col">
+        <div class="col-head">🔄 In Progress <span class="col-count">2</span></div>
+        <div class="task-card" style="border-color:var(--cyan)"><div class="task-title">Mission Control Dashboard</div><div class="task-meta"><span class="priority p0">P0</span> HTML/GitHub Pages</div></div>
+        <div class="task-card"><div class="task-title">Fix VideoBot Workflow</div><div class="task-meta"><span class="priority p0">P0</span> n8n + Groq</div></div>
+      </div>
+      <div class="kanban-col">
+        <div class="col-head">🔍 In Review <span class="col-count">1</span></div>
+        <div class="task-card"><div class="task-title">Agent Garden V2</div><div class="task-meta"><span class="priority p1">P1</span> Design polish</div></div>
+      </div>
+      <div class="kanban-col">
+        <div class="col-head">✅ Done <span class="col-count">4</span></div>
+        <div class="task-card" style="opacity:.6"><div class="task-title">Install ffmpeg + Whisper</div><div class="task-meta"><span class="priority p1">P1</span> ✅ Today</div></div>
+        <div class="task-card" style="opacity:.6"><div class="task-title">GitHub Pages Setup</div><div class="task-meta"><span class="priority p1">P1</span> ✅ Today</div></div>
+        <div class="task-card" style="opacity:.6"><div class="task-title">HealthCoach Fix</div><div class="task-meta"><span class="priority p0">P0</span> ✅ Yesterday</div></div>
+        <div class="task-card" style="opacity:.6"><div class="task-title">OpenClaw Setup</div><div class="task-meta"><span class="priority p0">P0</span> ✅ Mar 15</div></div>
+      </div>
+      <div class="kanban-col">
+        <div class="col-head">🗑️ Archived <span class="col-count">0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────── SECTION: CRON ───────── -->
+  <div class="section" id="sec-cron">
+    <div class="section-header">
+      <h2>⏰ Cron Jobs Manager</h2>
+      <p>Scheduled task automation</p>
+    </div>
+    <div class="card" style="margin-bottom:24px">
+      <table class="data-table">
+        <thead>
+          <tr><th>Name</th><th>Schedule</th><th>Agent</th><th>Status</th><th>Last Run</th><th>Next Run</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="td-name">💚 Health Coach Daily</td><td><span class="cron-pill">0 9 * * *</span></td><td>HealthCoach</td><td><span class="badge b-active">Active</span></td><td>Today 09:00</td><td>Tomorrow 09:00</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:11px">▶ Run</button></td></tr>
+          <tr><td class="td-name">🌙 Evening Check-in</td><td><span class="cron-pill">0 21 * * *</span></td><td>HealthCoach</td><td><span class="badge b-active">Active</span></td><td>Today 21:00</td><td>Tomorrow 21:00</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:11px">▶ Run</button></td></tr>
+          <tr><td class="td-name">📰 Daily AI News</td><td><span class="cron-pill">0 8 * * *</span></td><td>ContentGen</td><td><span class="badge b-paused">Paused</span></td><td>Mar 14</td><td>—</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:11px">▶ Enable</button></td></tr>
+          <tr><td class="td-name">📚 English Writing</td><td><span class="cron-pill">0 10 * * *</span></td><td>Moti</td><td><span class="badge b-paused">Paused</span></td><td>Mar 12</td><td>—</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:11px">▶ Enable</button></td></tr>
+          <tr><td class="td-name">📊 Weekly Review</td><td><span class="cron-pill">0 10 * * 1</span></td><td>HealthCoach</td><td><span class="badge b-active">Active</span></td><td>Mar 10</td><td>Mar 24</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:11px">▶ Run</button></td></tr>
+          <tr><td class="td-name">🎬 Video Factory</td><td><span class="cron-pill">0 */6 * * *</span></td><td>VideoBot</td><td><span class="badge b-active">Active</span></td><td>Today 06:00</td><td>Today 12:00</td><td><button class="btn btn-ghost" style="padding:4px 10px;font-size:11px">▶ Run</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ───────── SECTION: CALENDAR ───────── -->
+  <div class="section" id="sec-calendar">
+    <div class="section-header">
+      <h2>📅 OpenClaw Calendar</h2>
+      <p>Unified view of all scheduled activities</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div style="font-size:16px;font-weight:700">March 2026</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost" style="padding:5px 10px;font-size:12px">‹</button>
+            <button class="btn btn-ghost" style="padding:5px 10px;font-size:12px">›</button>
+          </div>
+        </div>
+        <div class="cal-grid">
+          <div class="cal-header">Su</div><div class="cal-header">Mo</div><div class="cal-header">Tu</div><div class="cal-header">We</div><div class="cal-header">Th</div><div class="cal-header">Fr</div><div class="cal-header">Sa</div>
+          <div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day">1</div>
+          <div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div><div class="cal-day">6</div><div class="cal-day">7</div><div class="cal-day">8</div>
+          <div class="cal-day">9</div><div class="cal-day has-event">10</div><div class="cal-day">11</div><div class="cal-day">12</div><div class="cal-day">13</div><div class="cal-day">14</div><div class="cal-day has-event">15</div>
+          <div class="cal-day">16</div><div class="cal-day has-event">17</div><div class="cal-day today">18</div><div class="cal-day">19</div><div class="cal-day has-event">20</div><div class="cal-day">21</div><div class="cal-day">22</div>
+          <div class="cal-day">23</div><div class="cal-day">24</div><div class="cal-day has-event">25</div><div class="cal-day">26</div><div class="cal-day">27</div><div class="cal-day">28</div><div class="cal-day">29</div>
+          <div class="cal-day">30</div><div class="cal-day">31</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="s-title">📋 Today — March 18</div>
+        <div class="event-pill ev-cron">🔄 09:00 — Health Coach Daily</div>
+        <div class="event-pill ev-task">📋 12:00 — Review VideoBot Fix</div>
+        <div class="event-pill ev-cron">🔄 18:00 — Video Factory Run</div>
+        <div class="event-pill ev-agent">🤖 21:00 — Evening Check-in</div>
+        <div class="s-title" style="margin-top:20px">⚠️ Subscription Alerts</div>
+        <div class="event-pill ev-bill">💰 Anthropic renews Mar 25 ($100)</div>
+        <div class="event-pill ev-bill">💰 fal.ai renews Mar 20 ($50)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────── SECTION: COSTS ───────── -->
+  <div class="section" id="sec-costs">
+    <div class="section-header">
+      <h2>💰 Costs & Usage Analytics</h2>
+      <p>Financial tracking and budget management</p>
+    </div>
+
+    <div class="grid-4" style="margin-bottom:24px">
+      <div class="card stat-card" style="--accent:var(--amber)">
+        <div class="stat-icon">💰</div>
+        <div class="stat-val" style="color:var(--amber)">$0.65</div>
+        <div class="stat-lbl">Today</div>
+      </div>
+      <div class="card stat-card" style="--accent:var(--red)">
+        <div class="stat-icon">📆</div>
+        <div class="stat-val" style="color:var(--red)">$78.30</div>
+        <div class="stat-lbl">This Month</div>
+        <div class="stat-trend warn">78% of $100</div>
+      </div>
+      <div class="card stat-card" style="--accent:var(--green)">
+        <div class="stat-icon">💵</div>
+        <div class="stat-val" style="color:var(--green)">$21.70</div>
+        <div class="stat-lbl">Remaining</div>
+      </div>
+      <div class="card stat-card" style="--accent:var(--cyan)">
+        <div class="stat-icon">📈</div>
+        <div class="stat-val" style="color:var(--cyan)">$95</div>
+        <div class="stat-lbl">Projected EOM</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="s-title">📊 Model Breakdown</div>
+        <div class="cost-bar">
+          <div class="cost-label">claude-sonnet-4-6</div>
+          <div class="cost-track"><div class="cost-fill" style="width:60%;background:var(--purple)"></div></div>
+          <div class="cost-val" style="color:var(--purple)">$47.20</div>
+        </div>
+        <div class="cost-bar">
+          <div class="cost-label">gpt-4o-mini</div>
+          <div class="cost-track"><div class="cost-fill" style="width:20%;background:var(--green)"></div></div>
+          <div class="cost-val" style="color:var(--green)">$15.80</div>
+        </div>
+        <div class="cost-bar">
+          <div class="cost-label">llama-3.3-70b (Groq)</div>
+          <div class="cost-track"><div class="cost-fill" style="width:8%;background:var(--cyan)"></div></div>
+          <div class="cost-val" style="color:var(--cyan)">$6.20</div>
+        </div>
+        <div class="cost-bar">
+          <div class="cost-label">Luma Dream Machine</div>
+          <div class="cost-track"><div class="cost-fill" style="width:12%;background:var(--amber)"></div></div>
+          <div class="cost-val" style="color:var(--amber)">$9.10</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="s-title">🔔 Subscriptions</div>
+        <div class="sub-card">
+          <div class="sub-head">
+            <div><div class="sub-name">Anthropic</div><div class="sub-plan">Pro Plan · $100/mo</div></div>
+            <span class="badge b-idle">⚠️ 78%</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:78%;background:linear-gradient(90deg,var(--green),var(--amber))"></div></div>
+          <div style="font-size:10px;color:var(--text3);margin-top:4px">$78.30 used · renews Mar 25</div>
+        </div>
+        <div class="sub-card">
+          <div class="sub-head">
+            <div><div class="sub-name">fal.ai</div><div class="sub-plan">Pro Plan · $50/mo</div></div>
+            <span class="badge b-active">✅ OK</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:25%"></div></div>
+          <div style="font-size:10px;color:var(--text3);margin-top:4px">$12.30 used · renews Mar 20</div>
+        </div>
+        <div class="sub-card">
+          <div class="sub-head">
+            <div><div class="sub-name">Groq</div><div class="sub-plan">Free Tier</div></div>
+            <span class="badge b-ok">Free</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="s-title">💡 Cost Optimization Tips</div>
+      <div style="display:grid;gap:10px;font-size:12px">
+        <div style="padding:10px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.1);border-radius:8px;color:var(--text2)">💡 Use <strong style="color:var(--green)">gpt-4o-mini</strong> for simple chat — saves ~85% vs claude-sonnet</div>
+        <div style="padding:10px;background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.1);border-radius:8px;color:var(--text2)">💡 Batch cron jobs together to reduce context overhead — saves ~30%</div>
+        <div style="padding:10px;background:rgba(255,170,0,.05);border:1px solid rgba(255,170,0,.1);border-radius:8px;color:var(--text2)">⚠️ Anthropic at 78% — consider switching non-critical tasks to Groq (free)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────── SECTION: MODELS ───────── -->
+  <div class="section" id="sec-models">
+    <div class="section-header">
+      <h2>🔧 Models Configuration</h2>
+      <p>Manage AI models, pricing, and fallback chains</p>
+    </div>
+    <div class="grid-3">
+      <div class="model-card">
+        <div class="model-name">claude-sonnet-4-6</div>
+        <div class="model-provider">Anthropic · Default Model</div>
+        <div class="model-pricing">
+          <div class="price-item"><span>Input/1M</span><div class="price-val">$3.00</div></div>
+          <div class="price-item"><span>Output/1M</span><div class="price-val">$15.00</div></div>
+          <div class="price-item"><span>Context</span><div class="price-val">200k</div></div>
+        </div>
+        <div class="model-caps"><span class="cap">Vision</span><span class="cap">Tools</span><span class="cap">Code</span><span class="cap">Reasoning</span></div>
+      </div>
+      <div class="model-card">
+        <div class="model-name">gpt-4o-mini</div>
+        <div class="model-provider">OpenAI · Cheap Tier</div>
+        <div class="model-pricing">
+          <div class="price-item"><span>Input/1M</span><div class="price-val">$0.15</div></div>
+          <div class="price-item"><span>Output/1M</span><div class="price-val">$0.60</div></div>
+          <div class="price-item"><span>Context</span><div class="price-val">128k</div></div>
+        </div>
+        <div class="model-caps"><span class="cap">Vision</span><span class="cap">Tools</span><span class="cap">Fast</span></div>
+      </div>
+      <div class="model-card">
+        <div class="model-name">llama-3.3-70b</div>
+        <div class="model-provider">Groq · Free Tier</div>
+        <div class="model-pricing">
+          <div class="price-item"><span>Input/1M</span><div class="price-val" style="color:var(--green)">Free</div></div>
+          <div class="price-item"><span>Speed</span><div class="price-val">~500ms</div></div>
+          <div class="price-item"><span>Context</span><div class="price-val">128k</div></div>
+        </div>
+        <div class="model-caps"><span class="cap">Fast</span><span class="cap">Free</span><span class="cap">Arabic</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="s-title">🔗 Fallback Chain</div>
+      <div style="display:flex;align-items:center;gap:12px;font-size:13px;flex-wrap:wrap">
+        <div style="padding:8px 14px;border-radius:10px;background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.2);color:var(--purple)">claude-sonnet-4-6</div>
+        <div style="color:var(--text3)">→</div>
+        <div style="padding:8px 14px;border-radius:10px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.15);color:var(--cyan)">gpt-4o</div>
+        <div style="color:var(--text3)">→</div>
+        <div style="padding:8px 14px;border-radius:10px;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.15);color:var(--green)">gpt-4o-mini</div>
+        <div style="color:var(--text3)">→</div>
+        <div style="padding:8px 14px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text2)">llama-3.3-70b (free)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────── SECTION: MEMORY ───────── -->
+  <div class="section" id="sec-memory">
+    <div class="section-header">
+      <h2>🧠 Memory Browser</h2>
+      <p>View and edit agent memory systems</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="s-title">📂 File Tree</div>
+        <div class="file-tree">
+          <div class="file-item active">📄 MEMORY.md <span style="margin-left:auto;font-size:10px;color:var(--text3)">8.2 KB</span></div>
+          <div class="file-item">🪨 SOUL.md <span style="margin-left:auto;font-size:10px;color:var(--text3)">2.1 KB</span></div>
+          <div class="file-item">👤 USER.md <span style="margin-left:auto;font-size:10px;color:var(--text3)">1.8 KB</span></div>
+          <div class="file-item">🤖 IDENTITY.md <span style="margin-left:auto;font-size:10px;color:var(--text3)">0.4 KB</span></div>
+          <div class="file-item">🔧 AGENTS.md <span style="margin-left:auto;font-size:10px;color:var(--text3)">6.1 KB</span></div>
+          <div class="file-item">🛠️ TOOLS.md <span style="margin-left:auto;font-size:10px;color:var(--text3)">1.2 KB</span></div>
+          <div style="font-size:10px;color:var(--text3);padding:8px 10px;margin-top:4px">📁 memory/</div>
+          <div class="file-item" style="padding-left:24px">📝 2026-03-18.md</div>
+          <div class="file-item" style="padding-left:24px">📝 2026-03-17.md</div>
+        </div>
+      </div>
+      <div class="card" style="font-family:'SF Mono','Fira Code',monospace;font-size:12px;color:var(--text2);line-height:1.8">
+        <div class="s-title">📖 MEMORY.md Preview</div>
+        <div style="color:var(--cyan)"># MEMORY.md - Long-Term Memory</div>
+        <br>
+        <div style="color:var(--amber)">## MoaTh — Core Profile</div>
+        <div>- Flight attendant · 27 · Riyadh · UTC+3</div>
+        <div>- Career pivot: freelance AI dev (2yr)</div>
+        <div>- Stack: Python, n8n, Claude, LangChain</div>
+        <br>
+        <div style="color:var(--amber)">## Language Behavior</div>
+        <div>- Default: Arabic</div>
+        <div>- Code/technical: English</div>
+        <br>
+        <div style="color:var(--amber)">## Active Projects</div>
+        <div>- n8n Automation Stack ✅</div>
+        <div>- VideoBot (Luma) — Fixed today ✅</div>
+        <div>- Mission Control Dashboard 🔄</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────── SECTION: MONITOR ───────── -->
+  <div class="section" id="sec-monitor">
+    <div class="section-header">
+      <h2>🖥️ System Monitor</h2>
+      <p>Infrastructure health monitoring</p>
+    </div>
+    <div class="grid-4">
+      <div class="card gauge-card stat-card" style="--accent:var(--green)">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-val" style="color:var(--green)">23%</div>
+        <div class="stat-lbl">CPU</div>
+        <div class="prog-bar"><div class="prog-fill" style="width:23%"></div></div>
+      </div>
+      <div class="card gauge-card stat-card" style="--accent:var(--cyan)">
+        <div class="stat-icon">🧠</div>
+        <div class="stat-val" style="color:var(--cyan)">52%</div>
+        <div class="stat-lbl">Memory · 6.2/12 GB</div>
+        <div class="prog-bar"><div class="prog-fill" style="width:52%"></div></div>
+      </div>
+      <div class="card gauge-card stat-card" style="--accent:var(--amber)">
+        <div class="stat-icon">💾</div>
+        <div class="stat-val" style="color:var(--amber)">46%</div>
+        <div class="stat-lbl">Disk · 234/512 GB</div>
+        <div class="prog-bar"><div class="prog-fill" style="width:46%"></div></div>
+      </div>
+      <div class="card gauge-card stat-card" style="--accent:var(--purple)">
+        <div class="stat-icon">🌐</div>
+        <div class="stat-val" style="color:var(--purple)">↑ 1.2</div>
+        <div class="stat-lbl">Network MB/s</div>
+        <div class="prog-bar"><div class="prog-fill" style="width:15%;background:linear-gradient(90deg,var(--purple),var(--cyan))"></div></div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="s-title">🔌 Gateway Status</div>
+        <div style="font-size:12px;color:var(--text2);display:grid;gap:8px">
+          <div>Status: <span style="color:var(--green);font-weight:700">● Online</span></div>
+          <div>Endpoint: <span style="color:var(--cyan);font-family:monospace">ws://localhost:18789</span></div>
+          <div>Uptime: <span style="color:var(--text)">14d 6h 32m</span></div>
+          <div>Version: <span style="color:var(--text)">OpenClaw v2.1.4</span></div>
+          <div>Model: <span style="color:var(--text)">claude-sonnet-4-6</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="s-title">📡 Connected Channels</div>
+        <div style="font-size:12px;color:var(--text2);display:grid;gap:10px">
+          <div style="display:flex;align-items:center;gap:8px"><span>✉️</span> Telegram <span style="margin-left:auto"><span class="badge b-active">Connected</span></span></div>
+          <div style="display:flex;align-items:center;gap:8px"><span>🎤</span> Whisper STT <span style="margin-left:auto"><span class="badge b-active">Ready</span></span></div>
+          <div style="display:flex;align-items:center;gap:8px"><span>🎬</span> Luma API <span style="margin-left:auto"><span class="badge b-active">Active</span></span></div>
+          <div style="display:flex;align-items:center;gap:8px"><span>⚡</span> n8n (VPS) <span style="margin-left:auto"><span class="badge b-active">Online</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────── SECTION: DOCS ───────── -->
+  <div class="section" id="sec-docs">
+    <div class="section-header">
+      <h2>📁 Documents Explorer</h2>
+      <p>Browse workspace files</p>
+    </div>
+    <div class="card">
+      <table class="data-table">
+        <thead><tr><th>Name</th><th>Type</th><th>Size</th><th>Modified</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td class="td-name">📄 MEMORY.md</td><td>Markdown</td><td>8.2 KB</td><td>Today 00:30</td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px">Edit</button></td></tr>
+          <tr><td class="td-name">🪨 SOUL.md</td><td>Markdown</td><td>2.1 KB</td><td>Mar 15</td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px">Edit</button></td></tr>
+          <tr><td class="td-name">👤 USER.md</td><td>Markdown</td><td>1.8 KB</td><td>Mar 17</td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px">Edit</button></td></tr>
+          <tr><td class="td-name">🔧 AGENTS.md</td><td>Markdown</td><td>6.1 KB</td><td>Mar 15</td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px">Edit</button></td></tr>
+          <tr><td class="td-name">📝 memory/2026-03-18.md</td><td>Markdown</td><td>1.2 KB</td><td>Today 00:31</td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px">Edit</button></td></tr>
+          <tr><td class="td-name">🌿 index.html (Agent Garden)</td><td>HTML</td><td>26 KB</td><td>Today 11:10</td><td><button class="btn btn-ghost" style="padding:3px 8px;font-size:10px">View</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ───────── SECTION: SECURITY ───────── -->
+  <div class="section" id="sec-security">
+    <div class="section-header">
+      <h2>🔒 Security Center</h2>
+      <p>Security audit and controls</p>
+    </div>
+    <div class="grid-2">
+      <div class="card" style="text-align:center">
+        <div class="s-title">Security Score</div>
+        <div class="score-ring">
+          <div class="score-inner">
+            <div class="score-num">73</div>
+            <div class="score-lbl">/ 100</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--amber)">⚠️ Good — 2 issues to fix</div>
+      </div>
+      <div class="card">
+        <div class="s-title">Audit Checklist</div>
+        <div class="audit-item"><span style="color:var(--green)">✅</span> API keys stored securely</div>
+        <div class="audit-item"><span style="color:var(--red)">❌</span> GitHub token exposed in chat — rotate now!</div>
+        <div class="audit-item"><span style="color:var(--amber)">⚠️</span> 2FA not enabled on GitHub</div>
+        <div class="audit-item"><span style="color:var(--green)">✅</span> Gateway runs on localhost only</div>
+        <div class="audit-item"><span style="color:var(--green)">✅</span> Telegram bot token secured</div>
+        <div class="audit-item"><span style="color:var(--amber)">⚠️</span> n8n backup not configured</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────── SECTION: TERMINAL ───────── -->
+  <div class="section" id="sec-terminal">
+    <div class="section-header">
+      <h2>⌨️ Terminal</h2>
+      <p>Direct CLI access</p>
+    </div>
+    <div class="terminal" style="margin-bottom:16px">
+      <div class="term-head">
+        <div class="tdot" style="background:#ff5f57"></div>
+        <div class="tdot" style="background:#ffbd2e"></div>
+        <div class="tdot" style="background:#28c840"></div>
+        <span style="margin-left:8px;font-size:11px;color:var(--text3);font-family:monospace">Terminal — bash — MoaTh@Windows</span>
+      </div>
+      <div class="term-body" id="term-output" style="height:280px;overflow-y:auto">
+        <div><span class="t-p">moti@A5 </span><span class="t-c">$ openclaw status</span></div>
+        <div class="t-ok">✓ Gateway: online</div>
+        <div class="t-ok">✓ Model: claude-sonnet-4-6</div>
+        <div class="t-ok">✓ Channel: telegram</div>
+        <div class="t-ok">✓ Sessions: 3 active</div>
+        <div style="height:8px"></div>
+        <div><span class="t-p">moti@A5 </span><span class="t-cursor" id="term-cursor"></span></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+      <button class="btn btn-ghost" style="font-family:monospace;font-size:11px" onclick="runCmd('openclaw status')">openclaw status</button>
+      <button class="btn btn-ghost" style="font-family:monospace;font-size:11px" onclick="runCmd('openclaw agents list')">agents list</button>
+      <button class="btn btn-ghost" style="font-family:monospace;font-size:11px" onclick="runCmd('openclaw cron list')">cron list</button>
+      <button class="btn btn-ghost" style="font-family:monospace;font-size:11px" onclick="runCmd('openclaw logs -f')">logs -f</button>
+    </div>
+    <div style="display:flex;gap:10px">
+      <input type="text" id="term-input" placeholder="Enter command..." style="flex:1;background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.2);border-radius:10px;padding:10px 14px;color:var(--text);font-family:monospace;font-size:13px;outline:none" onkeydown="if(event.key==='Enter')runCmd(this.value)">
+      <button class="btn btn-green" onclick="runCmd(document.getElementById('term-input').value)">Run ↵</button>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// Navigation
+function show(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  el.classList.add('active');
+  const titles = {
+    overview:'🏠 Overview Dashboard', garden:'🌳 Agents Garden',
+    agents:'🤖 Agents Hub', chat:'💬 Chat Interface',
+    tasks:'📋 Tasks Kanban', cron:'⏰ Cron Jobs Manager',
+    calendar:'📅 Calendar', costs:'💰 Costs & Usage',
+    models:'🔧 Models Config', memory:'🧠 Memory Browser',
+    monitor:'🖥️ System Monitor', docs:'📁 Documents',
+    security:'🔒 Security Center', terminal:'⌨️ Terminal'
+  };
+  document.getElementById('topbar-title').textContent = titles[id] || id;
+}
+
+// Clock
+function tick() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toLocaleDateString('en',{weekday:'short',month:'short',day:'numeric'}) + ' · ' +
+    now.toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+tick(); setInterval(tick, 1000);
+
+// Garden stars
+const starsEl = document.getElementById('stars');
+if (starsEl) {
+  for (let i = 0; i < 40; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s`;
+    starsEl.appendChild(s);
+  }
+}
+
+// Terminal
+const cmds = {
+  'openclaw status': ['✓ Gateway: online (ws://localhost:18789)', '✓ Model: claude-sonnet-4-6', '✓ Telegram: connected', '✓ Sessions: 3 active', '✓ Uptime: 14d 6h'],
+  'openclaw agents list': ['🤖 Moti (main) — online', '🎬 VideoBot — online', '💚 HealthCoach — idle', '📈 TradingBot — sleeping', '🎯 ContentGen — idle', '🔊 WhisperBot — idle'],
+  'openclaw cron list': ['✓ Health Coach Daily (0 9 * * *) — active', '✓ Evening Check-in (0 21 * * *) — active', '✓ Video Factory (0 */6 * * *) — active', '✗ Daily News (paused)', '✗ English Writing (paused)'],
+  'openclaw logs -f': ['[INFO] Telegram message received from MoaTh', '[INFO] Routing to claude-sonnet-4-6', '[INFO] Tool: exec (powershell)', '[INFO] Response sent in 1.2s', '[INFO] Heartbeat: HEARTBEAT_OK'],
+};
+function runCmd(cmd) {
+  if (!cmd.trim()) return;
+  const out = document.getElementById('term-output');
+  const cursor = document.getElementById('term-cursor');
+  if (cursor) cursor.remove();
+  const inp = document.getElementById('term-input');
+  if (inp) inp.value = '';
+  const line = document.createElement('div');
+  line.innerHTML = `<span class="t-p">moti@A5 </span><span class="t-c">$ ${cmd}</span>`;
+  out.appendChild(line);
+  const outputs = cmds[cmd.trim()] || [`Command not found: ${cmd}`, 'Try: openclaw status, openclaw agents list'];
+  outputs.forEach((l, i) => {
+    setTimeout(() => {
+      const d = document.createElement('div');
+      d.className = l.startsWith('✓') || l.startsWith('✅') ? 't-ok' : l.startsWith('✗') || l.includes('Error') ? 't-err' : 't-o';
+      d.textContent = l;
+      out.appendChild(d);
+      if (i === outputs.length - 1) {
+        setTimeout(() => {
+          const next = document.createElement('div');
+          next.innerHTML = '<span class="t-p">moti@A5 </span><span class="cursor" id="term-cursor"></span>';
+          out.appendChild(next);
+          out.scrollTop = out.scrollHeight;
+        }, 100);
+      }
+    }, i * 80);
+  });
+}
+</script>
+</body>
+</html>
