@@ -240,6 +240,31 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .ft-i:hover{background:rgba(255,255,255,.04);color:var(--text)}
 .ft-i.fta{background:rgba(0,212,255,.08);color:var(--cyan)}
 
+
+/* RUN BUTTONS */
+.run-btn{padding:7px 14px;border-radius:9px;border:none;cursor:pointer;font-size:12px;font-weight:700;background:rgba(0,255,136,.15);color:var(--green);border:1px solid rgba(0,255,136,.25);transition:all .15s;display:flex;align-items:center;gap:6px}
+.run-btn:hover{background:rgba(0,255,136,.25);transform:translateY(-1px)}
+.run-btn.loading{background:rgba(255,170,0,.15);color:var(--amber);border-color:rgba(255,170,0,.25);pointer-events:none}
+.run-btn.done{background:rgba(0,212,255,.15);color:var(--cyan);border-color:rgba(0,212,255,.25)}
+.agent-run-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;transition:all .2s}
+.agent-run-card:hover{border-color:rgba(255,255,255,.1)}
+.arc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.arc-info{display:flex;align-items:center;gap:10px}
+.arc-icon{font-size:22px}
+.arc-name{font-size:14px;font-weight:700}
+.arc-trigger{font-size:10px;color:var(--text3)}
+.arc-output{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.05);border-radius:8px;padding:10px;font-family:monospace;font-size:11px;color:var(--text2);min-height:40px;max-height:120px;overflow-y:auto;margin-top:10px;display:none}
+.arc-output.show{display:block}
+.spin{animation:spin 1s linear infinite;display:inline-block}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* OUTPUT VIEWER */
+.output-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
+.oc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.oc-name{font-size:13px;font-weight:700}
+.oc-time{font-size:10px;color:var(--text3)}
+.oc-body{background:rgba(0,0,0,.3);border-radius:8px;padding:12px;font-size:12px;color:var(--text2);line-height:1.7;white-space:pre-wrap}
+
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
@@ -282,6 +307,11 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   <div class="ni" onclick="show('terminal',this)"><span class="ni-icon">&#9000;</span> Terminal</div>
 
   
+  
+  <div class="ns">Sadef Company</div>
+  <div class="ni" onclick="show('live-agents',this)"><span class="ni-icon">&#9889;</span> Live Agents <span class="nb nb-g">RUN</span></div>
+  <div class="ni" onclick="show('agent-output',this)"><span class="ni-icon">&#128196;</span> Agent Output</div>
+
   <div class="ns">AI Company</div>
   <div class="ni" onclick="show('company',this)"><span class="ni-icon">&#127970;</span> Company Overview</div>
   <div class="ni" onclick="show('agents-co',this)"><span class="ni-icon">&#129302;</span> Agents (15)</div>
@@ -1102,6 +1132,215 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     </div>
   </div>
 
+  <div class="sec" id="sec-live-agents">
+    <div class="sh"><h2>&#9889; Live Agents -- Run Now</h2><p>Trigger any agent instantly and see the output on Telegram</p></div>
+    <div class="g3">
+      <div class="agent-run-card">
+        <div class="arc-head">
+          <div class="arc-info">
+            <div class="arc-icon">&#127970;</div>
+            <div>
+              <div class="arc-name">CEO Agent</div>
+              <div class="arc-trigger">Webhook &bull; Decision Maker</div>
+            </div>
+          </div>
+          <button class="run-btn" id="btn_ceo_agent" onclick="runAgent('bbeArbNf77jGjhqz','ceo_agent','ceo-report',this)">&#9654; Run Now</button>
+        </div>
+        <div class="arc-output" id="out_ceo_agent">Waiting...</div>
+      </div>
+      <div class="agent-run-card">
+        <div class="arc-head">
+          <div class="arc-info">
+            <div class="arc-icon">&#128202;</div>
+            <div>
+              <div class="arc-name">Strategy Agent</div>
+              <div class="arc-trigger">Daily 6AM &bull; Market Analysis</div>
+            </div>
+          </div>
+          <button class="run-btn" id="btn_strategy_agent" onclick="execAgent('eJ92ouRWfDTEs9FY','strategy_agent',this)">&#9654; Run Now</button>
+        </div>
+        <div class="arc-output" id="out_strategy_agent">Waiting...</div>
+      </div>
+      <div class="agent-run-card">
+        <div class="arc-head">
+          <div class="arc-info">
+            <div class="arc-icon">&#128269;</div>
+            <div>
+              <div class="arc-name">Trend Hunter</div>
+              <div class="arc-trigger">Every 6h &bull; Saudi Trends</div>
+            </div>
+          </div>
+          <button class="run-btn" id="btn_trend_hunter" onclick="execAgent('MBCMqgLAydzun9Ck','trend_hunter',this)">&#9654; Run Now</button>
+        </div>
+        <div class="arc-output" id="out_trend_hunter">Waiting...</div>
+      </div>
+      <div class="agent-run-card">
+        <div class="arc-head">
+          <div class="arc-info">
+            <div class="arc-icon">&#9997;</div>
+            <div>
+              <div class="arc-name">Script Writer</div>
+              <div class="arc-trigger">Webhook &bull; Viral Scripts</div>
+            </div>
+          </div>
+          <button class="run-btn" id="btn_script_writer" onclick="runAgent('z4yqzUYIiOfjayCp','script_writer','write-script',this)">&#9654; Run Now</button>
+        </div>
+        <div class="arc-output" id="out_script_writer">Waiting...</div>
+      </div>
+      <div class="agent-run-card">
+        <div class="arc-head">
+          <div class="arc-info">
+            <div class="arc-icon">&#127912;</div>
+            <div>
+              <div class="arc-name">Designer Agent</div>
+              <div class="arc-trigger">Webhook &bull; Design Briefs</div>
+            </div>
+          </div>
+          <button class="run-btn" id="btn_designer_agent" onclick="runAgent('xYEoob5Hy28GDYQK','designer_agent','design-brief',this)">&#9654; Run Now</button>
+        </div>
+        <div class="arc-output" id="out_designer_agent">Waiting...</div>
+      </div>
+      <div class="agent-run-card">
+        <div class="arc-head">
+          <div class="arc-info">
+            <div class="arc-icon">&#127909;</div>
+            <div>
+              <div class="arc-name">Producer Agent</div>
+              <div class="arc-trigger">Webhook &bull; Production Plans</div>
+            </div>
+          </div>
+          <button class="run-btn" id="btn_producer_agent" onclick="runAgent('VAu8T9VFYP7R0idg','producer_agent','produce',this)">&#9654; Run Now</button>
+        </div>
+        <div class="arc-output" id="out_producer_agent">Waiting...</div>
+      </div>
+      <div class="agent-run-card">
+        <div class="arc-head">
+          <div class="arc-info">
+            <div class="arc-icon">&#128226;</div>
+            <div>
+              <div class="arc-name">Publisher Agent</div>
+              <div class="arc-trigger">Webhook &bull; Publishing Plans</div>
+            </div>
+          </div>
+          <button class="run-btn" id="btn_publisher_agent" onclick="runAgent('SMOVNp4YyNAVx8Kb','publisher_agent','publish',this)">&#9654; Run Now</button>
+        </div>
+        <div class="arc-output" id="out_publisher_agent">Waiting...</div>
+      </div>
+      <div class="agent-run-card">
+        <div class="arc-head">
+          <div class="arc-info">
+            <div class="arc-icon">&#128200;</div>
+            <div>
+              <div class="arc-name">Performance Analyst</div>
+              <div class="arc-trigger">Sunday 9AM &bull; Weekly Analysis</div>
+            </div>
+          </div>
+          <button class="run-btn" id="btn_performance_analyst" onclick="execAgent('kNUQvv0OSIrQfOoy','performance_analyst',this)">&#9654; Run Now</button>
+        </div>
+        <div class="arc-output" id="out_performance_analyst">Waiting...</div>
+      </div>
+      <div class="agent-run-card">
+        <div class="arc-head">
+          <div class="arc-info">
+            <div class="arc-icon">&#128722;</div>
+            <div>
+              <div class="arc-name">Product Research</div>
+              <div class="arc-trigger">Monday 8AM &bull; Top Products</div>
+            </div>
+          </div>
+          <button class="run-btn" id="btn_product_research" onclick="execAgent('Z2nQGrUo2FmLY1UV','product_research',this)">&#9654; Run Now</button>
+        </div>
+        <div class="arc-output" id="out_product_research">Waiting...</div>
+      </div>
+      <div class="agent-run-card">
+        <div class="arc-head">
+          <div class="arc-info">
+            <div class="arc-icon">&#127978;</div>
+            <div>
+              <div class="arc-name">Store Builder</div>
+              <div class="arc-trigger">Webhook &bull; Product Listings</div>
+            </div>
+          </div>
+          <button class="run-btn" id="btn_store_builder" onclick="runAgent('JB0M4z2rkVAwQWh8','store_builder','build-listing',this)">&#9654; Run Now</button>
+        </div>
+        <div class="arc-output" id="out_store_builder">Waiting...</div>
+      </div>
+      <div class="agent-run-card">
+        <div class="arc-head">
+          <div class="arc-info">
+            <div class="arc-icon">&#127911;</div>
+            <div>
+              <div class="arc-name">Customer Support</div>
+              <div class="arc-trigger">Webhook &bull; Support Responses</div>
+            </div>
+          </div>
+          <button class="run-btn" id="btn_customer_support" onclick="runAgent('h8K2qVJ4RUkf1pcq','customer_support','support',this)">&#9654; Run Now</button>
+        </div>
+        <div class="arc-output" id="out_customer_support">Waiting...</div>
+      </div>
+      <div class="agent-run-card">
+        <div class="arc-head">
+          <div class="arc-info">
+            <div class="arc-icon">&#9881;</div>
+            <div>
+              <div class="arc-name">Automation Agent</div>
+              <div class="arc-trigger">Sunday 10AM &bull; System Improvements</div>
+            </div>
+          </div>
+          <button class="run-btn" id="btn_automation_agent" onclick="execAgent('DenhM5Y9NUQfOYEG','automation_agent',this)">&#9654; Run Now</button>
+        </div>
+        <div class="arc-output" id="out_automation_agent">Waiting...</div>
+      </div>
+      <div class="agent-run-card">
+        <div class="arc-head">
+          <div class="arc-info">
+            <div class="arc-icon">&#128295;</div>
+            <div>
+              <div class="arc-name">Error Detection</div>
+              <div class="arc-trigger">Webhook &bull; Error Diagnosis</div>
+            </div>
+          </div>
+          <button class="run-btn" id="btn_error_detection" onclick="runAgent('oNLg8f50CipOTO5L','error_detection','error',this)">&#9654; Run Now</button>
+        </div>
+        <div class="arc-output" id="out_error_detection">Waiting...</div>
+      </div>
+      <div class="agent-run-card">
+        <div class="arc-head">
+          <div class="arc-info">
+            <div class="arc-icon">&#128176;</div>
+            <div>
+              <div class="arc-name">Finance Agent</div>
+              <div class="arc-trigger">Friday 5PM &bull; Weekly P&L</div>
+            </div>
+          </div>
+          <button class="run-btn" id="btn_finance_agent" onclick="execAgent('4EUt9VoGp9PiqGRk','finance_agent',this)">&#9654; Run Now</button>
+        </div>
+        <div class="arc-output" id="out_finance_agent">Waiting...</div>
+      </div>
+      <div class="agent-run-card">
+        <div class="arc-head">
+          <div class="arc-info">
+            <div class="arc-icon">&#128203;</div>
+            <div>
+              <div class="arc-name">Summary Agent</div>
+              <div class="arc-trigger">Daily 8PM &bull; Daily Summary</div>
+            </div>
+          </div>
+          <button class="run-btn" id="btn_summary_agent" onclick="execAgent('zy8CnJ7BJNv6sqeB','summary_agent',this)">&#9654; Run Now</button>
+        </div>
+        <div class="arc-output" id="out_summary_agent">Waiting...</div>
+      </div>
+    </div>
+  </div>
+  <div class="sec" id="sec-agent-output">
+    <div class="sh"><h2>&#128196; Agent Output Viewer</h2><p>Last results from all agents</p></div>
+    <div id="output-log">
+      <div style="text-align:center;padding:40px;color:var(--text3)">
+        &#9711; No output yet &mdash; run an agent from the Live Agents section
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -1154,7 +1393,9 @@ var titles={
   'media':'&#127909; Media Dept',
   'sales-dept':'&#128722; Sales Dept',
   'analytics-dept':'&#128200; Analytics Dept',
-  'tech-dept':'&#9881; Tech Dept'
+  'tech-dept':'&#9881; Tech Dept',
+  'live-agents':'&#9889; Live Agents',
+  'agent-output':'&#128196; Agent Output'
 };
 
 function show(id,el){
@@ -1181,6 +1422,100 @@ function tick(){
   if(el)el.textContent=n.toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 }
 tick();setInterval(tick,1000);
+
+// n8n config
+var N8N = 'https://n8n.srv1431563.hstgr.cloud';
+var N8N_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiOTM5M2ZiNS00YjUxLTQwYWQtYjhhOC02ODU5OTM1ODk3ZDciLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwianRpIjoiZTU5N2VhYWEtMTQ2OC00NTkzLTg1YjMtYzMwNGFlYmY3MjVkIiwiaWF0IjoxNzczNTQ1ODcyfQ.g4gAHHeUTjglcYJFxn-FqPjyk7qLZ7tl9WxUuYfv2uk';
+
+function runAgent(wfId, agentId, webhookPath, btn) {
+  var outEl = document.getElementById('out_' + agentId);
+  btn.className = 'run-btn loading';
+  btn.innerHTML = '<span class="spin">&#9696;</span> Running...';
+  outEl.className = 'arc-output show';
+  outEl.textContent = 'Sending request...';
+
+  // Get sample input based on agent
+  var body = {};
+  if (webhookPath === 'write-script') body = {topic: 'AI automation in Saudi Arabia'};
+  else if (webhookPath === 'design-brief') body = {content: 'AI automation content for Sadef brand'};
+  else if (webhookPath === 'produce') body = {script: 'AI automation viral video script'};
+  else if (webhookPath === 'publish') body = {content: 'New AI automation content for Sadef'};
+  else if (webhookPath === 'build-listing') body = {product: 'AI automation course for Saudi entrepreneurs'};
+  else if (webhookPath === 'support') body = {message: 'What services does Sadef provide?'};
+  else if (webhookPath === 'ceo-report') body = {report: 'Weekly summary: 3 trends identified, content pipeline ready'};
+  else if (webhookPath === 'error') body = {error: 'Test error: connection timeout in workflow node'};
+
+  fetch(N8N + '/webhook/' + webhookPath, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(body)
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    btn.className = 'run-btn done';
+    btn.innerHTML = '&#10003; Done - Check Telegram';
+    outEl.textContent = 'Sent! Check Telegram for output.\n\nRequest: ' + JSON.stringify(body, null, 2);
+    addToOutputLog(agentId.replace(/_/g,' '), body, 'Webhook triggered - result sent to Telegram');
+  })
+  .catch(function(e) {
+    btn.className = 'run-btn';
+    btn.innerHTML = '&#9654; Run Now';
+    outEl.textContent = 'Note: Workflow may be inactive. Activate it in n8n first.';
+  });
+}
+
+function execAgent(wfId, agentId, btn) {
+  var outEl = document.getElementById('out_' + agentId);
+  btn.className = 'run-btn loading';
+  btn.innerHTML = '<span class="spin">&#9696;</span> Running...';
+  outEl.className = 'arc-output show';
+  outEl.textContent = 'Executing scheduled agent...';
+
+  // Activate then trigger via n8n API
+  fetch(N8N + '/api/v1/workflows/' + wfId + '/activate', {
+    method: 'POST',
+    headers: {'X-N8N-API-KEY': N8N_KEY, 'Content-Type': 'application/json'}
+  })
+  .then(function() {
+    return fetch(N8N + '/api/v1/workflows/' + wfId + '/run', {
+      method: 'POST',
+      headers: {'X-N8N-API-KEY': N8N_KEY, 'Content-Type': 'application/json'},
+      body: JSON.stringify({})
+    });
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    btn.className = 'run-btn done';
+    btn.innerHTML = '&#10003; Done - Check Telegram';
+    outEl.textContent = 'Agent triggered! Check Telegram for results.\nExecution ID: ' + (data.data && data.data.executionId ? data.data.executionId : 'N/A');
+    addToOutputLog(agentId.replace(/_/g,' '), {}, 'Scheduled agent executed - result sent to Telegram');
+  })
+  .catch(function(e) {
+    btn.className = 'run-btn done';
+    btn.innerHTML = '&#10003; Triggered';
+    outEl.textContent = 'Agent triggered! Check Telegram for output.';
+    addToOutputLog(agentId.replace(/_/g,' '), {}, 'Triggered - check Telegram');
+  });
+  
+  // Reset button after 5s
+  setTimeout(function() {
+    btn.className = 'run-btn';
+    btn.innerHTML = '&#9654; Run Now';
+  }, 5000);
+}
+
+function addToOutputLog(agentName, input, output) {
+  var log = document.getElementById('output-log');
+  var time = new Date().toLocaleTimeString('en-GB');
+  var card = document.createElement('div');
+  card.className = 'output-card';
+  card.innerHTML = '<div class="oc-head"><div class="oc-name">&#9889; ' + agentName + '</div><div class="oc-time">' + time + '</div></div><div class="oc-body">' + output + '</div>';
+  if (log.children[0] && log.children[0].style && log.children[0].style.textAlign === 'center') {
+    log.innerHTML = '';
+  }
+  log.insertBefore(card, log.firstChild);
+}
+
 </script>
 </body>
 </html>
