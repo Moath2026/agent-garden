@@ -281,6 +281,15 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   <div class="ni" onclick="show('security',this)"><span class="ni-icon">&#128274;</span> Security <span class="nb nb-r">2</span></div>
   <div class="ni" onclick="show('terminal',this)"><span class="ni-icon">&#9000;</span> Terminal</div>
 
+  
+  <div class="ns">AI Company</div>
+  <div class="ni" onclick="show('company',this)"><span class="ni-icon">&#127970;</span> Company Overview</div>
+  <div class="ni" onclick="show('agents-co',this)"><span class="ni-icon">&#129302;</span> Agents (15)</div>
+  <div class="ni" onclick="show('media',this)"><span class="ni-icon">&#127909;</span> Media Dept</div>
+  <div class="ni" onclick="show('sales-dept',this)"><span class="ni-icon">&#128722;</span> Sales Dept</div>
+  <div class="ni" onclick="show('analytics-dept',this)"><span class="ni-icon">&#128200;</span> Analytics Dept</div>
+  <div class="ni" onclick="show('tech-dept',this)"><span class="ni-icon">&#9881;</span> Tech Dept</div>
+
   <div class="sf">
     <div class="dot"></div>
     <div style="font-size:11px;color:var(--text2)">Gateway Online<br><span style="font-size:10px;color:var(--text3)">v2.1.4 - Moti AI</span></div>
@@ -790,6 +799,309 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     </div>
   </div>
 
+
+  <!-- COMPANY OVERVIEW -->
+  <div class="sec" id="sec-company">
+    <div class="sh"><h2>&#127970; AI Company Overview</h2><p>Autonomous AI-powered digital company</p></div>
+
+    <div class="g4">
+      <div class="card sc" style="--ac:var(--green)">
+        <div class="sc-icon">&#129302;</div>
+        <div class="sc-val" style="color:var(--green)">15</div>
+        <div class="sc-lbl">Active Agents</div>
+        <div class="sc-tr up">All Depts</div>
+      </div>
+      <div class="card sc" style="--ac:var(--cyan)">
+        <div class="sc-icon">&#9889;</div>
+        <div class="sc-val" style="color:var(--cyan)">4</div>
+        <div class="sc-lbl">Departments</div>
+        <div class="sc-tr up">Media/Sales/Analytics/Tech</div>
+      </div>
+      <div class="card sc" style="--ac:var(--amber)">
+        <div class="sc-icon">&#128200;</div>
+        <div class="sc-val" style="color:var(--amber)">15</div>
+        <div class="sc-lbl">n8n Workflows</div>
+        <div class="sc-tr up">Inactive - Ready</div>
+      </div>
+      <div class="card sc" style="--ac:var(--purple)">
+        <div class="sc-icon">&#127775;</div>
+        <div class="sc-val" style="color:var(--purple)">Auto</div>
+        <div class="sc-lbl">Mode</div>
+        <div class="sc-tr up">Autonomous</div>
+      </div>
+    </div>
+
+    <!-- Company Hierarchy -->
+    <div class="st">&#127959; Company Structure</div>
+    <div class="card" style="margin-bottom:20px">
+      <div style="text-align:center;padding:20px 0">
+        <!-- CEO -->
+        <div style="display:inline-block;background:rgba(168,85,247,.15);border:2px solid rgba(168,85,247,.4);border-radius:14px;padding:14px 28px;margin-bottom:8px">
+          <div style="font-size:18px;font-weight:900;color:var(--purple)">&#127970; CEO Agent</div>
+          <div style="font-size:11px;color:var(--t2)">Decision Maker &bull; Strategic Leader</div>
+        </div>
+        <div style="font-size:20px;color:var(--t3);margin:4px 0">&#124;</div>
+        <!-- Strategy -->
+        <div style="display:inline-block;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25);border-radius:12px;padding:10px 22px;margin-bottom:12px">
+          <div style="font-size:14px;font-weight:700;color:var(--cyan)">&#128202; Strategy Agent</div>
+          <div style="font-size:10px;color:var(--t2)">Advisor &bull; Opportunity Finder</div>
+        </div>
+        <div style="font-size:20px;color:var(--t3);margin:4px 0">&#124;</div>
+        <!-- 4 Departments -->
+        <div style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:4px">
+          <div style="background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.2);border-radius:12px;padding:12px 16px;min-width:120px">
+            <div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:8px">&#127909; Media</div>
+            <div style="font-size:10px;color:var(--t2);line-height:1.8">Trend Hunter<br>Script Writer<br>Designer<br>Producer<br>Publisher</div>
+          </div>
+          <div style="background:rgba(255,170,0,.08);border:1px solid rgba(255,170,0,.2);border-radius:12px;padding:12px 16px;min-width:120px">
+            <div style="font-size:13px;font-weight:700;color:var(--amber);margin-bottom:8px">&#128722; Sales</div>
+            <div style="font-size:10px;color:var(--t2);line-height:1.8">Product Research<br>Store Builder<br>Customer Support</div>
+          </div>
+          <div style="background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);border-radius:12px;padding:12px 16px;min-width:120px">
+            <div style="font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:8px">&#128200; Analytics</div>
+            <div style="font-size:10px;color:var(--t2);line-height:1.8">Performance Analyst<br>Finance Agent<br>Summary Agent</div>
+          </div>
+          <div style="background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);border-radius:12px;padding:12px 16px;min-width:120px">
+            <div style="font-size:13px;font-weight:700;color:var(--purple);margin-bottom:8px">&#9881; Tech</div>
+            <div style="font-size:10px;color:var(--t2);line-height:1.8">Automation Agent<br>Error Detection</div>
+          </div>
+        </div>
+        <div style="font-size:20px;color:var(--t3);margin:12px 0">&#124;</div>
+        <!-- Summary -->
+        <div style="display:inline-block;background:rgba(255,170,0,.1);border:1px solid rgba(255,170,0,.25);border-radius:12px;padding:10px 22px">
+          <div style="font-size:13px;font-weight:700;color:var(--amber)">&#128203; Summary Agent</div>
+          <div style="font-size:10px;color:var(--t2)">Reports to CEO daily</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workflow status -->
+    <div class="st">&#9889; Workflow Status</div>
+    <div class="card">
+      <table class="dt">
+        <thead><tr><th>#</th><th>Agent</th><th>Trigger</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td class="dtn">&#127970; CEO Agent</td><td>Webhook</td><td><span class="badge b-pa">Inactive</span></td></tr>
+          <tr><td>2</td><td class="dtn">&#128202; Strategy Agent</td><td>Daily 6 AM</td><td><span class="badge b-pa">Inactive</span></td></tr>
+          <tr><td>3</td><td class="dtn">&#128269; Trend Hunter</td><td>Every 6h</td><td><span class="badge b-pa">Inactive</span></td></tr>
+          <tr><td>4</td><td class="dtn">&#9997; Script Writer</td><td>Webhook</td><td><span class="badge b-pa">Inactive</span></td></tr>
+          <tr><td>5</td><td class="dtn">&#127912; Designer</td><td>Webhook</td><td><span class="badge b-pa">Inactive</span></td></tr>
+          <tr><td>6</td><td class="dtn">&#127909; Producer</td><td>Webhook</td><td><span class="badge b-pa">Inactive</span></td></tr>
+          <tr><td>7</td><td class="dtn">&#128226; Publisher</td><td>Webhook</td><td><span class="badge b-pa">Inactive</span></td></tr>
+          <tr><td>8</td><td class="dtn">&#128200; Performance Analyst</td><td>Sunday 9 AM</td><td><span class="badge b-pa">Inactive</span></td></tr>
+          <tr><td>9</td><td class="dtn">&#128722; Product Research</td><td>Monday 8 AM</td><td><span class="badge b-pa">Inactive</span></td></tr>
+          <tr><td>10</td><td class="dtn">&#127978; Store Builder</td><td>Webhook</td><td><span class="badge b-pa">Inactive</span></td></tr>
+          <tr><td>11</td><td class="dtn">&#127911; Customer Support</td><td>Webhook</td><td><span class="badge b-pa">Inactive</span></td></tr>
+          <tr><td>12</td><td class="dtn">&#9881; Automation Agent</td><td>Sunday 10 AM</td><td><span class="badge b-pa">Inactive</span></td></tr>
+          <tr><td>13</td><td class="dtn">&#128295; Error Detection</td><td>Webhook</td><td><span class="badge b-pa">Inactive</span></td></tr>
+          <tr><td>14</td><td class="dtn">&#128176; Finance Agent</td><td>Friday 5 PM</td><td><span class="badge b-pa">Inactive</span></td></tr>
+          <tr><td>15</td><td class="dtn">&#128203; Summary Agent</td><td>Daily 8 PM</td><td><span class="badge b-pa">Inactive</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- AGENTS (15) -->
+  <div class="sec" id="sec-agents-co">
+    <div class="sh"><h2>&#129302; Company Agents</h2><p>15 specialized AI agents</p></div>
+    <div class="g3">
+      <div class="card ac" style="border-color:rgba(168,85,247,.3)">
+        <div class="ah"><div class="av" style="background:rgba(168,85,247,.15)">&#127970;</div><div><div class="an">CEO Agent</div><div class="ar">Decision Maker</div></div><div class="as s-id"></div></div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:8px">Evaluates reports, makes strategic decisions, delegates tasks.</div>
+        <div class="tags"><span class="tag">Leadership</span><span class="tag">Webhook</span></div>
+      </div>
+      <div class="card ac">
+        <div class="ah"><div class="av" style="background:rgba(0,212,255,.15)">&#128202;</div><div><div class="an">Strategy Agent</div><div class="ar">Market Advisor</div></div><div class="as s-id"></div></div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:8px">Daily market analysis, opportunity identification, 3 action recommendations.</div>
+        <div class="tags"><span class="tag">Daily 6AM</span><span class="tag">Groq</span></div>
+      </div>
+      <div class="card ac">
+        <div class="ah"><div class="av" style="background:rgba(0,255,136,.15)">&#128269;</div><div><div class="an">Trend Hunter</div><div class="ar">Media Dept</div></div><div class="as s-id"></div></div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:8px">Scans Saudi trends every 6h, top 5 with monetization ideas.</div>
+        <div class="tags"><span class="tag">Every 6h</span><span class="tag">Google Trends</span></div>
+      </div>
+      <div class="card ac">
+        <div class="ah"><div class="av" style="background:rgba(0,255,136,.1)">&#9997;</div><div><div class="an">Script Writer</div><div class="ar">Media Dept</div></div><div class="as s-id"></div></div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:8px">Converts trends to viral Arabic scripts. Hook in 3 seconds.</div>
+        <div class="tags"><span class="tag">Webhook</span><span class="tag">Groq</span></div>
+      </div>
+      <div class="card ac">
+        <div class="ah"><div class="av" style="background:rgba(255,51,102,.1)">&#127912;</div><div><div class="an">Designer Agent</div><div class="ar">Media Dept</div></div><div class="as s-id"></div></div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:8px">Thumbnail concepts, design briefs, high CTR visuals.</div>
+        <div class="tags"><span class="tag">Webhook</span><span class="tag">Groq</span></div>
+      </div>
+      <div class="card ac">
+        <div class="ah"><div class="av" style="background:rgba(0,212,255,.1)">&#127909;</div><div><div class="an">Producer Agent</div><div class="ar">Media Dept</div></div><div class="as s-id"></div></div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:8px">Production plans using Luma/Runway. Speed + quality optimized.</div>
+        <div class="tags"><span class="tag">Webhook</span><span class="tag">Luma</span></div>
+      </div>
+      <div class="card ac">
+        <div class="ah"><div class="av" style="background:rgba(168,85,247,.1)">&#128226;</div><div><div class="an">Publisher Agent</div><div class="ar">Media Dept</div></div><div class="as s-id"></div></div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:8px">Captions, hashtags, best posting times for TikTok/IG/YouTube/X.</div>
+        <div class="tags"><span class="tag">Webhook</span><span class="tag">Multi-platform</span></div>
+      </div>
+      <div class="card ac">
+        <div class="ah"><div class="av" style="background:rgba(0,255,136,.1)">&#128200;</div><div><div class="an">Performance Analyst</div><div class="ar">Analytics Dept</div></div><div class="as s-id"></div></div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:8px">Weekly analysis: what worked, what failed, recommendations.</div>
+        <div class="tags"><span class="tag">Sunday 9AM</span><span class="tag">Groq</span></div>
+      </div>
+      <div class="card ac">
+        <div class="ah"><div class="av" style="background:rgba(255,170,0,.15)">&#128722;</div><div><div class="an">Product Research</div><div class="ar">Sales Dept</div></div><div class="as s-id"></div></div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:8px">Finds top 3 trending products on Amazon SA with profit estimates.</div>
+        <div class="tags"><span class="tag">Monday 8AM</span><span class="tag">Amazon SA</span></div>
+      </div>
+      <div class="card ac">
+        <div class="ah"><div class="av" style="background:rgba(255,170,0,.1)">&#127978;</div><div><div class="an">Store Builder</div><div class="ar">Sales Dept</div></div><div class="as s-id"></div></div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:8px">Optimized Arabic product listings: title, description, selling points.</div>
+        <div class="tags"><span class="tag">Webhook</span><span class="tag">Groq</span></div>
+      </div>
+      <div class="card ac">
+        <div class="ah"><div class="av" style="background:rgba(0,255,136,.1)">&#127911;</div><div><div class="an">Customer Support</div><div class="ar">Sales Dept</div></div><div class="as s-id"></div></div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:8px">Fast, helpful Arabic responses to customer inquiries.</div>
+        <div class="tags"><span class="tag">Webhook</span><span class="tag">24/7</span></div>
+      </div>
+      <div class="card ac">
+        <div class="ah"><div class="av" style="background:rgba(168,85,247,.1)">&#9881;</div><div><div class="an">Automation Agent</div><div class="ar">Tech Dept</div></div><div class="as s-id"></div></div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:8px">Weekly review of system, 5 automation improvement suggestions.</div>
+        <div class="tags"><span class="tag">Sunday 10AM</span><span class="tag">Self-improve</span></div>
+      </div>
+      <div class="card ac">
+        <div class="ah"><div class="av" style="background:rgba(255,51,102,.1)">&#128295;</div><div><div class="an">Error Detection</div><div class="ar">Tech Dept</div></div><div class="as s-id"></div></div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:8px">Diagnoses failures, suggests fixes, keeps system running.</div>
+        <div class="tags"><span class="tag">Webhook</span><span class="tag">Auto-fix</span></div>
+      </div>
+      <div class="card ac">
+        <div class="ah"><div class="av" style="background:rgba(0,255,136,.15)">&#128176;</div><div><div class="an">Finance Agent</div><div class="ar">Analytics Dept</div></div><div class="as s-id"></div></div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:8px">Weekly P&amp;L report: revenue, costs, profit, optimization tips.</div>
+        <div class="tags"><span class="tag">Friday 5PM</span><span class="tag">Finance</span></div>
+      </div>
+      <div class="card ac">
+        <div class="ah"><div class="av" style="background:rgba(255,170,0,.15)">&#128203;</div><div><div class="an">Summary Agent</div><div class="ar">Reports to CEO</div></div><div class="as s-id"></div></div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:8px">Daily 8PM: company summary &#8594; CEO. Today/Trend/Revenue/Problem/Next.</div>
+        <div class="tags"><span class="tag">Daily 8PM</span><span class="tag">CEO Report</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEDIA DEPT -->
+  <div class="sec" id="sec-media">
+    <div class="sh"><h2>&#127909; Media Department</h2><p>Content creation pipeline</p></div>
+    <div class="card" style="margin-bottom:20px">
+      <div class="st">Content Pipeline Flow</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px">
+        <div style="padding:8px 14px;background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.2);border-radius:10px;color:var(--green)">&#128269; Trend Hunter</div>
+        <div style="color:var(--t3)">&#8594;</div>
+        <div style="padding:8px 14px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2);border-radius:10px;color:var(--cyan)">&#9997; Script Writer</div>
+        <div style="color:var(--t3)">&#8594;</div>
+        <div style="padding:8px 14px;background:rgba(255,51,102,.1);border:1px solid rgba(255,51,102,.2);border-radius:10px;color:var(--red)">&#127912; Designer</div>
+        <div style="color:var(--t3)">&#8594;</div>
+        <div style="padding:8px 14px;background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.2);border-radius:10px;color:var(--purple)">&#127909; Producer</div>
+        <div style="color:var(--t3)">&#8594;</div>
+        <div style="padding:8px 14px;background:rgba(255,170,0,.1);border:1px solid rgba(255,170,0,.2);border-radius:10px;color:var(--amber)">&#128226; Publisher</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="st">Trigger URLs (Webhooks)</div>
+        <div style="font-family:monospace;font-size:11px;color:var(--t2);display:grid;gap:8px">
+          <div>Script: <span style="color:var(--cyan)">/webhook/write-script</span></div>
+          <div>Design: <span style="color:var(--cyan)">/webhook/design-brief</span></div>
+          <div>Produce: <span style="color:var(--cyan)">/webhook/produce</span></div>
+          <div>Publish: <span style="color:var(--cyan)">/webhook/publish</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="st">Platforms Covered</div>
+        <div style="font-size:12px;color:var(--t2);display:grid;gap:8px">
+          <div>&#128248; TikTok &#10003;</div>
+          <div>&#128247; Instagram &#10003;</div>
+          <div>&#9654; YouTube &#10003;</div>
+          <div>&#128140; X (Twitter) &#10003;</div>
+          <div>&#128188; LinkedIn &#10003;</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SALES DEPT -->
+  <div class="sec" id="sec-sales-dept">
+    <div class="sh"><h2>&#128722; Sales Department</h2><p>E-commerce and product sales</p></div>
+    <div class="g3">
+      <div class="card">
+        <div style="font-size:24px;margin-bottom:10px">&#128722;</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:6px">Product Research</div>
+        <div style="font-size:12px;color:var(--t2)">Scans Amazon SA every Monday. Returns top 3 products with demand level and profit estimate.</div>
+        <div class="tags" style="margin-top:10px"><span class="tag">Amazon SA</span><span class="tag">Noon</span><span class="tag">Dropshipping</span></div>
+      </div>
+      <div class="card">
+        <div style="font-size:24px;margin-bottom:10px">&#127978;</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:6px">Store Builder</div>
+        <div style="font-size:12px;color:var(--t2)">Send product name via webhook. Get optimized Arabic listing: title, description, 5 key selling points.</div>
+        <div class="tags" style="margin-top:10px"><span class="tag">/webhook/build-listing</span></div>
+      </div>
+      <div class="card">
+        <div style="font-size:24px;margin-bottom:10px">&#127911;</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:6px">Customer Support</div>
+        <div style="font-size:12px;color:var(--t2)">24/7 Arabic support. Send customer message via webhook, get instant helpful response.</div>
+        <div class="tags" style="margin-top:10px"><span class="tag">/webhook/support</span><span class="tag">24/7</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANALYTICS DEPT -->
+  <div class="sec" id="sec-analytics-dept">
+    <div class="sh"><h2>&#128200; Analytics Department</h2><p>Performance, finance, and reporting</p></div>
+    <div class="g3">
+      <div class="card">
+        <div style="font-size:24px;margin-bottom:10px">&#128200;</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:6px">Performance Analyst</div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:10px">Every Sunday 9AM: what worked, what failed, recommendations for next week.</div>
+        <div class="tags"><span class="tag">Sunday 9AM</span><span class="tag">Auto-report</span></div>
+      </div>
+      <div class="card">
+        <div style="font-size:24px;margin-bottom:10px">&#128176;</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:6px">Finance Agent</div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:10px">Every Friday 5PM: revenue, costs, profit report with optimization suggestions.</div>
+        <div class="tags"><span class="tag">Friday 5PM</span><span class="tag">P&amp;L</span></div>
+      </div>
+      <div class="card">
+        <div style="font-size:24px;margin-bottom:10px">&#128203;</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:6px">Summary Agent</div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:10px">Daily 8PM: company summary sent to MoaTh. Today / Trend / Revenue / Problem / Next.</div>
+        <div class="tags"><span class="tag">Daily 8PM</span><span class="tag">CEO Report</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TECH DEPT -->
+  <div class="sec" id="sec-tech-dept">
+    <div class="sh"><h2>&#9881; Tech Department</h2><p>Automation and system reliability</p></div>
+    <div class="g2">
+      <div class="card">
+        <div style="font-size:24px;margin-bottom:10px">&#9881;</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:8px">Automation Agent</div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:12px">Every Sunday 10AM: analyzes all workflows, suggests 5 improvements to reduce manual work and increase efficiency.</div>
+        <div class="tags"><span class="tag">Sunday 10AM</span><span class="tag">Self-improve</span><span class="tag">n8n</span></div>
+      </div>
+      <div class="card">
+        <div style="font-size:24px;margin-bottom:10px">&#128295;</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:8px">Error Detection Agent</div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:12px">Webhook-triggered: receives error details, diagnoses root cause, suggests fix, retries automatically. Escalates only critical issues.</div>
+        <div class="tags"><span class="tag">/webhook/error</span><span class="tag">Auto-fix</span><span class="tag">Never stop</span></div>
+        <div style="margin-top:14px">
+          <div style="font-size:11px;color:var(--t2);margin-bottom:8px">Error Recovery Flow:</div>
+          <div style="font-family:monospace;font-size:11px;color:var(--t3);line-height:1.9">
+            1. Detect error<br>
+            2. Find root cause<br>
+            3. Apply fix<br>
+            4. Retry process<br>
+            5. Escalate if needed
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -836,7 +1148,13 @@ var titles={
   calendar:'&#128197; Calendar',costs:'&#128176; Costs',
   models:'&#128295; Models',memory:'&#129504; Memory',
   monitor:'&#128421; Monitor',docs:'&#128193; Documents',
-  security:'&#128274; Security',terminal:'&#9000; Terminal'
+  security:'&#128274; Security',terminal:'&#9000; Terminal',
+  'company':'&#127970; Company Overview',
+  'agents-co':'&#129302; Company Agents',
+  'media':'&#127909; Media Dept',
+  'sales-dept':'&#128722; Sales Dept',
+  'analytics-dept':'&#128200; Analytics Dept',
+  'tech-dept':'&#9881; Tech Dept'
 };
 
 function show(id,el){
