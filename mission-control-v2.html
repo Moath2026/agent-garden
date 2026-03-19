@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mission Control v2</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',sans-serif;background:#0a0a0f;color:#e0e0e0;display:flex;height:100vh;overflow:hidden;}
+/* Sidebar */
+#sidebar{width:220px;background:#0d0d1a;border-right:1px solid #1e1e3a;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;z-index:100;}
+#sidebar-header{padding:20px 16px;border-bottom:1px solid #1e1e3a;}
+#sidebar-header h1{font-size:14px;color:#7c7cff;letter-spacing:2px;text-transform:uppercase;}
+#sidebar-header p{font-size:11px;color:#555;margin-top:2px;}
+nav{flex:1;padding:8px 0;}
+nav a{display:flex;align-items:center;gap:10px;padding:10px 16px;color:#aaa;text-decoration:none;font-size:13px;cursor:pointer;border-left:3px solid transparent;transition:all 0.2s;}
+nav a:hover{background:#111130;color:#fff;border-left-color:#7c7cff;}
+nav a.active{background:#111130;color:#fff;border-left-color:#7c7cff;}
+nav a .nav-icon{font-size:16px;width:20px;text-align:center;}
+/* Main */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+#topbar{background:#0d0d1a;border-bottom:1px solid #1e1e3a;padding:12px 20px;display:flex;align-items:center;gap:12px;}
+#hamburger{display:none;background:none;border:none;color:#fff;font-size:22px;cursor:pointer;}
+#topbar h2{font-size:15px;color:#fff;flex:1;}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:6px;box-shadow:0 0 6px #22c55e;}
+.topbar-info{font-size:12px;color:#666;}
+#content{flex:1;overflow-y:auto;padding:20px;}
+/* Sections */
+.section{display:none;}
+.section.active{display:block;}
+/* Cards */
+.card{background:#111120;border:1px solid #1e1e3a;border-radius:8px;padding:16px;}
+.card h3{font-size:13px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+/* Stat grid */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.stat-card{background:#111120;border:1px solid #1e1e3a;border-radius:8px;padding:16px;border-left:4px solid #22c55e;}
+.stat-card.cyan{border-left-color:#06b6d4;}
+.stat-card.amber{border-left-color:#f59e0b;}
+.stat-card.purple{border-left-color:#a855f7;}
+.stat-card .stat-val{font-size:28px;font-weight:700;color:#fff;margin-bottom:4px;}
+.stat-card .stat-label{font-size:12px;color:#666;}
+/* Gauge bars */
+.gauge-section{margin-bottom:20px;}
+.gauge-row{margin-bottom:12px;}
+.gauge-label{display:flex;justify-content:space-between;font-size:12px;color:#888;margin-bottom:4px;}
+.gauge-track{background:#1e1e3a;border-radius:4px;height:8px;overflow:hidden;}
+.gauge-fill{height:100%;border-radius:4px;background:#22c55e;transition:width 0.3s;}
+.gauge-fill.mem{background:#06b6d4;}
+.gauge-fill.disk{background:#f59e0b;}
+/* Grid layouts */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+/* Activity feed */
+.feed-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #1a1a2e;font-size:12px;}
+.feed-time{background:#1e1e3a;color:#888;padding:2px 6px;border-radius:4px;white-space:nowrap;flex-shrink:0;}
+.feed-text{color:#ccc;}
+/* Quick action buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.2s;}
+.btn-primary{background:#7c7cff;color:#fff;}
+.btn-primary:hover{background:#6a6ae8;}
+.btn-success{background:#166534;color:#22c55e;border:1px solid #22c55e;}
+.btn-danger{background:#7f1d1d;color:#ef4444;border:1px solid #ef4444;}
+.btn-sm{padding:5px 10px;font-size:11px;}
+.btn-ghost{background:transparent;color:#aaa;border:1px solid #333;}
+.btn-ghost:hover{background:#1e1e3a;color:#fff;}
+.btn-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+/* Calendar */
+.cal-grid{display:grid;grid-template-columns:1fr 300px;gap:16px;}
+.cal-table{width:100%;border-collapse:collapse;}
+.cal-table th{text-align:center;padding:8px;font-size:11px;color:#666;text-transform:uppercase;}
+.cal-table td{text-align:center;padding:8px 4px;font-size:13px;cursor:pointer;border-radius:4px;position:relative;}
+.cal-table td:hover{background:#1e1e3a;}
+.cal-table td.today{background:#7c7cff22;color:#7c7cff;font-weight:700;}
+.cal-table td.muted{color:#333;}
+.event-dot{width:5px;height:5px;border-radius:50%;display:inline-block;margin:0 1px;}
+.event-dot.green{background:#22c55e;}
+.event-dot.blue{background:#3b82f6;}
+.event-dot.amber{background:#f59e0b;}
+.event-dots{display:flex;justify-content:center;margin-top:2px;}
+.event-item{padding:10px;border-left:3px solid #7c7cff;background:#111130;border-radius:4px;margin-bottom:8px;font-size:12px;}
+.event-item .ev-time{color:#7c7cff;font-size:11px;margin-bottom:2px;}
+.alert-bar{background:#1a1a00;border:1px solid #f59e0b33;border-radius:6px;padding:10px 14px;font-size:12px;color:#f59e0b;margin-top:8px;}
+/* Garden */
+#sec-garden .garden-area{background:linear-gradient(135deg,#1a3a1a,#0f2a0f);border-radius:12px;position:relative;height:420px;overflow:hidden;border:1px solid #2a4a2a;}
+.agent-bubble{position:absolute;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.bubble-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;border:3px solid #22c55e;background:#0a1a0a;cursor:pointer;}
+.bubble-avatar.working{border-color:#22c55e;animation:pulse 2s infinite;}
+.bubble-avatar.thinking{border-color:#06b6d4;animation:float 3s ease-in-out infinite;}
+.bubble-avatar.idle{border-color:#888;opacity:0.7;}
+.bubble-avatar.sleeping{border-color:#a855f7;animation:breathe 4s ease-in-out infinite;}
+.bubble-avatar.error{border-color:#ef4444;animation:shake 0.5s infinite;}
+.bubble-name{font-size:10px;color:#aaa;white-space:nowrap;}
+.bubble-badge{font-size:9px;padding:1px 5px;border-radius:10px;font-weight:600;}
+.badge-working{background:#166534;color:#22c55e;}
+.badge-thinking{background:#164e63;color:#06b6d4;}
+.badge-idle{background:#1e1e1e;color:#888;}
+.badge-sleeping{background:#2e1065;color:#a855f7;}
+.badge-error{background:#7f1d1d;color:#ef4444;}
+.speech-bubble{background:#0a1a0a;border:1px solid #2a4a2a;border-radius:8px;padding:4px 8px;font-size:10px;color:#aaa;max-width:120px;text-align:center;position:absolute;top:-36px;white-space:nowrap;}
+.speech-bubble::after{content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#2a4a2a;border-bottom:none;}
+.garden-stats{position:absolute;bottom:12px;right:12px;background:#0a1a0aee;border:1px solid #2a4a2a;border-radius:8px;padding:12px;font-size:11px;}
+.garden-stats .gs-row{display:flex;justify-content:space-between;gap:20px;margin-bottom:4px;color:#888;}
+.garden-stats .gs-val{color:#22c55e;font-weight:600;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 #22c55e66;}50%{box-shadow:0 0 0 8px transparent;}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+@keyframes breathe{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-2px);}75%{transform:translateX(2px);}}
+/* Agents hub */
+.agent-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px;}
+.agent-card{background:#111120;border:1px solid #1e1e3a;border-radius:8px;padding:14px;transition:border-color 0.2s;}
+.agent-card:hover{border-color:#7c7cff44;}
+.ac-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.ac-icon{font-size:24px;}
+.ac-name{font-size:13px;font-weight:600;color:#fff;}
+.ac-model{font-size:10px;color:#555;}
+.ac-status{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;}
+.badge-active{background:#166534;color:#22c55e;}
+.badge-idle{background:#1e1e1e;color:#888;}
+.badge-error{background:#7f1d1d;color:#ef4444;}
+.badge-busy{background:#7c3a00;color:#f97316;}
+.ac-tokens{font-size:11px;color:#555;margin-bottom:10px;}
+.ac-tokens span{color:#888;}
+.ac-btns{display:flex;gap:4px;}
+.filter-row{display:flex;gap:8px;margin-bottom:4px;}
+.filter-btn{padding:5px 14px;border-radius:20px;border:1px solid #333;background:transparent;color:#888;font-size:12px;cursor:pointer;}
+.filter-btn.active{background:#7c7cff;color:#fff;border-color:#7c7cff;}
+/* Chat */
+.chat-layout{display:flex;flex-direction:column;height:calc(100vh - 140px);}
+.chat-toolbar{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.chat-toolbar select{background:#111120;border:1px solid #1e1e3a;color:#fff;padding:6px 10px;border-radius:6px;font-size:13px;}
+.chat-messages{flex:1;background:#080810;border:1px solid #1e1e3a;border-radius:8px;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;}
+.msg{max-width:75%;padding:10px 14px;border-radius:8px;font-size:13px;line-height:1.5;}
+.msg-user{background:#1e1e6a;color:#e0e0ff;align-self:flex-end;}
+.msg-agent{background:#111120;color:#ccc;border:1px solid #1e1e3a;align-self:flex-start;}
+.msg-label{font-size:10px;color:#555;margin-bottom:4px;}
+.ctx-bar{margin:10px 0;font-size:11px;color:#666;}
+.ctx-track{background:#1e1e3a;border-radius:4px;height:4px;margin-top:4px;}
+.ctx-fill{background:#7c7cff;height:100%;border-radius:4px;width:45%;}
+.chat-input-row{display:flex;gap:8px;margin-top:10px;}
+.chat-input-row input{flex:1;background:#111120;border:1px solid #1e1e3a;color:#fff;padding:10px 14px;border-radius:6px;font-size:13px;}
+.chat-input-row input:focus{outline:none;border-color:#7c7cff;}
+/* Kanban */
+.kanban{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;}
+.kb-col{min-width:200px;flex:1;background:#0d0d1a;border:1px solid #1e1e3a;border-radius:8px;padding:12px;}
+.kb-col-header{font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;justify-content:space-between;}
+.kb-col-count{background:#1e1e3a;color:#666;padding:1px 7px;border-radius:10px;font-size:11px;}
+.task-card{background:#111120;border:1px solid #1e1e3a;border-radius:6px;padding:10px;margin-bottom:8px;font-size:12px;cursor:grab;}
+.task-card:hover{border-color:#7c7cff44;}
+.task-drag{color:#444;margin-right:6px;cursor:grab;}
+.task-title{color:#ddd;margin-bottom:6px;font-size:12px;}
+.p0{background:#7f1d1d;color:#ef4444;}
+.p1{background:#7c3a00;color:#f97316;}
+.p2{background:#7c5a00;color:#f59e0b;}
+.p3{background:#1e1e1e;color:#888;}
+/* Cron table */
+.cron-table{width:100%;border-collapse:collapse;font-size:12px;}
+.cron-table th{text-align:left;padding:10px 12px;color:#555;border-bottom:1px solid #1e1e3a;font-size:11px;text-transform:uppercase;}
+.cron-table td{padding:10px 12px;border-bottom:1px solid #111130;color:#ccc;}
+.cron-table tr:hover td{background:#0d0d1a;}
+.toggle{position:relative;display:inline-block;width:36px;height:18px;}
+.toggle input{opacity:0;width:0;height:0;}
+.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#333;border-radius:18px;transition:0.3s;}
+.slider:before{position:absolute;content:'';height:12px;width:12px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:0.3s;}
+input:checked + .slider{background:#22c55e;}
+input:checked + .slider:before{transform:translateX(18px);}
+/* Costs */
+.costs-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.sub-card{background:#111120;border:1px solid #1e1e3a;border-radius:8px;padding:14px;}
+.sub-card .sub-provider{font-size:13px;font-weight:600;color:#fff;margin-bottom:4px;}
+.sub-card .sub-amount{font-size:22px;font-weight:700;color:#22c55e;}
+.sub-card .sub-period{font-size:11px;color:#555;}
+.models-table{width:100%;border-collapse:collapse;font-size:12px;}
+.models-table th{text-align:left;padding:8px 12px;color:#555;border-bottom:1px solid #1e1e3a;font-size:11px;}
+.models-table td{padding:8px 12px;border-bottom:1px solid #0d0d1a;color:#ccc;}
+.recommend{background:#0a1a0a;border-left:3px solid #22c55e;padding:10px 14px;border-radius:4px;font-size:12px;color:#aaa;margin-bottom:8px;}
+.recommend .rec-title{color:#22c55e;font-weight:600;margin-bottom:2px;}
+/* Memory */
+.memory-layout{display:grid;grid-template-columns:240px 1fr;gap:16px;height:calc(100vh - 160px);}
+.file-tree{background:#0d0d1a;border:1px solid #1e1e3a;border-radius:8px;padding:12px;overflow-y:auto;}
+.tree-item{padding:7px 10px;border-radius:4px;font-size:12px;color:#888;cursor:pointer;display:flex;align-items:center;gap:6px;}
+.tree-item:hover{background:#1e1e3a;color:#fff;}
+.tree-item.active{background:#111130;color:#7c7cff;}
+.tree-icon{font-size:14px;}
+.preview-panel{background:#080810;border:1px solid #1e1e3a;border-radius:8px;padding:16px;overflow-y:auto;font-family:monospace;font-size:12px;line-height:1.6;color:#aaa;}
+.search-bar{background:#111120;border:1px solid #1e1e3a;border-radius:6px;padding:8px 12px;color:#fff;font-size:13px;width:100%;margin-bottom:12px;}
+.search-bar:focus{outline:none;border-color:#7c7cff;}
+/* Models */
+.model-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
+.model-card{background:#111120;border:1px solid #1e1e3a;border-radius:8px;padding:14px;}
+.model-name{font-size:14px;font-weight:600;color:#fff;margin-bottom:4px;}
+.model-provider{font-size:11px;color:#7c7cff;margin-bottom:8px;}
+.model-stat{display:flex;justify-content:space-between;font-size:11px;color:#555;margin-bottom:3px;}
+.model-stat span{color:#888;}
+.model-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;}
+.tag{background:#1e1e3a;color:#666;padding:2px 8px;border-radius:10px;font-size:10px;}
+.fallback-chain{background:#0d0d1a;border:1px solid #1e1e3a;border-radius:8px;padding:14px;margin-top:8px;}
+.fallback-chain h3{font-size:12px;color:#555;text-transform:uppercase;margin-bottom:10px;}
+.chain-visual{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.chain-node{background:#111130;border:1px solid #7c7cff44;color:#7c7cff;padding:6px 12px;border-radius:6px;font-size:12px;}
+.chain-arrow{color:#555;font-size:16px;}
+/* Docs */
+.docs-layout{display:grid;grid-template-columns:220px 1fr;gap:16px;height:calc(100vh - 160px);}
+.breadcrumb{font-size:12px;color:#555;margin-bottom:12px;}
+.breadcrumb span{color:#7c7cff;}
+/* System */
+.sys-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.resource-row{margin-bottom:14px;}
+.resource-label{display:flex;justify-content:space-between;font-size:12px;color:#888;margin-bottom:4px;}
+.resource-val{color:#fff;font-weight:600;}
+.gw-card{background:#0a1a0a;border:1px solid #22c55e44;border-radius:8px;padding:14px;}
+.gw-status{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:#22c55e;}
+.skill-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1e1e3a;font-size:12px;color:#ccc;}
+.channel-row{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12px;color:#888;}
+.channel-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;}
+/* Security */
+.sec-layout{display:grid;grid-template-columns:auto 1fr;gap:20px;}
+.score-ring{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.score-text{font-size:32px;font-weight:700;color:#22c55e;}
+.score-sub{font-size:12px;color:#555;}
+.check-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:6px;font-size:13px;margin-bottom:6px;}
+.check-green{background:#0a1a0a;color:#22c55e;}
+.check-amber{background:#1a1400;color:#f59e0b;}
+.check-red{background:#1a0000;color:#ef4444;}
+.check-icon{font-size:16px;flex-shrink:0;}
+.access-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:12px;}
+.access-table th{text-align:left;padding:8px;color:#555;border-bottom:1px solid #1e1e3a;}
+.access-table td{padding:8px;border-bottom:1px solid #0d0d1a;color:#ccc;}
+/* Terminal */
+.terminal{background:#000;border-radius:8px;padding:16px;font-family:'Courier New',monospace;font-size:12px;color:#22c55e;height:360px;overflow-y:auto;border:1px solid #1a3a1a;}
+.term-line{margin-bottom:4px;line-height:1.4;}
+.term-prompt{color:#22c55e;}
+.term-cmd{color:#fff;}
+.term-out{color:#4ade80;opacity:0.8;}
+.term-err{color:#ef4444;}
+.term-input-row{display:flex;align-items:center;gap:8px;margin-top:10px;}
+.term-input-row span{color:#22c55e;font-family:monospace;}
+.term-input{flex:1;background:transparent;border:none;color:#22c55e;font-family:'Courier New',monospace;font-size:12px;outline:none;}
+.preset-btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.preset-btn{background:#0a1a0a;border:1px solid #1a3a1a;color:#4ade80;padding:5px 12px;border-radius:4px;font-size:11px;cursor:pointer;font-family:monospace;}
+.preset-btn:hover{background:#1a3a1a;}
+/* Mobile */
+@media(max-width:768px){
+  #sidebar{position:fixed;left:-220px;top:0;bottom:0;transition:left 0.3s;z-index:200;}
+  #sidebar.open{left:0;}
+  #hamburger{display:block;}
+  .stat-grid{grid-template-columns:repeat(2,1fr);}
+  .agent-grid{grid-template-columns:repeat(2,1fr);}
+  .cal-grid{grid-template-columns:1fr;}
+  .two-col{grid-template-columns:1fr;}
+  .costs-grid{grid-template-columns:1fr;}
+  .model-cards{grid-template-columns:1fr;}
+  .kanban{overflow-x:scroll;}
+}
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav id="sidebar">
+  <div id="sidebar-header">
+    <h1>&#9998; OpenClaw</h1>
+    <p>Mission Control v2</p>
+  </div>
+  <nav>
+    <a class="active" onclick="show('sec-home',this)"><span class="nav-icon">&#127968;</span> Overview</a>
+    <a onclick="show('sec-calendar',this)"><span class="nav-icon">&#128197;</span> Calendar</a>
+    <a onclick="show('sec-garden',this)"><span class="nav-icon">&#127807;</span> Garden</a>
+    <a onclick="show('sec-agents',this)"><span class="nav-icon">&#129302;</span> Agents</a>
+    <a onclick="show('sec-chat',this)"><span class="nav-icon">&#128172;</span> Chat</a>
+    <a onclick="show('sec-tasks',this)"><span class="nav-icon">&#128203;</span> Tasks</a>
+    <a onclick="show('sec-cron',this)"><span class="nav-icon">&#9200;</span> Cron</a>
+    <a onclick="show('sec-costs',this)"><span class="nav-icon">&#128176;</span> Costs</a>
+    <a onclick="show('sec-memory',this)"><span class="nav-icon">&#129504;</span> Memory</a>
+    <a onclick="show('sec-models',this)"><span class="nav-icon">&#9881;</span> Models</a>
+    <a onclick="show('sec-docs',this)"><span class="nav-icon">&#128193;</span> Docs</a>
+    <a onclick="show('sec-system',this)"><span class="nav-icon">&#128421;</span> System</a>
+    <a onclick="show('sec-security',this)"><span class="nav-icon">&#128274;</span> Security</a>
+    <a onclick="show('sec-terminal',this)"><span class="nav-icon">&#9000;</span> Terminal</a>
+  </nav>
+</nav>
+
+<!-- Main -->
+<div id="main">
+  <div id="topbar">
+    <button id="hamburger" onclick="toggleSidebar()">&#9776;</button>
+    <h2 id="page-title">&#127968; Overview</h2>
+    <span class="topbar-info"><span class="status-dot"></span>Gateway ONLINE &nbsp;|&nbsp; MoaTh &#128640; &nbsp;|&nbsp; 00:34 UTC+3</span>
+  </div>
+  <div id="content">
+
+    <!-- SECTION 1: Overview -->
+    <div id="sec-home" class="section active">
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-val">&#128994;</div>
+          <div style="font-size:18px;font-weight:700;color:#22c55e;">ONLINE</div>
+          <div class="stat-label">Gateway Status</div>
+        </div>
+        <div class="stat-card cyan">
+          <div class="stat-val">8</div>
+          <div class="stat-label">Active Agents</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-val">3</div>
+          <div class="stat-label">Sessions</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-val">$4.41</div>
+          <div class="stat-label">Cost Today</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="card gauge-section">
+            <h3>System Resources</h3>
+            <div class="gauge-row">
+              <div class="gauge-label"><span>CPU</span><span>34%</span></div>
+              <div class="gauge-track"><div class="gauge-fill" style="width:34%"></div></div>
+            </div>
+            <div class="gauge-row">
+              <div class="gauge-label"><span>Memory</span><span>67%</span></div>
+              <div class="gauge-track"><div class="gauge-fill mem" style="width:67%"></div></div>
+            </div>
+            <div class="gauge-row">
+              <div class="gauge-label"><span>Disk</span><span>45%</span></div>
+              <div class="gauge-track"><div class="gauge-fill disk" style="width:45%"></div></div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:12px;">
+            <h3>Quick Actions</h3>
+            <div class="btn-row">
+              <button class="btn btn-primary">&#128640; Deploy Agent</button>
+              <button class="btn btn-success">&#9654; Run Cron</button>
+              <button class="btn btn-danger">&#9679; Kill All</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Activity Feed</h3>
+          <div class="feed-item"><span class="feed-time">00:34</span><span class="feed-text">Agent CEO completed task: Market report</span></div>
+          <div class="feed-item"><span class="feed-time">00:31</span><span class="feed-text">Cron job heartbeat executed successfully</span></div>
+          <div class="feed-item"><span class="feed-time">00:28</span><span class="feed-text">Strategy agent: Thinking... analyzing data</span></div>
+          <div class="feed-item"><span class="feed-time">00:25</span><span class="feed-text">New session started by MoaTh</span></div>
+          <div class="feed-item"><span class="feed-time">00:19</span><span class="feed-text">Producer agent encountered error - retrying</span></div>
+          <div class="feed-item"><span class="feed-time">00:15</span><span class="feed-text">Memory file MEMORY.md updated</span></div>
+          <div class="feed-item"><span class="feed-time">00:10</span><span class="feed-text">Claude-sonnet-4 tokens: 45,231 used today</span></div>
+          <div class="feed-item"><span class="feed-time">00:02</span><span class="feed-text">Gateway restarted, all systems nominal</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: Calendar -->
+    <div id="sec-calendar" class="section">
+      <div class="cal-grid">
+        <div class="card">
+          <h3>March 2026</h3>
+          <table class="cal-table">
+            <thead><tr>
+              <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td class="muted">22</td><td class="muted">23</td><td class="muted">24</td><td class="muted">25</td><td class="muted">26</td><td class="muted">27</td><td class="muted">28</td>
+              </tr>
+              <tr>
+                <td>1</td><td>2<div class="event-dots"><span class="event-dot green"></span></div></td>
+                <td>3</td><td>4</td>
+                <td>5<div class="event-dots"><span class="event-dot blue"></span></div></td>
+                <td>6</td><td>7</td>
+              </tr>
+              <tr>
+                <td>8</td><td>9<div class="event-dots"><span class="event-dot amber"></span></div></td>
+                <td>10</td><td>11<div class="event-dots"><span class="event-dot green"></span><span class="event-dot blue"></span></div></td>
+                <td>12</td><td>13</td><td>14</td>
+              </tr>
+              <tr>
+                <td>15<div class="event-dots"><span class="event-dot amber"></span></div></td>
+                <td>16</td><td>17</td><td>18</td>
+                <td>19</td><td>20 <div class="event-dots"><span class="event-dot green"></span></div></td>
+                <td class="today">21</td>
+              </tr>
+              <tr>
+                <td>22</td><td>23<div class="event-dots"><span class="event-dot blue"></span></div></td>
+                <td>24</td><td>25<div class="event-dots"><span class="event-dot amber"></span></div></td>
+                <td>26</td><td>27</td><td>28</td>
+              </tr>
+              <tr>
+                <td>29</td><td>30<div class="event-dots"><span class="event-dot green"></span></div></td>
+                <td>31</td><td class="muted">1</td><td class="muted">2</td><td class="muted">3</td><td class="muted">4</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:12px;">
+            <h3>Upcoming Events</h3>
+            <div class="event-item">
+              <div class="ev-time">Today 09:00 AM</div>
+              <div>Saudia flight FA-302 departure</div>
+            </div>
+            <div class="event-item" style="border-left-color:#06b6d4;">
+              <div class="ev-time" style="color:#06b6d4;">Mar 23, 02:00 PM</div>
+              <div>Strategy agent weekly review</div>
+            </div>
+            <div class="event-item" style="border-left-color:#f59e0b;">
+              <div class="ev-time" style="color:#f59e0b;">Mar 25, 08:00 AM</div>
+              <div>Anthropic API invoice due</div>
+            </div>
+            <div class="event-item">
+              <div class="ev-time">Mar 30, 10:00 AM</div>
+              <div>Freelance client meeting</div>
+            </div>
+          </div>
+          <div class="alert-bar">&#9888; Anthropic subscription renews in 5 days ($20/mo)</div>
+          <div class="alert-bar" style="margin-top:6px;border-color:#3b82f633;color:#3b82f6;">&#8505; OpenAI subscription active - next bill Apr 1</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: Garden -->
+    <div id="sec-garden" class="section">
+      <div class="garden-area">
+        <!-- CEO -->
+        <div class="agent-bubble" style="left:60px;top:60px;">
+          <div class="speech-bubble" id="speech-ceo">Analyzing markets...</div>
+          <div class="bubble-avatar working">&#128081;</div>
+          <span class="bubble-name">CEO</span>
+          <span class="bubble-badge badge-working">working</span>
+        </div>
+        <!-- Strategy -->
+        <div class="agent-bubble" style="left:220px;top:40px;">
+          <div class="speech-bubble" id="speech-strategy">Hmm, thinking...</div>
+          <div class="bubble-avatar thinking">&#128202;</div>
+          <span class="bubble-name">Strategy</span>
+          <span class="bubble-badge badge-thinking">thinking</span>
+        </div>
+        <!-- Trend -->
+        <div class="agent-bubble" style="right:200px;top:70px;">
+          <div class="speech-bubble" id="speech-trend">Waiting for task</div>
+          <div class="bubble-avatar idle">&#128269;</div>
+          <span class="bubble-name">Trend</span>
+          <span class="bubble-badge badge-idle">idle</span>
+        </div>
+        <!-- Script -->
+        <div class="agent-bubble" style="left:100px;bottom:120px;">
+          <div class="speech-bubble" id="speech-script">Writing script...</div>
+          <div class="bubble-avatar working">&#9997;</div>
+          <span class="bubble-name">Script</span>
+          <span class="bubble-badge badge-working">working</span>
+        </div>
+        <!-- Designer -->
+        <div class="agent-bubble" style="left:310px;bottom:80px;">
+          <div class="speech-bubble" id="speech-designer">Zzz...</div>
+          <div class="bubble-avatar sleeping">&#127912;</div>
+          <span class="bubble-name">Designer</span>
+          <span class="bubble-badge badge-sleeping">sleeping</span>
+        </div>
+        <!-- Producer -->
+        <div class="agent-bubble" style="right:80px;bottom:100px;">
+          <div class="speech-bubble" id="speech-producer">Error! Retrying...</div>
+          <div class="bubble-avatar error">&#127909;</div>
+          <span class="bubble-name">Producer</span>
+          <span class="bubble-badge badge-error">error</span>
+        </div>
+        <!-- Garden stats -->
+        <div class="garden-stats">
+          <div class="gs-row"><span>Active</span><span class="gs-val">2</span></div>
+          <div class="gs-row"><span>Thinking</span><span class="gs-val">1</span></div>
+          <div class="gs-row"><span>Idle</span><span class="gs-val">1</span></div>
+          <div class="gs-row"><span>Sleeping</span><span class="gs-val">1</span></div>
+          <div class="gs-row"><span>Error</span><span style="color:#ef4444;font-weight:600;">1</span></div>
+          <div class="gs-row" style="margin-top:6px;border-top:1px solid #2a4a2a;padding-top:6px;"><span>Total tokens</span><span class="gs-val">87k</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: Agents Hub -->
+    <div id="sec-agents" class="section">
+      <div class="filter-row">
+        <button class="filter-btn active">All (12)</button>
+        <button class="filter-btn">Active (5)</button>
+        <button class="filter-btn">Idle (4)</button>
+        <button class="filter-btn">Error (3)</button>
+      </div>
+      <div class="agent-grid">
+        <div class="agent-card"><div class="ac-header"><span class="ac-icon">&#128081;</span><div><div class="ac-name">CEO Agent</div><div class="ac-model">claude-sonnet-4</div></div></div><div class="ac-status"><span class="badge badge-active">Active</span></div><div class="ac-tokens">Tokens: <span>12,451</span></div><div class="ac-btns"><button class="btn btn-ghost btn-sm">&#128172; Chat</button><button class="btn btn-ghost btn-sm">&#9646;&#9646;</button><button class="btn btn-ghost btn-sm">&#9881;</button></div></div>
+        <div class="agent-card"><div class="ac-header"><span class="ac-icon">&#128202;</span><div><div class="ac-name">Strategy</div><div class="ac-model">gpt-4o</div></div></div><div class="ac-status"><span class="badge badge-busy">Busy</span></div><div class="ac-tokens">Tokens: <span>9,870</span></div><div class="ac-btns"><button class="btn btn-ghost btn-sm">&#128172; Chat</button><button class="btn btn-ghost btn-sm">&#9646;&#9646;</button><button class="btn btn-ghost btn-sm">&#9881;</button></div></div>
+        <div class="agent-card"><div class="ac-header"><span class="ac-icon">&#128269;</span><div><div class="ac-name">Trend Scout</div><div class="ac-model">gpt-4o-mini</div></div></div><div class="ac-status"><span class="badge badge-idle">Idle</span></div><div class="ac-tokens">Tokens: <span>3,200</span></div><div class="ac-btns"><button class="btn btn-ghost btn-sm">&#128172; Chat</button><button class="btn btn-ghost btn-sm">&#9654;</button><button class="btn btn-ghost btn-sm">&#9881;</button></div></div>
+        <div class="agent-card"><div class="ac-header"><span class="ac-icon">&#9997;</span><div><div class="ac-name">Script Writer</div><div class="ac-model">claude-opus-4</div></div></div><div class="ac-status"><span class="badge badge-active">Active</span></div><div class="ac-tokens">Tokens: <span>22,100</span></div><div class="ac-btns"><button class="btn btn-ghost btn-sm">&#128172; Chat</button><button class="btn btn-ghost btn-sm">&#9646;&#9646;</button><button class="btn btn-ghost btn-sm">&#9881;</button></div></div>
+        <div class="agent-card"><div class="ac-header"><span class="ac-icon">&#127912;</span><div><div class="ac-name">Designer</div><div class="ac-model">gpt-4o</div></div></div><div class="ac-status"><span class="badge badge-idle">Idle</span></div><div class="ac-tokens">Tokens: <span>1,450</span></div><div class="ac-btns"><button class="btn btn-ghost btn-sm">&#128172; Chat</button><button class="btn btn-ghost btn-sm">&#9654;</button><button class="btn btn-ghost btn-sm">&#9881;</button></div></div>
+        <div class="agent-card"><div class="ac-header"><span class="ac-icon">&#127909;</span><div><div class="ac-name">Producer</div><div class="ac-model">claude-sonnet-4</div></div></div><div class="ac-status"><span class="badge badge-error">Error</span></div><div class="ac-tokens">Tokens: <span>5,630</span></div><div class="ac-btns"><button class="btn btn-ghost btn-sm">&#128172; Chat</button><button class="btn btn-danger btn-sm">&#9888; Fix</button><button class="btn btn-ghost btn-sm">&#9881;</button></div></div>
+        <div class="agent-card"><div class="ac-header"><span class="ac-icon">&#128200;</span><div><div class="ac-name">Analyst</div><div class="ac-model">gpt-4-turbo</div></div></div><div class="ac-status"><span class="badge badge-active">Active</span></div><div class="ac-tokens">Tokens: <span>18,900</span></div><div class="ac-btns"><button class="btn btn-ghost btn-sm">&#128172; Chat</button><button class="btn btn-ghost btn-sm">&#9646;&#9646;</button><button class="btn btn-ghost btn-sm">&#9881;</button></div></div>
+        <div class="agent-card"><div class="ac-header"><span class="ac-icon">&#128293;</span><div><div class="ac-name">Marketing</div><div class="ac-model">gpt-4o-mini</div></div></div><div class="ac-status"><span class="badge badge-active">Active</span></div><div class="ac-tokens">Tokens: <span>7,200</span></div><div class="ac-btns"><button class="btn btn-ghost btn-sm">&#128172; Chat</button><button class="btn btn-ghost btn-sm">&#9646;&#9646;</button><button class="btn btn-ghost btn-sm">&#9881;</button></div></div>
+        <div class="agent-card"><div class="ac-header"><span class="ac-icon">&#128218;</span><div><div class="ac-name">Researcher</div><div class="ac-model">claude-sonnet-4</div></div></div><div class="ac-status"><span class="badge badge-idle">Idle</span></div><div class="ac-tokens">Tokens: <span>4,100</span></div><div class="ac-btns"><button class="btn btn-ghost btn-sm">&#128172; Chat</button><button class="btn btn-ghost btn-sm">&#9654;</button><button class="btn btn-ghost btn-sm">&#9881;</button></div></div>
+        <div class="agent-card"><div class="ac-header"><span class="ac-icon">&#128279;</span><div><div class="ac-name">Connector</div><div class="ac-model">gpt-4o-mini</div></div></div><div class="ac-status"><span class="badge badge-error">Error</span></div><div class="ac-tokens">Tokens: <span>2,890</span></div><div class="ac-btns"><button class="btn btn-ghost btn-sm">&#128172; Chat</button><button class="btn btn-danger btn-sm">&#9888; Fix</button><button class="btn btn-ghost btn-sm">&#9881;</button></div></div>
+        <div class="agent-card"><div class="ac-header"><span class="ac-icon">&#128187;</span><div><div class="ac-name">Dev Agent</div><div class="ac-model">claude-opus-4</div></div></div><div class="ac-status"><span class="badge badge-idle">Idle</span></div><div class="ac-tokens">Tokens: <span>6,500</span></div><div class="ac-btns"><button class="btn btn-ghost btn-sm">&#128172; Chat</button><button class="btn btn-ghost btn-sm">&#9654;</button><button class="btn btn-ghost btn-sm">&#9881;</button></div></div>
+        <div class="agent-card"><div class="ac-header"><span class="ac-icon">&#128228;</span><div><div class="ac-name">Notifier</div><div class="ac-model">gpt-4o-mini</div></div></div><div class="ac-status"><span class="badge badge-error">Error</span></div><div class="ac-tokens">Tokens: <span>980</span></div><div class="ac-btns"><button class="btn btn-ghost btn-sm">&#128172; Chat</button><button class="btn btn-danger btn-sm">&#9888; Fix</button><button class="btn btn-ghost btn-sm">&#9881;</button></div></div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: Chat -->
+    <div id="sec-chat" class="section">
+      <div class="chat-layout">
+        <div class="chat-toolbar">
+          <label style="font-size:12px;color:#666;">Agent:</label>
+          <select>
+            <option>&#128081; CEO Agent</option>
+            <option>&#128202; Strategy Agent</option>
+            <option>&#9997; Script Writer</option>
+            <option>&#128269; Trend Scout</option>
+          </select>
+          <span class="badge badge-active">Active</span>
+        </div>
+        <div class="chat-messages">
+          <div style="align-self:flex-start;">
+            <div class="msg-label">CEO Agent &bull; claude-sonnet-4</div>
+            <div class="msg msg-agent">Hello MoaTh! I've completed the market analysis for Q1 2026. The AI automation sector shows 340% growth YoY. Shall I prepare a detailed report?</div>
+          </div>
+          <div style="align-self:flex-end;">
+            <div class="msg msg-user">Yes, focus on freelance opportunities in the MENA region. Keep it under 500 words.</div>
+          </div>
+          <div style="align-self:flex-start;">
+            <div class="msg-label">CEO Agent &bull; just now</div>
+            <div class="msg msg-agent">Understood. MENA AI automation market: $2.3B by 2026, 28% CAGR. Key opportunities: n8n workflows ($80-150/hr), LangChain agents ($100-200/hr), custom Claude integrations ($5-10k/project). Saudi Vision 2030 driving 60% of regional demand. Recommend targeting healthcare and fintech verticals first.</div>
+          </div>
+        </div>
+        <div class="ctx-bar">
+          Context window: 45% used (45k / 100k tokens)
+          <div class="ctx-track"><div class="ctx-fill"></div></div>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" placeholder="Message CEO Agent...">
+          <button class="btn btn-primary">&#9658; Send</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 6: Tasks Kanban -->
+    <div id="sec-tasks" class="section">
+      <div class="kanban">
+        <div class="kb-col">
+          <div class="kb-col-header">Backlog <span class="kb-col-count">3</span></div>
+          <div class="task-card"><span class="task-drag">&#8942;</span><span class="badge p1">P1</span><div class="task-title" style="margin-top:4px;">Build client onboarding flow</div><div style="font-size:10px;color:#555;">CEO Agent</div></div>
+          <div class="task-card"><span class="task-drag">&#8942;</span><span class="badge p2">P2</span><div class="task-title" style="margin-top:4px;">Create Tadawul stock screener</div><div style="font-size:10px;color:#555;">Analyst Agent</div></div>
+          <div class="task-card"><span class="task-drag">&#8942;</span><span class="badge p3">P3</span><div class="task-title" style="margin-top:4px;">Update SOUL.md persona</div><div style="font-size:10px;color:#555;">Dev Agent</div></div>
+        </div>
+        <div class="kb-col">
+          <div class="kb-col-header">In Progress <span class="kb-col-count">2</span></div>
+          <div class="task-card"><span class="task-drag">&#8942;</span><span class="badge p0">P0</span><div class="task-title" style="margin-top:4px;">Fix Producer agent error loop</div><div style="font-size:10px;color:#555;">Producer Agent</div></div>
+          <div class="task-card"><span class="task-drag">&#8942;</span><span class="badge p1">P1</span><div class="task-title" style="margin-top:4px;">Write 5 TikTok scripts for March</div><div style="font-size:10px;color:#555;">Script Writer</div></div>
+        </div>
+        <div class="kb-col">
+          <div class="kb-col-header">In Review <span class="kb-col-count">2</span></div>
+          <div class="task-card"><span class="task-drag">&#8942;</span><span class="badge p1">P1</span><div class="task-title" style="margin-top:4px;">n8n workflow for email parsing</div><div style="font-size:10px;color:#555;">Strategy Agent</div></div>
+          <div class="task-card"><span class="task-drag">&#8942;</span><span class="badge p2">P2</span><div class="task-title" style="margin-top:4px;">Design landing page mockup</div><div style="font-size:10px;color:#555;">Designer</div></div>
+        </div>
+        <div class="kb-col">
+          <div class="kb-col-header">Done <span class="kb-col-count">3</span></div>
+          <div class="task-card" style="opacity:0.6;"><span class="task-drag">&#8942;</span><span class="badge p1">P1</span><div class="task-title" style="margin-top:4px;">Market analysis Q1 2026</div><div style="font-size:10px;color:#555;">CEO Agent</div></div>
+          <div class="task-card" style="opacity:0.6;"><span class="task-drag">&#8942;</span><span class="badge p2">P2</span><div class="task-title" style="margin-top:4px;">Setup OpenClaw on new PC</div><div style="font-size:10px;color:#555;">Dev Agent</div></div>
+          <div class="task-card" style="opacity:0.6;"><span class="task-drag">&#8942;</span><span class="badge p3">P3</span><div class="task-title" style="margin-top:4px;">Read LangGraph docs</div><div style="font-size:10px;color:#555;">Researcher</div></div>
+        </div>
+        <div class="kb-col">
+          <div class="kb-col-header">Archived <span class="kb-col-count">2</span></div>
+          <div class="task-card" style="opacity:0.4;"><span class="task-drag">&#8942;</span><span class="badge p3">P3</span><div class="task-title" style="margin-top:4px;">Initial project setup</div><div style="font-size:10px;color:#555;"></div></div>
+          <div class="task-card" style="opacity:0.4;"><span class="task-drag">&#8942;</span><span class="badge p3">P3</span><div class="task-title" style="margin-top:4px;">Install Node.js v24</div><div style="font-size:10px;color:#555;"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 7: Cron -->
+    <div id="sec-cron" class="section">
+      <div class="card">
+        <h3>Cron Jobs</h3>
+        <table class="cron-table">
+          <thead><tr><th>Name</th><th>Schedule</th><th>Agent</th><th>Status</th><th>Last Run</th><th>Next Run</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td>Heartbeat Poll</td><td>*/30 * * * *</td><td>CEO</td><td><label class="toggle"><input type="checkbox" checked onchange="toggleSwitch(this)"><span class="slider"></span></label></td><td>00:30</td><td>01:00</td><td><button class="btn btn-ghost btn-sm">&#9654; Run</button></td></tr>
+            <tr><td>Market Report</td><td>0 9 * * 1-5</td><td>Strategy</td><td><label class="toggle"><input type="checkbox" checked onchange="toggleSwitch(this)"><span class="slider"></span></label></td><td>09:00</td><td>Tomorrow</td><td><button class="btn btn-ghost btn-sm">&#9654; Run</button></td></tr>
+            <tr><td>TikTok Trends</td><td>0 */6 * * *</td><td>Trend</td><td><label class="toggle"><input type="checkbox" onchange="toggleSwitch(this)"><span class="slider"></span></label></td><td>18:00</td><td>00:00</td><td><button class="btn btn-ghost btn-sm">&#9654; Run</button></td></tr>
+            <tr><td>Memory Backup</td><td>0 0 * * *</td><td>Dev</td><td><label class="toggle"><input type="checkbox" checked onchange="toggleSwitch(this)"><span class="slider"></span></label></td><td>00:00</td><td>Tomorrow</td><td><button class="btn btn-ghost btn-sm">&#9654; Run</button></td></tr>
+            <tr><td>Email Digest</td><td>0 8 * * *</td><td>Notifier</td><td><label class="toggle"><input type="checkbox" onchange="toggleSwitch(this)"><span class="slider"></span></label></td><td>08:00</td><td>Tomorrow</td><td><button class="btn btn-ghost btn-sm">&#9654; Run</button></td></tr>
+            <tr><td>Cost Report</td><td>0 23 * * *</td><td>Analyst</td><td><label class="toggle"><input type="checkbox" checked onchange="toggleSwitch(this)"><span class="slider"></span></label></td><td>23:00</td><td>23:00</td><td><button class="btn btn-ghost btn-sm">&#9654; Run</button></td></tr>
+            <tr><td>Script Publish</td><td>30 18 * * 5</td><td>Script</td><td><label class="toggle"><input type="checkbox" checked onchange="toggleSwitch(this)"><span class="slider"></span></label></td><td>Fri 18:30</td><td>Next Fri</td><td><button class="btn btn-ghost btn-sm">&#9654; Run</button></td></tr>
+            <tr><td>Security Scan</td><td>0 3 * * *</td><td>Dev</td><td><label class="toggle"><input type="checkbox" checked onchange="toggleSwitch(this)"><span class="slider"></span></label></td><td>03:00</td><td>Tomorrow</td><td><button class="btn btn-ghost btn-sm">&#9654; Run</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SECTION 8: Costs -->
+    <div id="sec-costs" class="section">
+      <div style="display:grid;grid-template-columns:1fr 280px;gap:16px;margin-bottom:16px;">
+        <div class="card">
+          <h3>Model Usage</h3>
+          <table class="models-table">
+            <thead><tr><th>Model</th><th>Input Tokens</th><th>Output Tokens</th><th>Cost</th></tr></thead>
+            <tbody>
+              <tr><td>claude-opus-4</td><td>12,450</td><td>3,210</td><td style="color:#ef4444;">$1.82</td></tr>
+              <tr><td>claude-sonnet-4</td><td>45,231</td><td>12,400</td><td style="color:#f59e0b;">$1.54</td></tr>
+              <tr><td>gpt-4o</td><td>28,900</td><td>7,800</td><td style="color:#f59e0b;">$0.72</td></tr>
+              <tr><td>gpt-4o-mini</td><td>92,000</td><td>24,000</td><td style="color:#22c55e;">$0.18</td></tr>
+              <tr><td>gpt-4-turbo</td><td>8,100</td><td>2,200</td><td style="color:#f59e0b;">$0.15</td></tr>
+            </tbody>
+          </table>
+          <div style="text-align:right;margin-top:8px;font-size:13px;color:#fff;">Total Today: <strong style="color:#22c55e;">$4.41</strong></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <svg width="160" height="160" viewBox="0 0 160 160">
+            <circle cx="80" cy="80" r="60" fill="none" stroke="#1e1e3a" stroke-width="20"/>
+            <circle cx="80" cy="80" r="60" fill="none" stroke="#ef4444" stroke-width="20" stroke-dasharray="85 292" stroke-dashoffset="0" transform="rotate(-90 80 80)"/>
+            <circle cx="80" cy="80" r="60" fill="none" stroke="#f59e0b" stroke-width="20" stroke-dasharray="72 292" stroke-dashoffset="-85" transform="rotate(-90 80 80)"/>
+            <circle cx="80" cy="80" r="60" fill="none" stroke="#3b82f6" stroke-width="20" stroke-dasharray="34 292" stroke-dashoffset="-157" transform="rotate(-90 80 80)"/>
+            <circle cx="80" cy="80" r="60" fill="none" stroke="#22c55e" stroke-width="20" stroke-dasharray="8 292" stroke-dashoffset="-191" transform="rotate(-90 80 80)"/>
+            <text x="80" y="75" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">$4.41</text>
+            <text x="80" y="92" text-anchor="middle" fill="#666" font-size="10">today</text>
+          </svg>
+          <div style="font-size:10px;color:#666;margin-top:4px;">
+            <span style="color:#ef4444;">&#9632;</span> opus &nbsp;
+            <span style="color:#f59e0b;">&#9632;</span> sonnet &nbsp;
+            <span style="color:#3b82f6;">&#9632;</span> gpt-4o &nbsp;
+            <span style="color:#22c55e;">&#9632;</span> mini
+          </div>
+        </div>
+      </div>
+      <div class="costs-grid" style="margin-bottom:16px;">
+        <div class="sub-card"><div class="sub-provider">Anthropic</div><div class="sub-amount">$20</div><div class="sub-period">/ month &bull; Renews Mar 26</div></div>
+        <div class="sub-card"><div class="sub-provider">OpenAI</div><div class="sub-amount">$20</div><div class="sub-period">/ month &bull; Renews Apr 1</div></div>
+        <div class="sub-card"><div class="sub-provider">Google AI</div><div class="sub-amount">$0</div><div class="sub-period">Free tier &bull; 1M tokens/day</div></div>
+        <div class="sub-card"><div class="sub-provider">fal.ai</div><div class="sub-amount">$10</div><div class="sub-period">Pay-as-go &bull; Image gen</div></div>
+      </div>
+      <div class="card">
+        <h3>Optimization Recommendations</h3>
+        <div class="recommend"><div class="rec-title">&#128200; Switch Researcher to gpt-4o-mini</div>Saves ~$0.40/day. Researcher tasks are retrieval-heavy, not reasoning-heavy.</div>
+        <div class="recommend"><div class="rec-title">&#9200; Batch cron jobs</div>Combine 3 cron jobs into 1 multi-step agent. Estimated 30% token reduction.</div>
+        <div class="recommend"><div class="rec-title">&#128176; Use prompt caching</div>Enable Anthropic prompt caching for CEO agent. Saves up to 90% on repeated context.</div>
+      </div>
+    </div>
+
+    <!-- SECTION 9: Memory -->
+    <div id="sec-memory" class="section">
+      <input class="search-bar" type="text" placeholder="&#128269; Search memory files...">
+      <div class="memory-layout">
+        <div class="file-tree">
+          <div class="tree-item active" onclick="previewMemory('MEMORY.md')"><span class="tree-icon">&#128196;</span> MEMORY.md</div>
+          <div class="tree-item" onclick="previewMemory('SOUL.md')"><span class="tree-icon">&#128203;</span> SOUL.md</div>
+          <div class="tree-item" onclick="previewMemory('USER.md')"><span class="tree-icon">&#128100;</span> USER.md</div>
+          <div class="tree-item" onclick="previewMemory('AGENTS.md')"><span class="tree-icon">&#129302;</span> AGENTS.md</div>
+          <div class="tree-item" onclick="previewMemory('TOOLS.md')"><span class="tree-icon">&#128295;</span> TOOLS.md</div>
+          <div class="tree-item" onclick="previewMemory('IDENTITY.md')"><span class="tree-icon">&#129384;</span> IDENTITY.md</div>
+          <div style="margin-top:8px;padding:4px 10px;font-size:10px;color:#444;text-transform:uppercase;">memory/</div>
+          <div class="tree-item" onclick="previewMemory('2026-03-20.md')"><span class="tree-icon">&#128197;</span> 2026-03-20.md</div>
+          <div class="tree-item" onclick="previewMemory('2026-03-19.md')"><span class="tree-icon">&#128197;</span> 2026-03-19.md</div>
+          <div class="tree-item" onclick="previewMemory('heartbeat-state.json')"><span class="tree-icon">&#128196;</span> heartbeat-state.json</div>
+        </div>
+        <div class="preview-panel" id="memory-preview">
+# MEMORY.md - Long Term Memory
+
+## Core Identity
+- Name: Moti, AI agent for MoaTh
+- Mission: Help MoaTh pivot from flight attendant to AI freelancer
+
+## Key Context
+- MoaTh works at Saudia Airlines, irregular schedule
+- 2-year runway for career pivot
+- Focus: Python, n8n, Claude API, LangChain, LangGraph
+
+## Financial Rules
+- Shariah-compliant only
+- Never recommend haram products
+- Tadawul stocks, sukuk, halal ETFs
+
+## Recent Learnings
+- Mission Control v2 dashboard built successfully
+- GitHub repo: Moath2026/agent-garden
+- OpenClaw running well on Windows
+
+## Active Projects
+1. AI Automation freelancing setup
+2. TikTok content pipeline (Script + Producer agents)
+3. Trading automation (Tadawul)
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 10: Models -->
+    <div id="sec-models" class="section">
+      <div class="model-cards">
+        <div class="model-card">
+          <div class="model-name">claude-opus-4</div>
+          <div class="model-provider">Anthropic</div>
+          <div class="model-stat">Input price: <span>$15 / 1M tokens</span></div>
+          <div class="model-stat">Output price: <span>$75 / 1M tokens</span></div>
+          <div class="model-stat">Context: <span>200k tokens</span></div>
+          <div class="model-tags"><span class="tag">reasoning</span><span class="tag">coding</span><span class="tag">creative</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-name">claude-sonnet-4</div>
+          <div class="model-provider">Anthropic</div>
+          <div class="model-stat">Input price: <span>$3 / 1M tokens</span></div>
+          <div class="model-stat">Output price: <span>$15 / 1M tokens</span></div>
+          <div class="model-stat">Context: <span>200k tokens</span></div>
+          <div class="model-tags"><span class="tag">balanced</span><span class="tag">fast</span><span class="tag">coding</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-name">gpt-4o</div>
+          <div class="model-provider">OpenAI</div>
+          <div class="model-stat">Input price: <span>$2.50 / 1M tokens</span></div>
+          <div class="model-stat">Output price: <span>$10 / 1M tokens</span></div>
+          <div class="model-stat">Context: <span>128k tokens</span></div>
+          <div class="model-tags"><span class="tag">multimodal</span><span class="tag">vision</span><span class="tag">fast</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-name">gpt-4o-mini</div>
+          <div class="model-provider">OpenAI</div>
+          <div class="model-stat">Input price: <span>$0.15 / 1M tokens</span></div>
+          <div class="model-stat">Output price: <span>$0.60 / 1M tokens</span></div>
+          <div class="model-stat">Context: <span>128k tokens</span></div>
+          <div class="model-tags"><span class="tag">cheap</span><span class="tag">fast</span><span class="tag">default</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-name">gpt-4-turbo</div>
+          <div class="model-provider">OpenAI</div>
+          <div class="model-stat">Input price: <span>$10 / 1M tokens</span></div>
+          <div class="model-stat">Output price: <span>$30 / 1M tokens</span></div>
+          <div class="model-stat">Context: <span>128k tokens</span></div>
+          <div class="model-tags"><span class="tag">vision</span><span class="tag">coding</span></div>
+        </div>
+      </div>
+      <div class="fallback-chain">
+        <h3>Fallback Chain</h3>
+        <div class="chain-visual">
+          <div class="chain-node">gpt-4o-mini</div>
+          <div class="chain-arrow">&#8594;</div>
+          <div class="chain-node">claude-sonnet-4</div>
+          <div class="chain-arrow">&#8594;</div>
+          <div class="chain-node">claude-opus-4</div>
+          <div style="font-size:11px;color:#555;margin-left:8px;">(on rate limit / error)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 11: Docs -->
+    <div id="sec-docs" class="section">
+      <div class="breadcrumb">workspace / <span>docs</span> / README.md</div>
+      <div class="docs-layout">
+        <div class="file-tree">
+          <div class="tree-item active"><span class="tree-icon">&#128196;</span> README.md</div>
+          <div class="tree-item"><span class="tree-icon">&#128196;</span> BOOTSTRAP.md</div>
+          <div class="tree-item"><span class="tree-icon">&#128196;</span> HEARTBEAT.md</div>
+          <div style="margin-top:8px;padding:4px 10px;font-size:10px;color:#444;text-transform:uppercase;">skills/</div>
+          <div class="tree-item"><span class="tree-icon">&#128193;</span> github/</div>
+          <div class="tree-item"><span class="tree-icon">&#128193;</span> weather/</div>
+          <div class="tree-item"><span class="tree-icon">&#128193;</span> calendar/</div>
+          <div class="tree-item"><span class="tree-icon">&#128193;</span> ontology/</div>
+          <div style="margin-top:8px;padding:4px 10px;font-size:10px;color:#444;text-transform:uppercase;">projects/</div>
+          <div class="tree-item"><span class="tree-icon">&#128193;</span> agent-garden/</div>
+          <div class="tree-item"><span class="tree-icon">&#128193;</span> tiktok-pipeline/</div>
+        </div>
+        <div class="preview-panel">
+# OpenClaw Workspace
+
+Welcome to MoaTh's Mission Control.
+
+## Quick Start
+1. Read SOUL.md - your identity
+2. Read USER.md - who you're helping  
+3. Read memory/YYYY-MM-DD.md for recent context
+
+## Structure
+- `MEMORY.md` - long-term curated memory
+- `SOUL.md` - agent persona and rules
+- `USER.md` - about MoaTh
+- `AGENTS.md` - workspace rules
+- `skills/` - available skill modules
+- `memory/` - daily session logs
+
+## Active Mission
+Career pivot: Flight Attendant -> AI Freelancer
+Timeline: 2 years
+Stack: Python, n8n, Claude, LangChain, LangGraph
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 12: System -->
+    <div id="sec-system" class="section">
+      <div class="sys-grid">
+        <div>
+          <div class="card" style="margin-bottom:12px;">
+            <h3>Resource Usage</h3>
+            <div class="resource-row">
+              <div class="resource-label"><span>CPU</span><span class="resource-val">34%</span></div>
+              <div class="gauge-track"><div class="gauge-fill" style="width:34%;background:#22c55e;"></div></div>
+            </div>
+            <div class="resource-row">
+              <div class="resource-label"><span>Memory</span><span class="resource-val">67% (10.7 GB)</span></div>
+              <div class="gauge-track"><div class="gauge-fill" style="width:67%;background:#06b6d4;"></div></div>
+            </div>
+            <div class="resource-row">
+              <div class="resource-label"><span>Disk</span><span class="resource-val">45% (224 GB)</span></div>
+              <div class="gauge-track"><div class="gauge-fill" style="width:45%;background:#f59e0b;"></div></div>
+            </div>
+            <div class="resource-row">
+              <div class="resource-label"><span>Network</span><span class="resource-val">12 MB/s</span></div>
+              <div class="gauge-track"><div class="gauge-fill" style="width:24%;background:#a855f7;"></div></div>
+            </div>
+          </div>
+          <div class="gw-card">
+            <div class="gw-status"><span class="status-dot"></span> Gateway ONLINE</div>
+            <div style="font-size:11px;color:#555;margin-top:8px;">
+              <div>Version: openclaw v3.2.1</div>
+              <div>Node: v24.14.0</div>
+              <div>Uptime: 6h 34m</div>
+              <div>OS: Windows 11 x64</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:12px;">
+            <h3>Installed Skills</h3>
+            <div class="skill-row"><span>&#127803; weather</span><label class="toggle"><input type="checkbox" checked onchange="toggleSwitch(this)"><span class="slider"></span></label></div>
+            <div class="skill-row"><span>&#128008; github</span><label class="toggle"><input type="checkbox" checked onchange="toggleSwitch(this)"><span class="slider"></span></label></div>
+            <div class="skill-row"><span>&#128197; calendar</span><label class="toggle"><input type="checkbox" checked onchange="toggleSwitch(this)"><span class="slider"></span></label></div>
+            <div class="skill-row"><span>&#129504; ontology</span><label class="toggle"><input type="checkbox" onchange="toggleSwitch(this)"><span class="slider"></span></label></div>
+            <div class="skill-row"><span>&#128295; automation-workflows</span><label class="toggle"><input type="checkbox" checked onchange="toggleSwitch(this)"><span class="slider"></span></label></div>
+            <div class="skill-row"><span>&#128269; web-search</span><label class="toggle"><input type="checkbox" checked onchange="toggleSwitch(this)"><span class="slider"></span></label></div>
+          </div>
+          <div class="card">
+            <h3>Connected Channels</h3>
+            <div class="channel-row"><span class="channel-dot"></span> Telegram (MoaTh direct)</div>
+            <div class="channel-row"><span class="channel-dot" style="background:#888;"></span> Discord (offline)</div>
+            <div class="channel-row"><span class="channel-dot"></span> n8n Webhook</div>
+            <div class="channel-row"><span class="channel-dot"></span> GitHub Actions</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 13: Security -->
+    <div id="sec-security" class="section">
+      <div class="sec-layout" style="margin-bottom:16px;">
+        <div class="score-ring">
+          <svg width="140" height="140" viewBox="0 0 140 140">
+            <circle cx="70" cy="70" r="55" fill="none" stroke="#1e1e3a" stroke-width="12"/>
+            <circle cx="70" cy="70" r="55" fill="none" stroke="#22c55e" stroke-width="12"
+              stroke-dasharray="251" stroke-dashoffset="68"
+              transform="rotate(-90 70 70)" stroke-linecap="round"/>
+            <text x="70" y="65" text-anchor="middle" fill="#22c55e" font-size="26" font-weight="700">73</text>
+            <text x="70" y="82" text-anchor="middle" fill="#555" font-size="11">/100</text>
+          </svg>
+          <div class="score-text" style="font-size:14px;">Security Score</div>
+          <div class="score-sub">Good - 2 issues to fix</div>
+        </div>
+        <div>
+          <h3 style="font-size:13px;color:#555;text-transform:uppercase;margin-bottom:10px;">Security Checklist</h3>
+          <div class="check-item check-green"><span class="check-icon">&#10003;</span> API keys stored in environment variables</div>
+          <div class="check-item check-green"><span class="check-icon">&#10003;</span> GitHub repo private (agent-garden)</div>
+          <div class="check-item check-amber"><span class="check-icon">&#9888;</span> Token in git remote URL - rotate recommended</div>
+          <div class="check-item check-red"><span class="check-icon">&#10007;</span> 2FA not verified on GitHub account</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Recent Access Logs</h3>
+        <table class="access-table">
+          <thead><tr><th>Time</th><th>Action</th><th>Source</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>00:34</td><td>git push origin main</td><td>Local/subagent</td><td style="color:#22c55e;">OK</td></tr>
+            <tr><td>00:28</td><td>Telegram message received</td><td>MoaTh (887195031)</td><td style="color:#22c55e;">OK</td></tr>
+            <tr><td>00:15</td><td>GitHub API read</td><td>gh CLI</td><td style="color:#22c55e;">OK</td></tr>
+            <tr><td>00:10</td><td>OpenAI API call</td><td>gpt-4o-mini</td><td style="color:#22c55e;">OK</td></tr>
+            <tr><td>00:02</td><td>Gateway restart</td><td>System</td><td style="color:#f59e0b;">WARN</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SECTION 14: Terminal -->
+    <div id="sec-terminal" class="section">
+      <div class="terminal" id="term-output">
+        <div class="term-line"><span class="term-prompt">$</span> <span class="term-cmd">openclaw status</span></div>
+        <div class="term-line term-out">OpenClaw Mission Control v3.2.1</div>
+        <div class="term-line term-out">  Gateway:    ONLINE (port 3000)</div>
+        <div class="term-line term-out">  Agents:     8 active, 4 idle, 3 error</div>
+        <div class="term-line term-out">  Sessions:   3 active</div>
+        <div class="term-line term-out">  Model:      anthropic/claude-sonnet-4</div>
+        <div class="term-line term-out">  Default:    openai/gpt-4o-mini</div>
+        <div class="term-line term-out">  Node:       v24.14.0</div>
+        <div class="term-line term-out">  OS:         Windows_NT 10.0.26200 (x64)</div>
+        <div class="term-line term-out">  Uptime:     6h 34m 12s</div>
+        <div class="term-line" style="margin-top:8px;"><span class="term-prompt">$</span> <span class="term-cmd">openclaw agents list</span></div>
+        <div class="term-line term-out">CEO Agent       [active]   claude-sonnet-4   12k tokens</div>
+        <div class="term-line term-out">Strategy        [busy]     gpt-4o            9.8k tokens</div>
+        <div class="term-line term-out">Trend Scout     [idle]     gpt-4o-mini       3.2k tokens</div>
+        <div class="term-line term-out">Script Writer   [active]   claude-opus-4     22k tokens</div>
+        <div class="term-line term-err">Producer        [ERROR]    claude-sonnet-4   5.6k tokens</div>
+        <div class="term-line" style="margin-top:8px;"><span class="term-prompt">$</span> <span id="term-cursor" class="term-cmd">_</span></div>
+      </div>
+      <div class="term-input-row">
+        <span>$</span>
+        <input class="term-input" id="term-input" type="text" placeholder="Enter command..." onkeydown="handleTermKey(event)">
+      </div>
+      <div class="preset-btns">
+        <button class="preset-btn" onclick="runPreset('openclaw status')">openclaw status</button>
+        <button class="preset-btn" onclick="runPreset('openclaw agents list')">agents list</button>
+        <button class="preset-btn" onclick="runPreset('openclaw gateway restart')">gateway restart</button>
+        <button class="preset-btn" onclick="runPreset('openclaw cron list')">cron list</button>
+        <button class="preset-btn" onclick="runPreset('openclaw memory dump')">memory dump</button>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+var sections = ['sec-home','sec-calendar','sec-garden','sec-agents','sec-chat','sec-tasks','sec-cron','sec-costs','sec-memory','sec-models','sec-docs','sec-system','sec-security','sec-terminal'];
+var titles = {'sec-home':'&#127968; Overview','sec-calendar':'&#128197; Calendar','sec-garden':'&#127807; Garden','sec-agents':'&#129302; Agents','sec-chat':'&#128172; Chat','sec-tasks':'&#128203; Tasks','sec-cron':'&#9200; Cron Jobs','sec-costs':'&#128176; Costs','sec-memory':'&#129504; Memory','sec-models':'&#9881; Models','sec-docs':'&#128193; Docs','sec-system':'&#128421; System','sec-security':'&#128274; Security','sec-terminal':'&#9000; Terminal'};
+
+function show(id, el) {
+  sections.forEach(function(s) {
+    var sec = document.getElementById(s);
+    if (sec) sec.classList.remove('active');
+  });
+  var target = document.getElementById(id);
+  if (target) target.classList.add('active');
+  var navLinks = document.querySelectorAll('nav a');
+  navLinks.forEach(function(a) { a.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  var titleEl = document.getElementById('page-title');
+  if (titleEl && titles[id]) titleEl.innerHTML = titles[id];
+  if (window.innerWidth <= 768) {
+    document.getElementById('sidebar').classList.remove('open');
+  }
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+function toggleSwitch(el) {
+  // toggle logic handled by CSS
+}
+
+function previewMemory(filename) {
+  var content = {
+    'MEMORY.md': '# MEMORY.md - Long Term Memory\n\n## Core Identity\n- Name: Moti\n- Mission: Help MoaTh pivot to AI freelancer\n\n## Key Facts\n- Riyadh, Saudi Arabia\n- Flight Attendant at Saudia\n- 2-year career pivot runway\n\n## Financial Rules\n- Shariah-compliant only\n- Tadawul, sukuk, halal ETFs',
+    'SOUL.md': '# SOUL.md - Who You Are\n\nBe genuinely helpful, not performatively helpful.\nHave opinions. Be resourceful before asking.\nEarn trust through competence.',
+    'USER.md': '# USER.md - About MoaTh\n\n- Name: MoaTh\n- Age: 27\n- Timezone: UTC+3\n- Job: Flight Attendant at Saudia Airlines\n- Mission: AI automation freelancer',
+    'AGENTS.md': '# AGENTS.md\n\nThis folder is home. Treat it that way.\n\nBefore doing anything:\n1. Read SOUL.md\n2. Read USER.md\n3. Read memory files',
+    'TOOLS.md': '# TOOLS.md\n\n## Luma Dream Machine\n- API Key: luma-05b5...\n\n## n8n\n- URL: n8n.srv1431563.hstgr.cloud\n\n## Telegram Bots\n- Moti Videos Bot',
+    'IDENTITY.md': '# IDENTITY.md\n\n- Name: Moti\n- Creature: AI agent\n- Vibe: Sharp, direct, occasionally funny\n- Emoji: &#129302;\n- Human: MoaTh &#128640;',
+    '2026-03-20.md': '# 2026-03-20\n\n00:34 - Built Mission Control v2 dashboard\n00:28 - Strategy agent analyzing markets\n00:15 - Memory files updated\n00:02 - Gateway restarted',
+    '2026-03-19.md': '# 2026-03-19\n\n23:00 - Cost report generated: $3.82\n18:30 - Script published to TikTok\n14:00 - Client meeting notes saved',
+    'heartbeat-state.json': '{\n  "lastChecks": {\n    "email": 1742424000,\n    "calendar": 1742420400,\n    "weather": null\n  },\n  "lastPing": "2026-03-20T00:30:00Z"\n}'
+  };
+  var preview = document.getElementById('memory-preview');
+  if (preview) preview.textContent = content[filename] || '# ' + filename + '\n\n(No preview available)';
+  var items = document.querySelectorAll('.file-tree .tree-item');
+  items.forEach(function(i) { i.classList.remove('active'); });
+  event.currentTarget.classList.add('active');
+}
+
+// Garden speech bubbles animation
+var speeches = {
+  'speech-ceo': ['Analyzing markets...','CEO report ready!','Checking KPIs...','Revenue up 12%!','Strategy meeting?'],
+  'speech-strategy': ['Hmm, thinking...','Processing data...','Next move?','Running models...','Analyzing trends...'],
+  'speech-trend': ['Waiting for task','Ready when needed','Standing by...','Nothing to do...','Idle mode on'],
+  'speech-script': ['Writing script...','Almost done!','Adding hooks...','Final draft!','Posting soon...'],
+  'speech-designer': ['Zzz...','Snooze...','...','ZzZz...','Wake me up?'],
+  'speech-producer': ['Error! Retrying...','Connection lost!','Retry 3/5...','Help!','Broken pipe!']
+};
+setInterval(function() {
+  var keys = Object.keys(speeches);
+  var key = keys[Math.floor(Math.random() * keys.length)];
+  var el = document.getElementById(key);
+  if (el) {
+    var opts = speeches[key];
+    el.textContent = opts[Math.floor(Math.random() * opts.length)];
+  }
+}, 2500);
+
+// Terminal
+function runPreset(cmd) {
+  document.getElementById('term-input').value = cmd;
+  handleTermKey({key: 'Enter', preventDefault: function(){}});
+}
+
+function handleTermKey(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault ? e.preventDefault() : null;
+    var input = document.getElementById('term-input');
+    var cmd = input.value.trim();
+    if (!cmd) return;
+    var out = document.getElementById('term-output');
+    var line1 = document.createElement('div');
+    line1.className = 'term-line';
+    line1.innerHTML = '<span class="term-prompt">$ </span><span class="term-cmd">' + cmd + '</span>';
+    out.appendChild(line1);
+    var responses = {
+      'openclaw status': 'Gateway: ONLINE | Agents: 8 active | Uptime: 6h 34m',
+      'openclaw agents list': 'CEO[active] Strategy[busy] Trend[idle] Script[active] Producer[ERROR]',
+      'openclaw gateway restart': 'Restarting gateway... Done. Gateway ONLINE.',
+      'openclaw cron list': '8 jobs registered. 5 active, 3 paused.',
+      'openclaw memory dump': 'MEMORY.md: 1.2kb | SOUL.md: 0.8kb | USER.md: 0.9kb | Daily: 3 files'
+    };
+    var resp = responses[cmd] || 'Command executed: ' + cmd;
+    var line2 = document.createElement('div');
+    line2.className = 'term-line term-out';
+    line2.textContent = resp;
+    out.appendChild(line2);
+    input.value = '';
+    out.scrollTop = out.scrollHeight;
+  }
+}
+</script>
+</body>
+</html>
